@@ -2,51 +2,56 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import os
+import json
 
 app = Flask(__name__)
 CORS(app)
 
 # --- GOOGLE SHEETS SETUP ---
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
-client = gspread.authorize(creds)
+
+def get_creds():
+    # 1. Look for the "Secret Key" you pasted into Render
+    env_creds = os.getenv('GOOGLE_CREDENTIALS')
+    if env_creds:
+        creds_dict = json.loads(env_creds)
+        return ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+    
+    # 2. Look for the file on your Mac (for local testing)
+    if os.path.exists("credentials.json"):
+        return ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
+    
+    raise Exception("No Google Credentials found.")
+
+# Initialize the Google Client
+try:
+    creds = get_creds()
+    client = gspread.authorize(creds)
+except Exception as e:
+    print(f"Startup Error: {e}")
 
 @app.route('/audit', methods=['POST'])
 def run_audit():
-    data = request.json
-    
-    # 1. Capture the new extended data
-    name = data.get('name', 'Unknown')
-    phone = data.get('phone', 'No Phone')
-    email = data.get('email', 'No Email')
-    income = float(data.get('monthly_income', 0))
-    debts = float(data.get('monthly_debts', 0))
-    credit = data.get('credit', 'Not Provided')
-    timeline = data.get('timeline', 'Not Provided')
-    
-    # 2. Mortgage Math
-    max_allowable_payment = (income * 0.43) - debts
-    
-    # 3. Personalized Message
-    if max_allowable_payment > 500:
-        result_message = f"Success! Based on your audit, your estimated buying power is ${max_allowable_payment:,.2f}/mo. Since your timeline is {timeline}, we should verify your pre-approval soon."
-    else:
-        result_message = "Audit Complete. Based on your current profile, we should look at an equity-building strategy first."
-
-    # 4. SAVE TO GOOGLE SHEETS
     try:
+        data = request.json
+        # Your audit logic
+        income = float(data.get('monthly_income', 0))
+        debts = float(data.get('monthly_debts', 0))
+        max_payment = (income * 0.43) - debts
+        
+        # Save to Google Sheets
         sheet = client.open("Unlock Your 2026 Buying Power").worksheet("Leads2026")
-        # Added Credit and Timeline to the row below
-        sheet.append_row([name, phone, email, income, debts, round(max_allowable_payment, 2), credit, timeline])
-        print(f"✅ Full Audit Captured: {name} ({credit})")
+        sheet.append_row([
+            data.get('name'), data.get('phone'), data.get('email'), 
+            income, debts, round(max_payment, 2), data.get('credit'), data.get('timeline')
+        ])
+        
+        return jsonify({"status": "success", "message": f"Buying power: ${max_payment:,.2f}"})
     except Exception as e:
-        print(f"❌ Google Sheets Error: {e}")
-
-    return jsonify({
-        "status": "success",
-        "message": result_message,
-        "next_step": "DM Shiva 'STRATEGY' for your full breakdown."
-    })
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(port=5001, debug=True)
+    # Render needs this specific port logic to stay alive
+    port = int(os.environ.get("PORT", 5001))
+    app.run(host='0.0.0.0', port=port)
