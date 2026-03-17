@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shiva Luxury | 2026 Buying Power Audit</title>
+    <style>
+        body { font-family: 'Georgia', serif; background: #0a192f; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .luxury-box { background: white; padding: 40px; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); width: 100%; max-width: 450px; text-align: center; border: 2px solid #d4af37; }
+        .logo-text { font-family: 'Helvetica', sans-serif; font-size: 24px; font-weight: bold; color: #0a192f; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; }
+        h2 { font-weight: 400; margin-bottom: 25px; color: #111; font-size: 20px; }
+        label { display: block; text-align: left; font-size: 11px; color: #888; margin: 10px 0 2px 5px; text-transform: uppercase; }
+        input, select { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; font-size: 14px; background: #fff; }
+        .btn-gold { width: 100%; padding: 16px; background: #d4af37; color: #0a192f; border: none; border-radius: 5px; font-weight: 600; text-transform: uppercase; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        .btn-gold:hover { background: #b8962e; }
+        #result { margin-top: 25px; font-size: 15px; color: #333; line-height: 1.6; }
+        .sms-button { 
+            display: inline-block; width: 100%; padding: 16px; background: #0a192f; color: #d4af37; 
+            text-decoration: none; border-radius: 5px; font-weight: 600; text-transform: uppercase; margin-top: 15px;
+            border: 1px solid #d4af37; font-family: 'Helvetica', sans-serif; font-size: 14px;
+        }
+        .credentials { margin-top: 30px; font-family: 'Helvetica', sans-serif; font-size: 11px; color: #888; border-top: 1px solid #eee; padding-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="luxury-box">
+        <div class="logo-text">SHIVALUXURY</div>
+        <h2>2026 Mortgage & Equity Audit</h2>
+        
+        <input type="text" id="name" placeholder="Full Name">
+        <input type="text" id="phone" placeholder="Phone Number">
+        <input type="email" id="email" placeholder="Email Address">
+        
+        <div style="display: flex; gap: 10px;">
+            <input type="number" id="income" placeholder="Monthly Income ($)">
+            <input type="number" id="debts" placeholder="Monthly Debts ($)">
+        </div>
+
+        <label>Credit Profile</label>
+        <select id="credit">
+            <option value="Excellent (740+)">Excellent (740+)</option>
+            <option value="Good (680-739)">Good (680-739)</option>
+            <option value="Fair (620-679)">Fair (620-679)</option>
+            <option value="Building (Below 620)">Building (Below 620)</option>
+        </select>
+
+        <label>Purchase Timeline</label>
+        <select id="timeline">
+            <option value="Immediate (1-3 months)">Immediate (1-3 months)</option>
+            <option value="Planning (3-6 months)">Planning (3-6 months)</option>
+            <option value="Researching (6+ months)">Researching (6+ months)</option>
+        </select>
+
+        <button class="btn-gold" onclick="sendData()">Generate My Audit</button>
+        <div id="result"></div>
+        <div class="credentials">DRE 02251909 | NMLS 2779492</div>
+    </div>
+
+    <script>
+        async function sendData() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = "<i>Consulting the 2026 market data...</i>";
+            
+            const data = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                monthly_income: document.getElementById('income').value,
+                monthly_debts: document.getElementById('debts').value,
+                credit: document.getElementById('credit').value,
+                timeline: document.getElementById('timeline').value
+            };
+
+            try {
+                const response = await fetch('http://127.0.0.1:5001/audit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                
+                // --- CONFIGURATION: REPLACE WITH YOUR NUMBER ---
+                const myPhone = "3104225608"; // Use digits only, no dashes
+                const message = encodeURIComponent("Hi Shiva! I just finished my 2026 Buying Power Audit and I'd like to discuss my results.");
+                
+                resultDiv.innerHTML = `
+                    <div style="margin-bottom: 20px; font-weight: bold; border-top: 1px solid #eee; padding-top: 15px;">
+                        ${result.message}
+                    </div>
+                    <a href="sms:${myPhone}&body=${message}" class="sms-button">
+                        Text Shiva for Strategy
+                    </a>
+                `;
+            } catch (error) {
+                resultDiv.innerText = "Connection error. Ensure your Python app is running.";
+            }
+        }
+    </script>
+</body>
+</html>
