@@ -10,8 +10,6 @@ CORS(app)
 
 # --- GOOGLE SHEETS SETUP ---
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-
-# We define 'client' here so the whole app can see it
 client = None
 
 def get_creds():
@@ -21,77 +19,87 @@ def get_creds():
         return ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
     if os.path.exists("credentials.json"):
         return ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
-    raise Exception("No Google Credentials found.")
+    return None
 
 try:
     creds = get_creds()
-    client = gspread.authorize(creds)
+    if creds:
+        client = gspread.authorize(creds)
 except Exception as e:
     print(f"Startup Error: {e}")
 
-# --- HOME PAGE (The "Front Door" for shivaluxury.com) ---
 @app.route('/')
 def home():
     return render_template_string('''
     <!DOCTYPE html>
-    <html lang="en">
+    <html>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Shiva Luxury | 2026 Audit</title>
         <style>
-            body { margin: 0; padding: 0; background: #0a192f; font-family: 'Helvetica', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-            .luxury-box { background: white; padding: 40px; border-radius: 15px; width: 90%; max-width: 450px; text-align: center; border: 2px solid #d4af37; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
-            .logo { font-size: 24px; font-weight: bold; letter-spacing: 2px; color: #0a192f; margin-bottom: 5px; }
-            h2 { font-family: 'Georgia', serif; font-weight: 400; margin-bottom: 25px; font-size: 18px; color: #333; }
-            input, select { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-            .btn-gold { width: 100%; padding: 16px; background: #d4af37; color: #0a192f; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-            #result { margin-top: 20px; color: #333; font-size: 15px; }
-            .sms-btn { display: block; margin-top: 15px; padding: 15px; background: #0a192f; color: #d4af37; text-decoration: none; border-radius: 5px; font-weight: bold; }
-            .footer-info { margin-top: 30px; font-size: 10px; color: #999; border-top: 1px solid #eee; padding-top: 15px; }
+            body { margin: 0; background: #0a192f; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+            .box { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center; border: 2px solid #d4af37; }
+            input, select { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+            button { width: 100%; padding: 15px; background: #d4af37; color: #0a192f; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
+            #res { margin-top: 15px; font-size: 14px; }
         </style>
     </head>
     <body>
-        <div class="luxury-box">
-            <div class="logo">SHIVALUXURY</div>
-            <h2>2026 Mortgage & Equity Audit</h2>
-            <input type="text" id="name" placeholder="Full Name">
-            <input type="text" id="phone" placeholder="Phone Number">
-            <input type="email" id="email" placeholder="Email Address">
-            <div style="display: flex; gap: 10px;">
-                <input type="number" id="income" placeholder="Monthly Inc ($)">
-                <input type="number" id="debts" placeholder="Monthly Debt ($)">
-            </div>
-            <select id="credit">
-                <option value="">Select Credit Profile</option>
-                <option value="Excellent (740+)">Excellent (740+)</option>
-                <option value="Good (680-739)">Good (680-739)</option>
-                <option value="Fair (620-679)">Fair (620-679)</option>
-                <option value="Building (Below 620)">Building (Below 620)</option>
+        <div class="box">
+            <h2 style="color:#0a192f; margin-bottom:20px;">2026 Mortgage Audit</h2>
+            <input type="text" id="n" placeholder="Full Name">
+            <input type="text" id="p" placeholder="Phone Number">
+            <input type="email" id="e" placeholder="Email Address">
+            <input type="number" id="i" placeholder="Monthly Income ($)">
+            <input type="number" id="d" placeholder="Monthly Debt ($)">
+            <select id="c">
+                <option value="Excellent">Excellent (740+)</option>
+                <option value="Good">Good (680-739)</option>
+                <option value="Fair">Fair (620-679)</option>
             </select>
-            <button class="btn-gold" onclick="sendData()">Generate My Audit</button>
-            <div id="result"></div>
-            <div class="footer-info">
-                Shiva Tamara | Licensed Real Estate Agent | DRE# 02251909<br>Nobility and Monarchs
-            </div>
+            <button onclick="send()">Generate My Audit</button>
+            <div id="res"></div>
         </div>
         <script>
-            async function sendData() {
-                const resDiv = document.getElementById('result');
-                resDiv.innerHTML = "<i>Consulting 2026 market data...</i>";
+            async function send() {
+                const r = document.getElementById('res');
+                r.innerHTML = "Processing...";
                 const data = {
-                    name: document.getElementById('name').value,
-                    phone: document.getElementById('phone').value,
-                    email: document.getElementById('email').value,
-                    monthly_income: document.getElementById('income').value,
-                    monthly_debts: document.getElementById('debts').value,
-                    credit: document.getElementById('credit').value
+                    name: document.getElementById('n').value,
+                    phone: document.getElementById('p').value,
+                    email: document.getElementById('e').value,
+                    monthly_income: document.getElementById('i').value,
+                    monthly_debts: document.getElementById('d').value,
+                    credit: document.getElementById('c').value
                 };
-                try {
-                    const response = await fetch('/audit', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(data)
-                    });
-                    const result = await response.json();
-                    const myPhone = "1213555123
+                const response = await fetch('/audit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const res = await response.json();
+                r.innerHTML = "<strong>" + res.message + "</strong>";
+            }
+        </script>
+    </body>
+    </html>
+    ''')
+
+@app.route('/audit', methods=['POST'])
+def run_audit():
+    global client
+    try:
+        data = request.json
+        inc = float(data.get('monthly_income', 0))
+        deb = float(data.get('monthly_debts', 0))
+        pwr = (inc * 0.43) - deb
+        if client:
+            sheet = client.open("Unlock Your 2026 Buying Power").worksheet("Leads2026")
+            sheet.append_row([data.get('name'), data.get('phone'), data.get('email'), inc, deb, round(pwr, 2), data.get('credit')])
+        return jsonify({"status": "success", "message": f"Estimated Power: ${pwr:,.2f}"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5001)))
