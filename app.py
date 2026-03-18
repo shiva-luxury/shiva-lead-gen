@@ -37,17 +37,18 @@ def home():
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Shiva Luxury | PITI Strategy Audit</title>
+        <title>Shiva Luxury | 2026 Strategy Audit</title>
         <style>
             body { margin: 0; padding: 0; background: #0a192f; font-family: 'Helvetica', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
             .luxury-box { background: white; padding: 40px; border-radius: 15px; width: 90%; max-width: 450px; text-align: center; border: 2px solid #d4af37; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
             .logo { font-size: 26px; font-weight: bold; letter-spacing: 3px; color: #0a192f; margin-bottom: 5px; border-bottom: 1px solid #d4af37; display: inline-block; padding-bottom: 5px; }
             h2 { font-family: 'Georgia', serif; font-weight: 400; margin: 20px 0; font-size: 18px; color: #333; }
             input, select { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; font-size: 16px; }
-            .btn-gold { width: 100%; padding: 18px; background: #d4af37; color: #0a192f; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 14px; width: 100%; }
+            .btn-gold { width: 100%; padding: 18px; background: #d4af37; color: #0a192f; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; text-transform: uppercase; font-size: 14px; transition: 0.3s; }
+            .btn-gold:hover { background: #b8962d; }
             #result { margin-top: 25px; text-align: left; background: #f4f4f4; padding: 20px; border-radius: 8px; display: none; border-left: 5px solid #d4af37; font-size: 15px; line-height: 1.6; }
             .sms-btn { display: block; margin-top: 20px; padding: 15px; background: #0a192f; color: #d4af37; text-decoration: none; border-radius: 5px; font-weight: bold; text-align: center; }
-            .footer-info { margin-top: 35px; font-size: 11px; color: #777; border-top: 1px solid #eee; padding-top: 20px; }
+            .footer-info { margin-top: 35px; font-size: 11px; color: #777; border-top: 1px solid #eee; padding-top: 20px; line-height: 1.6; }
             .license { color: #d4af37; font-weight: bold; }
         </style>
     </head>
@@ -56,33 +57,44 @@ def home():
             <div class="logo">SHIVA LUXURY</div>
             <h2>Full PITI Strategy Audit</h2>
             <input type="text" id="name" placeholder="Full Name">
+            <input type="text" id="phone" placeholder="Phone Number">
+            <input type="email" id="email" placeholder="Email Address">
             <input type="text" id="zip" placeholder="Property ZIP Code">
             <input type="number" id="loan_amount" placeholder="Target Loan Amount ($)">
-            <input type="text" id="phone" placeholder="Phone Number">
             <select id="credit">
                 <option value="">Select Credit Profile</option>
                 <option value="Excellent (740+)">Excellent (740+)</option>
                 <option value="Good (680-739)">Good (680-739)</option>
             </select>
+            <select id="timeline">
+                <option value="">Desired Timeline</option>
+                <option value="ASAP">ASAP</option>
+                <option value="1-3 Months">1-3 Months</option>
+                <option value="Just Researching">Just Researching</option>
+            </select>
             <button class="btn-gold" onclick="sendData()">Generate My Full PITI Audit</button>
             <div id="result"></div>
             <div class="footer-info">
                 <strong>SHIVA TAMARA</strong><br>
-                DRE# 02251909 | NMLS# 2779492
+                Licensed Real Estate Agent | <span class="license">DRE# 02251909</span><br>
+                Mortgage Loan Originator | <span class="license">NMLS# 2779492</span><br>
+                <em>Beverly Hills Financial Group</em>
             </div>
         </div>
         <script>
             async function sendData() {
                 const resDiv = document.getElementById('result');
                 resDiv.style.display = "block";
-                resDiv.innerHTML = "<i>Analyzing Market & Tax Data...</i>";
+                resDiv.innerHTML = "<i>Analyzing 2026 Market & Tax Data...</i>";
                 
                 const data = {
                     name: document.getElementById('name').value,
+                    phone: document.getElementById('phone').value,
+                    email: document.getElementById('email').value,
                     zip: document.getElementById('zip').value,
                     loan_amount: document.getElementById('loan_amount').value,
-                    phone: document.getElementById('phone').value,
-                    credit: document.getElementById('credit').value
+                    credit: document.getElementById('credit').value,
+                    timeline: document.getElementById('timeline').value
                 };
                 
                 try {
@@ -121,7 +133,7 @@ def run_audit():
         zip_code = data.get('zip')
         
         # 1. Tax Logic (API-Ninjas)
-        tax_rate = 0.0125 # Default 1.25%
+        tax_rate = 0.0125 # Default 1.25% fallback
         if NINJAS_API_KEY:
             api_url = f'https://api.api-ninjas.com/v1/propertytax?zip={zip_code}'
             r = requests.get(api_url, headers={'X-Api-Key': NINJAS_API_KEY})
@@ -133,22 +145,25 @@ def run_audit():
         months = 360
         pi = loan * (rate * (1 + rate)**months) / ((1 + rate)**months - 1) if loan > 0 else 0
         
-        # 3. Tax & Insurance Logic
+        # 3. Tax & Insurance Logic (0.35% Annual Insurance)
         monthly_tax = (loan * tax_rate) / 12
-        monthly_hoi = (loan * 0.0035) / 12 # 0.35% Annual Insurance Estimate
-        
+        monthly_hoi = (loan * 0.0035) / 12 
         total = pi + monthly_tax + monthly_hoi
 
-        # 4. Log to Google Sheets
+        # 4. Log to Google Sheets (Aligned Mapping to Your 10 Columns)
         if client:
             sheet = client.open("Unlock Your 2026 Buying Power").worksheet("Leads2026")
             sheet.append_row([
-                data.get('name'), 
-                zip_code, 
-                loan, 
-                round(total, 2), 
-                data.get('credit'), 
-                "Full PITI Audit"
+                data.get('name'),         # Col A: Full Name
+                data.get('phone'),        # Col B: Phone
+                data.get('email'),        # Col C: Email
+                zip_code,                 # Col D: ZIP Code
+                loan,                     # Col E: Loan Amount
+                round(total, 2),          # Col F: PITI Total
+                data.get('credit'),       # Col G: Credit Score
+                data.get('timeline'),     # Col H: Timeline
+                "2026 Strategy Audit",    # Col I: Source
+                ""                        # Col J: Notes
             ])
 
         return jsonify({
