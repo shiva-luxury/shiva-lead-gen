@@ -1,8 +1,8 @@
 """
-ShivaLuxury — Know Your Possibilities Engine (Phase 1 + Phase 2)
-=================================================================
+ShivaLuxury — Know Your Possibilities Engine (FINAL Phase 1)
+=============================================================
 6 Paths: Buyer | Seller | Fresh Start | Lease | Commercial | Self-Employed
-Phase 2: Email alerts, social content generator, outbound prospect finder
+Life Events: Divorce | Getting Married | Growing Family | Relocating
 Google Sheets: 6 tabs auto-created with correct headers
 """
 
@@ -23,15 +23,43 @@ SCOPES = ["https://spreadsheets.google.com/feeds",
           "https://www.googleapis.com/auth/spreadsheets",
           "https://www.googleapis.com/auth/drive"]
 
-LEADS_TAB = 'Leads2026'
+TABS = {
+    'buyer':         'Buyers2026',
+    'seller':        'Sellers2026',
+    'fresh_start':   'YourWayOut2026',
+    'lease':         'Leases2026',
+    'commercial':    'Commercial2026',
+    'self_employed': 'Loans2026'
+}
 
-TABS = {k: LEADS_TAB for k in ['buyer','seller','fresh_start','lease','commercial','self_employed']}
-
-LEADS_HEADER = ["Timestamp","Path","Name","Phone","Email","ZIP","Priority","Segment",
-                "Key Figure","P&I / Monthly","Income / Revenue","Debts / Balance",
-                "Credit","Timeline","Location","Property / Budget","Details","Notes","Script Opener"]
-
-HEADERS = {k: LEADS_HEADER for k in ['buyer','seller','fresh_start','lease','commercial','self_employed']}
+HEADERS = {
+    'buyer':        ["Timestamp","Name","Phone","Email","ZIP",
+                     "Employment","Buy Status","Property Type","Loan Type",
+                     "Home Price","Down Payment","Down %","Loan Amount","HOA /mo",
+                     "P&I /mo","Tax /mo","Tax Rate","Insurance /mo","PMI /mo","Total PITI /mo",
+                     "Monthly Income","Monthly Debts","Front DTI","Back DTI","Qualifies?",
+                     "Credit","Timeline","Beds","Baths","Stories","Must-Haves",
+                     "Commute","Vibe","Dream Home","Priority","Segment"],
+    'seller':       ["Timestamp","Name","Phone","Email","ZIP",
+                     "Address","Year Purchased","Beds","Baths","Condition","Stories",
+                     "Has Mortgage","Mortgage Balance","Current Rate","Estimated Value",
+                     "Market Value","Net Equity","After Commission","Buying Power",
+                     "Why Selling","Next Step","Concern","Timeline","Priority","Segment"],
+    'fresh_start':  ["Timestamp","Name","Phone","Email","ZIP",
+                     "Address","Situation","Years Behind","Want To Keep","Urgency",
+                     "Property Value","Mortgage Balance","Back Taxes","Other Liens",
+                     "Total Owed","Est. Equity","Walkaway Cash","Notes","Priority"],
+    'lease':        ["Timestamp","Name","Phone","Email",
+                     "Area","ZIP","Budget /mo","Unit Size","Move-In","Lease Length",
+                     "Move-In Funds","Parking","Pets","Must-Haves","Notes","Priority"],
+    'commercial':   ["Timestamp","Name","Phone","Email",
+                     "Area","Budget /mo","Sq Ft","Space Type","Purpose","Privacy",
+                     "Lease Length","Requirements","Parking","Move-In","Notes","Priority"],
+    'self_employed':["Timestamp","Name","Phone","Email","ZIP",
+                     "Employment","Business Type","Years in Biz",
+                     "Monthly Revenue","Monthly Income","Bank Balance",
+                     "Credit","Target Price","Loan Type","Notes","Priority","Loan Options"]
+}
 
 # ─── SHEETS ───────────────────────────────────────────────────────────────────
 def get_client():
@@ -123,11 +151,7 @@ def buyer(data):
     dream=str(data.get('dream_home','')); notes=str(data.get('notes',''))
     commute=str(data.get('commute','')); vibe=str(data.get('vibe',''))
     beds=str(data.get('beds','')); baths=str(data.get('baths',''))
-    stories=str(data.get('stories',''))
     garage=str(data.get('garage','')); must=str(data.get('must_haves',''))
-    buy_status=str(data.get('buy_status',''))
-    purpose=str(data.get('purpose','Primary Residence'))
-    privacy=str(data.get('privacy',''))
     inc=sf(data.get('monthly_income')); dbt=sf(data.get('monthly_debts'))
     hoa=sf(data.get('hoa')); hp=sf(data.get('home_price'))
     dp=sf(data.get('down_payment')); dpct=sf(data.get('down_pct')); la=sf(data.get('loan_amount'))
@@ -219,22 +243,21 @@ def buyer(data):
         }
     }
 
-    details=", ".join(filter(None,[f"{beds}bd/{baths}ba" if beds else "",stories,buy_status,purpose,privacy]))
-    row=[ts(),"Buyer",name,phone,email,zip_c,priority,seg,
-         f"${total:,.2f}/mo",f"${pi:,.2f}",fmt_s(inc),fmt_s(dbt),
-         credit,timeline,zip_c,fmt_s(hp) if hp else fmt_s(la),
-         details,notes[:80],script['call_opener'][:120]]
+    buy_status=str(data.get('buy_status','searching'))
+    ptype=str(data.get('property_type','Primary Residence'))
+    stories=str(data.get('stories',''))
+    row=[ts(),name,phone,email,zip_c,emp,buy_status,ptype,loan_type,
+         fmt_s(hp) if hp else "N/A",fmt_s(dp) if dp else "N/A",
+         f"{dpct:.1f}%" if dpct else "N/A",fmt_s(la),fmt_s(hoa),
+         f"${pi:,.2f}",f"${mtx:,.2f}",f"{tax_rate*100:.3f}%",
+         f"${mins:,.2f}",f"${pmi:,.2f}",f"${total:,.2f}",
+         fmt_s(inc),fmt_s(dbt),f"{fdti:.1f}%",f"{bdti:.1f}%",
+         "Yes" if qualifies else ("No" if qualifies is False else "N/A"),
+         credit,timeline,beds,baths,stories,must,commute,vibe,
+         dream[:80] if dream else "",
+         priority,seg]
     saved,err=save('buyer',row)
-    if saved: highlight('buyer','gold' if ref>=750_000 else 'pink' if pn==1 else None)
-    try:
-        from email_system import send_lead_alert, send_welcome_email
-        _calc={'total_piti':total,'pi':pi,'monthly_tax':mtx,'insurance':mins,'pmi':pmi,'hoa':hoa,
-               'front_dti':fdti,'back_dti':bdti,'qualification':qual_msg,'qualifies':qualifies,
-               'priority':priority,'segment':seg,'script':script,'rate':INT_RATE,
-               'loan_amount':la,'home_price':hp}
-        send_lead_alert('buyer', data, _calc)
-        if email: send_welcome_email('buyer', data, _calc)
-    except Exception as _em: print(f"[EMAIL WARN] {_em}")
+    if saved: pass  # no row coloring — data stays clean
     print(f"[OK] Buyer → {name} | {seg} | {priority}")
     return jsonify({"status":"success","qualification":qual_msg,"qualifies":qualifies,
         "priority":priority,"segment":seg,"life_event":life,"wishlist":wishlist,
@@ -256,9 +279,6 @@ def seller(data):
     nxt=str(data.get('next_step','')); concern=str(data.get('concern',''))
     tl=str(data.get('timeline','')); notes=str(data.get('notes',''))
     life=str(data.get('life_event','none'))
-    why_selling=str(data.get('why_selling',''))
-    has_mortgage=str(data.get('has_mortgage',''))
-    current_rate=str(data.get('current_rate',''))
     bal=sf(data.get('mortgage_balance')); est=sf(data.get('owner_estimate'))
 
     cm={'Excellent':1.05,'Good':1.0,'Fair':0.93,'Needs Work':0.85}
@@ -299,19 +319,14 @@ def seller(data):
         "possibilities":f"Here's what I want you to see, {first}: You have {fmt_s(net_eq)} in equity. After commission you walk away with {fmt_s(after_com)}. Buying power of {fmt_s(buying_power)} for your next home. And the buyer pays for their own agent — not you. Your life doesn't have to stay the same."
     }
 
-    details=", ".join(filter(None,[f"{beds}bd" if beds else "",cond,why_selling[:40] if why_selling else "",has_mortgage]))
-    row=[ts(),"Seller",name,phone,email,zip_c,priority,seg,
-         fmt_s(net_eq),fmt_s(buying_power),fmt_s(ev),fmt_s(bal),
-         "N/A",tl,address or zip_c,fmt_s(ev),
-         details,notes[:80],script['opener'][:120]]
+    why_selling=str(data.get('why_selling',''))
+    has_mortgage=str(data.get('has_mortgage','yes'))
+    current_rate=str(data.get('current_rate',''))
+    row=[ts(),name,phone,email,zip_c,address,yr,beds,baths,cond,stories,
+         has_mortgage,fmt_s(bal),current_rate,fmt_s(est) if est else "N/A",
+         fmt_s(ev),fmt_s(net_eq),fmt_s(after_com),fmt_s(buying_power),
+         why_selling,nxt,concern,tl,priority,seg]
     saved,err=save('seller',row)
-    try:
-        from email_system import send_lead_alert, send_welcome_email
-        _calc={'est_value':ev,'net_equity':net_eq,'after_commission':after_com,
-               'buying_power':buying_power,'priority':priority,'segment':seg,'script':script}
-        send_lead_alert('seller', data, _calc)
-        if email: send_welcome_email('seller', data, _calc)
-    except Exception as _em: print(f"[EMAIL WARN] {_em}")
     print(f"[OK] Seller → {name} | {seg} | {priority}")
     return jsonify({"status":"success","priority":priority,"segment":seg,
         "sheets_saved":saved,"sheets_error":err,"script":script,"possibilities":poss,
@@ -328,8 +343,6 @@ def fresh_start(data):
     situation=str(data.get('situation','Tax Delinquent'))
     years_behind=str(data.get('years_behind','1'))
     primary_need=str(data.get('primary_need',''))
-    want_to_keep=str(data.get('want_to_keep',''))
-    urgency=str(data.get('urgency',''))
     notes=str(data.get('notes',''))
 
     prop_val=sf(data.get('property_value')); mtg_bal=sf(data.get('mortgage_balance'))
@@ -375,20 +388,14 @@ def fresh_start(data):
         "walk_away_clean":f"Here's what I want you to understand, {first}: you have {fmt_s(est_equity)} in equity right now. If we don't act, that equity disappears into foreclosure and you walk away with nothing. If we act now, you could walk away with {fmt_s(walkaway_cash)} in your pocket, zero debt on this property, and your credit protected. Which option sounds better to you?"
     }
 
-    details=", ".join(filter(None,[situation,f"{years_behind}yr behind",primary_need,want_to_keep]))
-    row=[ts(),"Your Way Out",name,phone,email,zip_c,priority,"Distressed",
-         fmt_s(walkaway_cash),"N/A",fmt_s(est_equity),fmt_s(total_owed),
-         "N/A",urgency,address or zip_c,fmt_s(prop_val),
-         details,notes[:80],script['opener'][:120]]
+    want_to_keep=str(data.get('want_to_keep',primary_need))
+    urgency=str(data.get('urgency',''))
+    row=[ts(),name,phone,email,zip_c,address,situation,years_behind,
+         want_to_keep,urgency,
+         fmt_s(prop_val),fmt_s(mtg_bal),fmt_s(back_taxes),fmt_s(other_liens),
+         fmt_s(total_owed),fmt_s(est_equity),fmt_s(walkaway_cash),notes[:100],priority]
     saved,err=save('fresh_start',row)
-    if saved: highlight('fresh_start','red')
-    try:
-        from email_system import send_lead_alert, send_welcome_email
-        _calc={'prop_value':prop_val,'total_owed':total_owed,'est_equity':est_equity,
-               'walkaway_cash':walkaway_cash,'priority':priority,'script':script}
-        send_lead_alert('fresh_start', data, _calc)
-        if email: send_welcome_email('fresh_start', data, _calc)
-    except Exception as _em: print(f"[EMAIL WARN] {_em}")
+    if saved: pass  # no row coloring
     print(f"[OK] Fresh Start → {name} | {priority}")
     return jsonify({"status":"success","priority":priority,"sheets_saved":saved,"sheets_error":err,
         "script":script,"possibilities":poss,"breakdown_rows":breakdown_rows,
@@ -401,13 +408,10 @@ def fresh_start(data):
 def lease(data):
     name=str(data.get('name','')).strip(); phone=str(data.get('phone','')).strip()
     email=str(data.get('email','')).strip(); life=str(data.get('life_event','none'))
-    zip_c=str(data.get('zip_code',''))
     area=str(data.get('area','')); budget=str(data.get('budget',''))
     size=str(data.get('size','')); move_in=str(data.get('move_in',''))
     ll=str(data.get('lease_length','')); parking=str(data.get('parking','1'))
-    pets=str(data.get('pets','')); must=str(data.get('must_haves',''))
-    move_in_funds=str(data.get('move_in_funds',''))
-    notes=str(data.get('notes',''))
+    pets=str(data.get('pets','')); must=str(data.get('must_haves','')); notes=str(data.get('notes',''))
 
     if "ASAP" in move_in: priority="🔥 HOT — Immediate"
     elif "1 month" in move_in: priority="⚡ WARM — 30 Days"
@@ -425,18 +429,10 @@ def lease(data):
     if life=='divorce': poss.append({"icon":"💔","title":"Fast placement — I understand your timeline","desc":"Divorce situations often need fast housing. I'll prioritize quick move-in options and work around your timeline."})
 
     script={"opener":f"Hi {first}! Shiva Tamara — ShivaLuxury, DRE 02251909. I saw your leasing inquiry for a {size} in {area}. I have some options that match — including {parking} parking. Do you have a few minutes?","sms":f"Hi {first}! 🔑 It's Shiva. I found {size} options in {area} within your budget. Reply YES to chat!"}
-    details=", ".join(filter(None,[size,ll,f"{parking} parking" if parking else "",pets,must[:40] if must else ""]))
-    row=[ts(),"Lease",name,phone,email,zip_c or "",priority,"Renter",
-         f"${budget}/mo",f"${budget}/mo","N/A","N/A",
-         "N/A",move_in,area or zip_c,f"${budget}/mo",
-         details,notes[:80],script['opener'][:120]]
+    zip_code=str(data.get('zip_code',''))
+    move_in_funds=str(data.get('move_in_funds',''))
+    row=[ts(),name,phone,email,area,zip_code,budget,size,move_in,ll,move_in_funds,parking,pets,must,notes[:80],priority]
     saved,err=save('lease',row)
-    try:
-        from email_system import send_lead_alert, send_welcome_email
-        _calc={'priority':priority,'area':area,'budget':budget,'size':size,'script':script}
-        send_lead_alert('lease', data, _calc)
-        if email: send_welcome_email('lease', data, _calc)
-    except Exception as _em: print(f"[EMAIL WARN] {_em}")
     print(f"[OK] Lease → {name} | {priority}")
     return jsonify({"status":"success","priority":priority,"sheets_saved":saved,"sheets_error":err,"script":script,"possibilities":poss})
 
@@ -463,18 +459,10 @@ def commercial(data):
     if any(x in parking for x in ["20+","11-20"]): poss.append({"icon":"🅿️","title":f"Large parking — creative solutions","desc":f"Finding {parking} spaces on-site can be challenging. I can combine on-site parking with nearby private lots to meet your total need at a lower cost."})
 
     script={"opener":f"Hi {first}! Shiva Tamara — ShivaLuxury, DRE 02251909. I saw your commercial inquiry for {sqft} sq ft in {area}. I have spaces that match your specific requirements. Do you have 10 minutes?","sms":f"Hi {first}! 🏢 It's Shiva. I found {stype} options in {area} that match your needs. Reply YES!"}
-    details=", ".join(filter(None,[f"{sqft} sqft",stype,reqs[:40] if reqs else "",f"{parking} parking" if parking else ""]))
-    row=[ts(),"Commercial",name,phone,email,"",priority,"Commercial",
-         f"${budget}/mo",f"${budget}/mo","N/A","N/A",
-         "N/A",mv,area,f"{sqft} sqft · ${budget}/mo",
-         details,notes[:80],script['opener'][:120]]
+    purpose=str(data.get('purpose',''))
+    privacy=str(data.get('privacy',''))
+    row=[ts(),name,phone,email,area,budget,sqft,stype,purpose,privacy,ll,reqs,parking,mv,notes[:80],priority]
     saved,err=save('commercial',row)
-    try:
-        from email_system import send_lead_alert, send_welcome_email
-        _calc={'priority':priority,'area':area,'sqft':sqft,'space_type':stype,'script':script}
-        send_lead_alert('commercial', data, _calc)
-        if email: send_welcome_email('commercial', data, _calc)
-    except Exception as _em: print(f"[EMAIL WARN] {_em}")
     print(f"[OK] Commercial → {name} | {priority}")
     return jsonify({"status":"success","priority":priority,"sheets_saved":saved,"sheets_error":err,"script":script,"possibilities":poss})
 
@@ -521,67 +509,12 @@ def self_employed(data):
     script={"opener":f"Hi {first}! Shiva Tamara — ShivaLuxury, DRE 02251909. I reviewed your self-employed profile. The good news — you have options most agents don't even know exist. I have lender partners who work specifically with business owners. Do you have 10 minutes?","sms":f"Hi {first}! 💼 It's Shiva. Your possibilities report is ready — you have loan options even without 2 years of tax returns. Reply YES to learn more!"}
 
     opts_str='; '.join([l['name'] for l in loan_opts])
-    details=", ".join(filter(None,[btype,f"{yrs} in biz",opts_str[:50]]))
-    seg2=("Ultra Luxury ($1M+)" if hp>=1_000_000 else "Luxury ($750K+)" if hp>=750_000 else "Premium ($500K+)" if hp>=500_000 else "Business Owner") if hp>0 else "Business Owner"
-    row=[ts(),"Self-Employed",name,phone,email,zip_c,priority,seg2,
-         fmt_s(hp) if hp else "TBD",fmt_s(rev),fmt_s(inc),fmt_s(bnk),
-         credit,"N/A",zip_c,fmt_s(hp) if hp else "TBD",
-         details,notes[:80],script['opener'][:120]]
+    loan_type_self=str(data.get('loan_type','Bank Statement'))
+    emp_self=str(data.get('employment_type','Self-Employed'))
+    row=[ts(),name,phone,email,zip_c,emp_self,btype,yrs,fmt_s(rev),fmt_s(inc),fmt_s(bnk),credit,fmt_s(hp),loan_type_self,notes[:80],priority,opts_str]
     saved,err=save('self_employed',row)
-    try:
-        from email_system import send_lead_alert, send_welcome_email
-        _calc={'priority':priority,'loan_options':loan_opts,'roadmap':roadmap,'script':script}
-        send_lead_alert('self_employed', data, _calc)
-        if email: send_welcome_email('self_employed', data, _calc)
-    except Exception as _em: print(f"[EMAIL WARN] {_em}")
     print(f"[OK] Self-Employed → {name} | {priority}")
     return jsonify({"status":"success","priority":priority,"sheets_saved":saved,"sheets_error":err,"script":script,"loan_options":loan_opts,"roadmap":roadmap})
-
-# ══════════════════════════════════════════════════════════════════════════════
-# PHASE 2 ROUTES
-# ══════════════════════════════════════════════════════════════════════════════
-
-@app.route('/social-content', methods=['POST'])
-def social_content():
-    try:
-        from content_gen import generate_content
-        d = request.get_json(force=True) or {}
-        path     = d.get('path', 'buy')
-        platform = d.get('platform', 'all')
-        lead     = d.get('lead_data', {})
-        content  = generate_content(path, lead, platform if platform != 'all' else None)
-        return jsonify({"status":"success","path":path,"content":content,
-                        "enhanced_by_ai":bool(os.getenv('ANTHROPIC_API_KEY'))})
-    except Exception as e:
-        import traceback; traceback.print_exc()
-        return jsonify({"status":"error","message":str(e)}), 500
-
-@app.route('/find-prospects', methods=['POST'])
-def find_prospects():
-    try:
-        from prospector import search_prospects
-        d      = request.get_json(force=True) or {}
-        intent = d.get('intent','all')
-        subs   = d.get('subreddits', None)
-        limit  = min(int(d.get('limit', 10)), 25)
-        result = search_prospects(
-            intent     = intent if intent != 'all' else None,
-            subreddits = subs,
-            limit      = limit
-        )
-        return jsonify(result)
-    except Exception as e:
-        return jsonify({"status":"error","message":str(e)}), 500
-
-@app.route('/content-calendar', methods=['GET'])
-def content_calendar():
-    try:
-        from content_gen import generate_calendar
-        month = request.args.get('month', datetime.now().month, type=int)
-        year  = request.args.get('year',  datetime.now().year,  type=int)
-        return jsonify(generate_calendar(month=month, year=year))
-    except Exception as e:
-        return jsonify({"status":"error","message":str(e)}), 500
 
 # ─── HEALTH ───────────────────────────────────────────────────────────────────
 @app.route('/health')

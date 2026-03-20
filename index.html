@@ -181,7 +181,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:linear-
 .wtags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:13px;}
 .wtag{padding:4px 10px;background:var(--navy);color:var(--gold);border-radius:20px;font-size:10px;font-weight:500;}
 .metarow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:13px;}
-.mpill{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;background:var(--off);border:1px solid var(--border);font-size:10px;font-weight:500;color:var(--dark);}
+.mpill{display:flex;align-items:center;gap:5px;padding:6px 14px;border-radius:20px;background:var(--green2);border:1px solid rgba(26,107,60,.3);font-size:12px;font-weight:600;color:var(--green);}.metarow{justify-content:center;}
 .dot{width:6px;height:6px;border-radius:50%;}
 .dg{background:var(--gold);} .dgr{background:#22c55e;} .db{background:#3b82f6;} .dr{background:#ef4444;}
 .sacc{border:1.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:13px;}
@@ -219,6 +219,17 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:linear-
   .res-big{font-size:38px;}
   .grid2{grid-template-columns:1fr 1fr;}
 }
+
+.choice-group{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.choice-btn{display:flex;align-items:center;gap:12px;padding:14px 15px;background:var(--off);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;user-select:none;}
+.choice-btn:hover{border-color:var(--gold);background:rgba(212,175,55,.05);transform:translateX(3px);}
+.choice-btn.sel{border-color:var(--gold);background:rgba(212,175,55,.08);}
+.cb-icon{font-size:22px;flex-shrink:0;}
+.cb-title{font-size:14px;font-weight:600;color:var(--dark);}
+.cb-sub{font-size:11px;color:var(--gray);margin-top:2px;}
+.sec{display:flex;align-items:center;gap:10px;margin:14px 0 8px;}
+.sec span{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold2);font-weight:600;white-space:nowrap;}
+.sec::before,.sec::after{content:'';flex:1;height:1px;background:var(--border);}
 </style>
 </head>
 <body>
@@ -285,8 +296,8 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:linear-
   <!-- S3: Contact info (all paths)                          -->
   <!-- ══════════════════════════════════════════════════════ -->
   <div class="screen" id="s3">
-    <div class="q-step">Let's get started</div>
-    <div class="q-text" id="s3title">How can I reach you?</div>
+    <div class="q-step">Step 2 of 4 — Your Info</div>
+    <div class="q-text">Let's get started</div>
     <div class="q-sub">Your info is private and never sold or shared.</div>
     <div class="fields">
       <div class="field"><label>Full Name *</label><input id="c-name" placeholder="Your full name"></div>
@@ -302,252 +313,436 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:linear-
   <!-- ══════════════════════════════════════════════════════ -->
   <!-- S4-BUY: Buy details                                   -->
   <!-- ══════════════════════════════════════════════════════ -->
+  <!-- ═══ BUY INTENT ═══ -->
   <div class="screen" id="s4-buy">
-    <div class="q-step">Your finances</div>
-    <div class="q-text">Let's see what's possible for you</div>
-    <div class="fields">
-      <div class="row2">
-        <div class="field"><label>Monthly Income ($)</label><input type="number" id="b-inc" placeholder="8,500"></div>
-        <div class="field"><label>Monthly Debts ($)</label><input type="number" id="b-dbt" placeholder="500"></div>
-      </div>
-      <div class="field"><label>Employment Type</label>
-        <select id="b-emp">
-          <option value="W-2 Employee">W-2 Employee</option>
-          <option value="Self-Employed">Self-Employed / 1099</option>
-          <option value="Retired">Retired</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-      <div class="field"><label>Property Type</label>
-        <select id="b-ptype">
-          <option value="Primary Residence">Primary Residence</option>
-          <option value="Investment Property">Investment Property</option>
-          <option value="Vacation Home">Vacation Home</option>
-        </select>
-      </div>
-      <div class="ttabs">
-        <button class="ttab active" onclick="bTab('price')">🏠 Home Price + Down</button>
-        <button class="ttab" onclick="bTab('loan')">💰 Loan Amount</button>
-      </div>
-      <div id="bp-price">
-        <div class="field"><label>Home Price ($)</label><input type="number" id="b-hp" placeholder="800,000" oninput="syncDP()"></div>
-        <div class="row2">
-          <div class="field"><label>Down Payment (%)</label><input type="number" id="b-dpct" placeholder="20" oninput="syncDPAmt()"></div>
-          <div class="field"><label>Down Payment ($)</label><input type="number" id="b-damt" placeholder="160,000" oninput="syncDPPct()"></div>
+    <div class="q-step">Step 3 — Buying</div>
+    <div class="q-text">What are you looking to do?</div>
+    <div class="q-sub">Choose the path that fits — we'll tailor everything to you.</div>
+    <div class="choice-group">
+      <div class="choice-btn sel" id="bi-found" onclick="setBuyIntent('found',this)">
+        <div class="cb-icon">🏦</div>
+        <div>
+          <div class="cb-title">I want to pre-qualify for a loan</div>
+          <div class="cb-sub">I found a home or want to know what loan I qualify for</div>
         </div>
       </div>
-      <div id="bp-loan" style="display:none">
-        <div class="field"><label>Loan Amount ($)</label><input type="number" id="b-la" placeholder="640,000"></div>
-      </div>
-      <div class="row2">
-        <div class="field"><label>ZIP Code</label><input id="b-zip" placeholder="90210"></div>
-        <div class="field"><label>HOA ($/mo)</label><input type="number" id="b-hoa" placeholder="0"></div>
-      </div>
-      <div class="row2">
-        <div class="field"><label>Credit Profile</label>
-          <select id="b-cr"><option value="Excellent (740+)">Excellent (740+)</option><option value="Good (680-739)">Good (680-739)</option><option value="Fair (620-679)">Fair (620-679)</option><option value="Building (Below 620)">Building (Below 620)</option></select>
-        </div>
-        <div class="field"><label>Timeline</label>
-          <select id="b-tl"><option value="Immediate (1-3 months)">Immediate (1-3 mo)</option><option value="Planning (3-6 months)">Planning (3-6 mo)</option><option value="Researching (6+ months)">Researching (6+ mo)</option></select>
-        </div>
-      </div>
-      <div class="row2">
-        <div class="field"><label>Where Are You in the Process?</label>
-          <select id="b-status">
-            <option value="Just starting">Just starting to look</option>
-            <option value="Pre-qualified">Pre-qualified</option>
-            <option value="Pre-approved">Pre-approved</option>
-            <option value="Have a realtor">Already have a realtor</option>
-          </select>
-        </div>
-        <div class="field"><label>Purpose</label>
-          <select id="b-purpose">
-            <option value="Primary Residence">Primary Residence</option>
-            <option value="Investment Property">Investment Property</option>
-            <option value="Vacation Home">Vacation Home</option>
-          </select>
+      <div class="choice-btn" id="bi-explore" onclick="setBuyIntent('explore',this)">
+        <div class="cb-icon">🏡</div>
+        <div>
+          <div class="cb-title">I'm looking for a property</div>
+          <div class="cb-sub">Show me homes in my price range and book a free tour</div>
         </div>
       </div>
     </div>
-    <div class="q-step" style="margin-top:16px;">Your dream home</div>
-    <div class="q-text" style="font-size:18px;">What are you looking for?</div>
-    <div class="fields" style="margin-top:10px;">
+    <button class="btn btn-gold" onclick="goBuyDetails()"><span class="bl">Continue →</span></button>
+    <button class="btn-back" onclick="back()">← Back</button>
+  </div>
+
+  <!-- ═══ BUY PATH A: Found a Home ═══ -->
+  <div class="screen" id="s4-buy-a">
+    <div class="q-step">Step 3A — Your Home + Finances</div>
+    <div class="q-text">Tell me about the home and your situation</div>
+    <div class="fields">
+
+      <div class="sec"><span>The Property</span></div>
       <div class="row2">
-        <div class="field"><label>Bedrooms</label><select id="b-bd"><option value="">Any</option><option>1</option><option>2</option><option>3</option><option>4</option><option value="5+">5+</option></select></div>
-        <div class="field"><label>Bathrooms</label><select id="b-ba"><option value="">Any</option><option>1</option><option>2</option><option>3</option><option value="4+">4+</option></select></div>
+        <div class="field"><label>Purchase Price ($)</label><input type="number" id="ba-hp" placeholder="750,000" oninput="syncBaDP()"></div>
+        <div class="field"><label>Down Payment ($)</label><input type="number" id="ba-dp" placeholder="150,000" oninput="syncBaDPct()"></div>
       </div>
       <div class="row2">
-        <div class="field"><label>Stories</label>
-          <select id="b-stories">
-            <option value="">No preference</option>
-            <option value="Single Story">Single Story</option>
-            <option value="Two Story">Two Story</option>
-            <option value="Multi-Level">Multi-Level / Condo</option>
-          </select>
-        </div>
-        <div class="field"><label>Privacy Preference</label>
-          <select id="b-privacy">
-            <option value="">No preference</option>
-            <option value="Gated Community">Gated Community</option>
-            <option value="Private / No HOA">Private / No HOA</option>
-            <option value="Very Private Estate">Very Private Estate</option>
+        <div class="field"><label>Down Payment (%)</label><input type="number" id="ba-dpct" placeholder="20" oninput="syncBaDPAmt()"></div>
+        <div class="field"><label>HOA ($/mo)</label><input type="number" id="ba-hoa" placeholder="0"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>ZIP Code</label><input id="ba-zip" placeholder="90210"></div>
+        <div class="field"><label>Property Type</label>
+          <select id="ba-ptype">
+            <option value="Single-Family Home">Single-Family Home</option>
+            <option value="Condo">Condo</option>
+            <option value="Townhouse">Townhouse</option>
+            <option value="Multi-Family">Multi-Family</option>
           </select>
         </div>
       </div>
-      <label style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);font-weight:500;display:block;">Must-Haves</label>
-      <div class="ckg" id="b-mh">
-        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Yard / Outdoor Space</div>
+      <div class="field"><label>Occupancy</label>
+        <select id="ba-occ">
+          <option value="Primary Residence">Primary Residence — I'll live here</option>
+          <option value="Second Home">Second Home / Vacation</option>
+          <option value="Investment Property">Investment Property — rental</option>
+        </select>
+      </div>
+
+      <div class="sec"><span>Your Finances</span></div>
+      <div class="row2">
+        <div class="field"><label>Gross Monthly Income ($)</label><input type="number" id="ba-inc" placeholder="8,500"></div>
+        <div class="field"><label>Monthly Minimum Debts ($)</label><input type="number" id="ba-dbt" placeholder="500"></div>
+      </div>
+      <div class="field"><label>Credit Score Range</label>
+        <select id="ba-cr">
+          <option value="720+">720+ — Excellent</option>
+          <option value="680-719">680–719 — Good</option>
+          <option value="640-679">640–679 — Fair</option>
+          <option value="620-639">620–639 — Below Average</option>
+          <option value="Below 620">Below 620 — Building</option>
+        </select>
+      </div>
+      <div class="field"><label>Employment Type</label>
+        <select id="ba-emp">
+          <option value="W-2 Employee">W-2 / Salaried Employee</option>
+          <option value="Self-Employed">Self-Employed / 1099</option>
+          <option value="Retired">Retired</option>
+          <option value="Military / VA">Military / VA</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="field"><label>Have you served in the military?</label>
+        <select id="ba-va">
+          <option value="No">No</option>
+          <option value="Yes - Veteran">Yes — Veteran</option>
+          <option value="Yes - Active Duty">Yes — Active Duty</option>
+          <option value="Yes - Surviving Spouse">Yes — Surviving Spouse</option>
+        </select>
+      </div>
+      <div class="field"><label>Timeline</label>
+        <select id="ba-tl">
+          <option value="Immediate (1-3 months)">Ready now (1–3 months)</option>
+          <option value="Planning (3-6 months)">Planning (3–6 months)</option>
+          <option value="Researching (6+ months)">Still researching (6+ months)</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:14px;padding:10px 13px;background:#f8f5ef;border-radius:7px;font-size:10px;color:#999;line-height:1.6;">
+      ⚠️ <em>Estimates are not a loan offer. Rates and payments are subject to change and are based on limited information provided.</em>
+    </div>
+    <button class="btn btn-gold" id="buyBtnA" onclick="subBuyA()"><span class="bl">Show Me My Loan Options →</span><span class="dots"><span></span><span></span><span></span></span></button>
+    <button class="btn-back" onclick="back()">← Back</button>
+  </div>
+
+  <!-- ═══ BUY PATH B: Exploring ═══ -->
+  <!-- BUY PATH B: Looking for Property -->
+  <div class="screen" id="s4-buy-b">
+    <div class="q-step">Step 3B &mdash; Find Your Home</div>
+    <div class="q-text">What are you looking for?</div>
+    <div class="q-sub">Tell us your budget and preferences &mdash; we&apos;ll show you what&apos;s available.</div>
+    <div class="fields">
+      <div class="sec"><span>Your Budget</span></div>
+      <div class="row2">
+        <div class="field"><label>Min Price ($)</label><input type="number" id="bb-pmin" placeholder="400,000"></div>
+        <div class="field"><label>Max Price ($)</label><input type="number" id="bb-pmax" placeholder="650,000"></div>
+      </div>
+      <div class="field"><label>Down Payment Available ($)</label><input type="number" id="bb-dp" placeholder="50,000"></div>
+      <div class="sec"><span>Location</span></div>
+      <div class="field"><label>Preferred City / Neighborhood</label><input id="bb-area" placeholder="Calabasas, West LA, Malibu..."></div>
+      <div class="field"><label>ZIP Code (if specific)</label><input id="bb-zip" placeholder="Optional"></div>
+      <div class="sec"><span>Property Details</span></div>
+      <div class="row2">
+        <div class="field"><label>Bedrooms</label>
+          <select id="bb-bd"><option value="">Any</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option><option value="4">4+</option><option value="5+">5+</option></select>
+        </div>
+        <div class="field"><label>Bathrooms</label>
+          <select id="bb-ba"><option value="">Any</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option><option value="4+">4+</option></select>
+        </div>
+      </div>
+      <div class="field"><label>Property Type</label>
+        <select id="bb-ptype"><option value="Any">Any type</option><option value="Single-Family Home">Single-Family Home</option><option value="Condo">Condo</option><option value="Townhouse">Townhouse</option><option value="Multi-Family">Multi-Family</option></select>
+      </div>
+      <div class="field"><label>When Do You Want to Move?</label>
+        <select id="bb-tl"><option value="ASAP">ASAP &mdash; ready now</option><option value="1-3 months">1&ndash;3 months</option><option value="3-6 months">3&ndash;6 months</option><option value="Just browsing">Just browsing</option></select>
+      </div>
+      <label style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);font-weight:500;display:block;margin-bottom:5px;">Must-Haves</label>
+      <div class="ckg" id="bb-mh">
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Yard / Outdoor</div>
         <div class="cki" onclick="ck(this)"><span class="ckb"></span>Single Story</div>
-        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Good School District</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Good Schools</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Home Office</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Pool</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Pet Friendly</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Garage / Parking</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>New Construction</div>
+      </div>
+    </div>
+    <button class="btn btn-gold" id="buyBtnB" onclick="subBuyB()"><span class="bl">Show Me Homes &rarr;</span><span class="dots"><span></span><span></span><span></span></span></button>
+    <button class="btn-back" onclick="back()">&larr; Back</button>
+  </div>
+
+  <!-- ═══ BUY PATH B POST-RESULTS: Home Search ═══ -->
+  <div class="screen" id="s4-buy-b2">
+    <div class="q-step">Optional — Home Search</div>
+    <div class="q-text" id="b2-headline">See what you can actually buy</div>
+    <div class="q-sub">Based on your buying power, here's what's out there. Takes 30 seconds.</div>
+    <div class="fields">
+      <div class="field"><label>Where Do You Want to Buy?</label>
+        <input id="b2-area" placeholder="Calabasas, West LA, Malibu..."></div>
+      <div class="row2">
+        <div class="field"><label>Bedrooms</label>
+          <select id="b2-bd"><option value="">Any</option><option>1</option><option>2</option><option>3</option><option>4</option><option value="5+">5+</option></select>
+        </div>
+        <div class="field"><label>Bathrooms</label>
+          <select id="b2-ba"><option value="">Any</option><option>1</option><option>2</option><option>3</option><option value="4+">4+</option></select>
+        </div>
+      </div>
+      <div class="field"><label>Price Range</label>
+        <input id="b2-price" placeholder="Auto-filled from your buying power" readonly style="background:#f0f0f0;color:#888;"></div>
+      <div class="field"><label>Timeline</label>
+        <select id="b2-tl">
+          <option value="ASAP">ASAP — I'm ready</option>
+          <option value="3-6 months">3–6 months</option>
+          <option value="Just browsing">Just browsing for now</option>
+        </select>
+      </div>
+      <label style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);font-weight:500;display:block;margin-bottom:5px;">Must-Haves</label>
+      <div class="ckg" id="b2-mh">
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Yard / Outdoor</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Single Story</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Good Schools</div>
         <div class="cki" onclick="ck(this)"><span class="ckb"></span>Home Office</div>
         <div class="cki" onclick="ck(this)"><span class="ckb"></span>Pool</div>
         <div class="cki" onclick="ck(this)"><span class="ckb"></span>Pet Friendly</div>
         <div class="cki" onclick="ck(this)"><span class="ckb"></span>ADU / Guest House</div>
         <div class="cki" onclick="ck(this)"><span class="ckb"></span>New Construction</div>
       </div>
-      <div class="field"><label>Describe Your Dream Home (optional)</label>
-        <textarea id="b-dream" placeholder="e.g. 4BR single story with pool near great schools in Calabasas..."></textarea>
-      </div>
-      <div class="row2">
-        <div class="field"><label>Commute To</label><input id="b-com" placeholder="SpaceX, Downtown LA..."></div>
-        <div class="field"><label>Neighborhood Vibe</label>
-          <select id="b-vibe"><option value="">No preference</option><option>Quiet / Suburban</option><option>Urban / Walkable</option><option>Near Beach</option><option>Family-Friendly</option><option>Trendy</option></select>
-        </div>
-      </div>
-      <div class="field"><label>Notes / Questions</label><textarea id="b-notes" placeholder="Anything else I should know..."></textarea></div>
     </div>
-    <button class="btn btn-gold" id="buyBtn" onclick="subBuy()"><span class="bl">Show Me My Options →</span><span class="dots"><span></span><span></span><span></span></span></button>
-    <button class="btn-back" onclick="back()">← Back</button>
+    <button class="btn btn-gold" onclick="subHomeSearch()"><span class="bl">Show Me Homes I Can Afford →</span></button>
+    <button class="btn-back" style="text-align:center;width:100%;justify-content:center;" onclick="go('res-buy')">Skip for now →</button>
   </div>
 
   <!-- ══════════════════════════════════════════════════════ -->
-  <!-- S4-SELL: Sell details                                 -->
-  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- S4-SELL: Sell details -->
   <div class="screen" id="s4-sell">
-    <div class="ibox"><span class="ico">💡</span><strong>Did you know?</strong> When you sell, <strong>the buyer pays for their own agent — not you.</strong> You keep far more than most sellers realize.</div>
-    <div class="q-step">Your home</div>
-    <div class="q-text">Tell me about your property</div>
+    <div class="q-step">Step 3 &mdash; Your Property</div>
+    <div class="q-text">Tell me about your home</div>
+    <div class="q-sub">We&apos;ll estimate your home&apos;s value and show you what similar homes are selling for.</div>
     <div class="fields">
+
+      <div class="sec"><span>Property Details</span></div>
       <div class="field"><label>Property Address</label><input id="s-adr" placeholder="123 Sunset Blvd, Los Angeles CA"></div>
       <div class="row2">
         <div class="field"><label>ZIP Code</label><input id="s-zip" placeholder="90210"></div>
-        <div class="field"><label>Year Purchased</label><input type="number" id="s-yr" placeholder="2019"></div>
-      </div>
-      <div class="row2">
-        <div class="field"><label>Bedrooms</label><select id="s-bd"><option>2</option><option selected>3</option><option>4</option><option value="5+">5+</option></select></div>
-        <div class="field"><label>Condition</label><select id="s-cond"><option>Excellent</option><option selected>Good</option><option>Fair</option><option value="Needs Work">Needs Work</option></select></div>
-      </div>
-      <div class="field"><label>Stories</label><select id="s-str"><option value="1">Single Story</option><option value="2" selected>Two Story</option><option value="Condo">Condo / Townhome</option></select></div>
-      <div class="row2">
-        <div class="field"><label>Remaining Mortgage ($)</label><input type="number" id="s-mb" placeholder="350,000"></div>
-        <div class="field"><label>Estimated Value ($)</label><input type="number" id="s-est" placeholder="750,000"></div>
-      </div>
-      <div class="field"><label>Why Are You Selling?</label>
-        <select id="s-why">
-          <option value="Upgrading / Upsizing">Upgrading / Upsizing</option>
-          <option value="Downsizing">Downsizing</option>
-          <option value="Relocating">Relocating</option>
-          <option value="Divorce / Separation">Divorce / Separation</option>
-          <option value="Financial reasons">Financial reasons</option>
-          <option value="Inherited property">Inherited property</option>
-          <option value="Investment sale">Investment sale</option>
-          <option value="Just exploring value">Just exploring my value</option>
-        </select>
-      </div>
-      <div class="row2">
-        <div class="field"><label>Do You Have a Mortgage?</label>
-          <select id="s-hasmtg">
-            <option value="Yes">Yes</option>
-            <option value="No - own free and clear">No — Own free &amp; clear</option>
+        <div class="field"><label>Property Type</label>
+          <select id="s-ptype">
+            <option value="Single-Family Home">Single-Family Home</option>
+            <option value="Condo">Condo</option>
+            <option value="Townhouse">Townhouse</option>
+            <option value="Multi-Family">Multi-Family</option>
           </select>
         </div>
-        <div class="field"><label>Current Rate (%)</label><input type="number" id="s-rate" placeholder="4.5" step="0.1"></div>
       </div>
-      <div class="field"><label>After Selling I Want To...</label>
-        <select id="s-nxt"><option value="Buy smaller / single-story">Buy smaller / single-story</option><option value="Buy in a new area">Buy in a new area</option><option value="Retire / downsize">Retire or downsize</option><option value="Invest equity">Invest the equity</option><option value="Rent for a while">Rent for a while</option><option value="Not sure yet">Not sure yet</option></select>
+      <div class="row2">
+        <div class="field"><label>Bedrooms</label>
+          <select id="s-bd"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5+">5+</option></select>
+        </div>
+        <div class="field"><label>Bathrooms</label>
+          <select id="s-ba"><option value="1">1</option><option value="1.5">1.5</option><option value="2" selected>2</option><option value="2.5">2.5</option><option value="3">3</option><option value="4+">4+</option></select>
+        </div>
       </div>
-      <div class="field"><label>What's Holding You Back?</label>
-        <select id="s-cnc"><option value="Dont know what I can afford next">Don't know what I can afford next</option><option value="Worried wont get enough">Worried I won't get enough</option><option value="Dont know the process">Don't know the process</option><option value="Emotional attachment">Emotional attachment</option><option value="Timing uncertainty">Unsure about timing</option><option value="None just exploring">Just exploring</option></select>
+      <div class="row2">
+        <div class="field"><label>Condition</label>
+          <select id="s-cond"><option>Excellent</option><option selected>Good</option><option>Fair</option><option value="Needs Work">Needs Work</option></select>
+        </div>
+        <div class="field"><label>Year Purchased</label>
+          <input type="number" id="s-yr" placeholder="2019">
+        </div>
       </div>
-      <div class="field"><label>Timeline</label><select id="s-tl"><option value="ASAP">ASAP</option><option value="3-6 months">3–6 months</option><option value="6-12 months">6–12 months</option><option value="Just exploring">Just exploring</option></select></div>
-      <div class="field"><label>Notes</label><textarea id="s-notes" placeholder="e.g. Two-story, need single story near family..."></textarea></div>
+
+      <div class="sec"><span>Finances</span></div>
+      <div class="row2">
+        <div class="field"><label>What You Paid ($)</label><input type="number" id="s-purchase" placeholder="500,000"></div>
+        <div class="field"><label>What You Think It&apos;s Worth Today ($)</label><input type="number" id="s-est" placeholder="750,000"></div>
+      </div>
+      <div class="field"><label>Do You Have a Mortgage?</label>
+        <select id="s-hasmtg" onchange="toggleSellMtg()">
+          <option value="Yes">Yes &mdash; still paying it off</option>
+          <option value="No">No &mdash; owned free and clear</option>
+        </select>
+      </div>
+      <div id="s-mtg-fields">
+        <div class="row2">
+          <div class="field"><label>Remaining Balance ($)</label><input type="number" id="s-mb" placeholder="350,000"></div>
+          <div class="field"><label>Current Rate (%) &mdash; optional</label><input type="number" id="s-rate" placeholder="4.5" step="0.1"></div>
+        </div>
+      </div>
+
+      <div class="sec"><span>Your Situation</span></div>
+      <div class="field"><label>Why Are You Selling?</label>
+        <select id="s-why">
+          <option value="Upsizing">Need more space &mdash; upsizing</option>
+          <option value="Downsizing">Simplifying &mdash; downsizing</option>
+          <option value="Relocating">Relocating to another area</option>
+          <option value="Retirement">Retirement or lifestyle change</option>
+          <option value="Investment sale">Cashing out an investment</option>
+          <option value="Inherited property">Inherited property</option>
+          <option value="Just exploring">Just exploring my options</option>
+        </select>
+      </div>
+      <div class="field"><label>Do You Currently Have a Listing Agent?</label>
+        <select id="s-agent">
+          <option value="No">No &mdash; I don&apos;t have one yet</option>
+          <option value="Interviewing">Interviewing agents now</option>
+          <option value="FSBO">Thinking of selling myself (FSBO)</option>
+          <option value="Yes">Yes &mdash; I have an agent</option>
+        </select>
+      </div>
+      <div class="field"><label>Selling Timeline</label>
+        <select id="s-tl">
+          <option value="ASAP">ASAP &mdash; ready now</option>
+          <option value="3-6 months">3&ndash;6 months</option>
+          <option value="6-12 months">6&ndash;12 months</option>
+          <option value="Just exploring">Just exploring for now</option>
+        </select>
+      </div>
     </div>
-    <button class="btn btn-gold" id="sellBtn" onclick="subSell()"><span class="bl">Show Me My Options →</span><span class="dots"><span></span><span></span><span></span></span></button>
-    <button class="btn-back" onclick="back()">← Back</button>
+    <button class="btn btn-gold" id="sellBtn" onclick="subSell()"><span class="bl">See My Options &rarr;</span><span class="dots"><span></span><span></span><span></span></span></button>
+    <button class="btn-back" onclick="back()">&larr; Back</button>
   </div>
+
 
   <!-- ══════════════════════════════════════════════════════ -->
   <!-- S4-LOAN: Loan options details                         -->
   <!-- ══════════════════════════════════════════════════════ -->
+  <!-- LOAN: Phase 1 - Intent -->
   <div class="screen" id="s4-loan">
-    <div class="q-step">Your situation</div>
-    <div class="q-text">Tell me what you're looking for</div>
+    <div class="q-step">Step 3 &mdash; Loan Options</div>
+    <div class="q-text">What are you looking to do?</div>
+    <div class="q-sub">Choose what fits &mdash; we&apos;ll guide you to the right loan.</div>
+    <div class="choice-group" id="loan-intent-group">
+      <div class="choice-btn sel" id="li-buy" onclick="setLoanIntent('buy',this)">
+        <div class="cb-icon">&#x1F3E0;</div>
+        <div><div class="cb-title">Buy a home</div><div class="cb-sub">Purchase financing options</div></div>
+      </div>
+      <div class="choice-btn" id="li-refi" onclick="setLoanIntent('refi',this)">
+        <div class="cb-icon">&#x1F504;</div>
+        <div><div class="cb-title">Refinance my mortgage</div><div class="cb-sub">Lower my rate or payment</div></div>
+      </div>
+      <div class="choice-btn" id="li-equity" onclick="setLoanIntent('equity',this)">
+        <div class="cb-icon">&#x1F4B0;</div>
+        <div><div class="cb-title">Use my home equity</div><div class="cb-sub">HELOC, home equity loan, cash-out</div></div>
+      </div>
+      <div class="choice-btn" id="li-invest" onclick="setLoanIntent('invest',this)">
+        <div class="cb-icon">&#x1F3E2;</div>
+        <div><div class="cb-title">Invest in property</div><div class="cb-sub">Rental, flip, DSCR or portfolio loan</div></div>
+      </div>
+      <div class="choice-btn" id="li-notsure" onclick="setLoanIntent('notsure',this)">
+        <div class="cb-icon">&#x1F914;</div>
+        <div><div class="cb-title">Not sure &mdash; help me choose</div><div class="cb-sub">Answer a few questions and we&apos;ll recommend</div></div>
+      </div>
+    </div>
+
+    <!-- Sub-question for buy -->
+    <div id="loan-sub-buy" style="display:none;margin-top:2px;">
+      <div class="sec"><span>What best describes you?</span></div>
+      <div class="choice-group" id="loan-buyer-type-group">
+        <div class="choice-btn sel" id="lbt-first" onclick="setLoanSubType('buyer','first',this)"><div class="cb-icon">&#x1F511;</div><div><div class="cb-title">First-time homebuyer</div></div></div>
+        <div class="choice-btn" id="lbt-va" onclick="setLoanSubType('buyer','va',this)"><div class="cb-icon">&#x1F1FA;&#x1F1F8;</div><div><div class="cb-title">Veteran / Active military</div></div></div>
+        <div class="choice-btn" id="lbt-rural" onclick="setLoanSubType('buyer','rural',this)"><div class="cb-icon">&#x1F33E;</div><div><div class="cb-title">Buying in a rural area</div></div></div>
+        <div class="choice-btn" id="lbt-jumbo" onclick="setLoanSubType('buyer','jumbo',this)"><div class="cb-icon">&#x1F3F0;</div><div><div class="cb-title">High-priced home ($750K+)</div></div></div>
+        <div class="choice-btn" id="lbt-build" onclick="setLoanSubType('buyer','build',this)"><div class="cb-icon">&#x1F6A7;</div><div><div class="cb-title">Building a home</div></div></div>
+      </div>
+    </div>
+
+    <!-- Sub-question for refi -->
+    <div id="loan-sub-refi" style="display:none;margin-top:2px;">
+      <div class="sec"><span>What&apos;s your goal?</span></div>
+      <div class="choice-group" id="loan-refi-type-group">
+        <div class="choice-btn sel" id="lrt-rate" onclick="setLoanSubType('refi','rate',this)"><div class="cb-icon">&#x2B07;&#xFE0F;</div><div><div class="cb-title">Lower my rate / payment</div></div></div>
+        <div class="choice-btn" id="lrt-cashout" onclick="setLoanSubType('refi','cashout',this)"><div class="cb-icon">&#x1F4B5;</div><div><div class="cb-title">Take cash out</div></div></div>
+        <div class="choice-btn" id="lrt-switch" onclick="setLoanSubType('refi','switch',this)"><div class="cb-icon">&#x1F500;</div><div><div class="cb-title">Switch loan type (ARM &harr; Fixed)</div></div></div>
+      </div>
+    </div>
+
+    <!-- Sub-question for equity -->
+    <div id="loan-sub-equity" style="display:none;margin-top:2px;">
+      <div class="sec"><span>How do you want to access your equity?</span></div>
+      <div class="choice-group" id="loan-equity-type-group">
+        <div class="choice-btn sel" id="let-line" onclick="setLoanSubType('equity','line',this)"><div class="cb-icon">&#x1F4CA;</div><div><div class="cb-title">Ongoing access (like a credit line)</div><div class="cb-sub">HELOC</div></div></div>
+        <div class="choice-btn" id="let-lump" onclick="setLoanSubType('equity','lump',this)"><div class="cb-icon">&#x1F4B0;</div><div><div class="cb-title">One-time lump sum</div><div class="cb-sub">Home Equity Loan</div></div></div>
+        <div class="choice-btn" id="let-cashout" onclick="setLoanSubType('equity','cashout',this)"><div class="cb-icon">&#x1F3E0;</div><div><div class="cb-title">Refinance and take cash</div><div class="cb-sub">Cash-Out Refinance</div></div></div>
+      </div>
+    </div>
+
+    <!-- Sub-question for invest -->
+    <div id="loan-sub-invest" style="display:none;margin-top:2px;">
+      <div class="sec"><span>What kind of financing?</span></div>
+      <div class="choice-group" id="loan-invest-type-group">
+        <div class="choice-btn sel" id="lit-rental" onclick="setLoanSubType('invest','rental',this)"><div class="cb-icon">&#x1F4C5;</div><div><div class="cb-title">Long-term rental</div><div class="cb-sub">DSCR or conventional investment loan</div></div></div>
+        <div class="choice-btn" id="lit-flip" onclick="setLoanSubType('invest','flip',this)"><div class="cb-icon">&#x1F528;</div><div><div class="cb-title">Short-term / flip</div><div class="cb-sub">Bridge or hard money loan</div></div></div>
+      </div>
+    </div>
+
+    <button class="btn btn-gold" onclick="goLoanPhase2()"><span class="bl">See My Loan Options &rarr;</span></button>
+    <button class="btn-back" onclick="back()">&larr; Back</button>
+  </div>
+
+  <!-- LOAN: Phase 2 - Pre-Qualify -->
+  <div class="screen" id="s4-loan-2">
+    <div class="q-step">Step 3B &mdash; Quick Pre-Qualification</div>
+    <div class="q-text" id="loan-p2-title">Let&apos;s see what you qualify for</div>
+    <div class="q-sub">No credit pull required &mdash; just a few quick questions.</div>
     <div class="fields">
-      <div class="field"><label>What Type of Loan?</label>
-        <select id="l-type" onchange="toggleLoanFields()">
-          <option value="Refinance">Refinance My Current Home</option>
-          <option value="Cash-Out Refi">Cash-Out Refinance</option>
-          <option value="HELOC">HELOC (Home Equity Line)</option>
-          <option value="Not Sure">Not Sure — Show Me My Options</option>
+
+      <div class="sec"><span>Property &amp; Loan</span></div>
+      <div class="field"><label id="loan-price-label">Estimated Home Value / Purchase Price</label>
+        <select id="l-pricerange">
+          <option value="250000">Under $250K</option>
+          <option value="375000">$250K &ndash; $500K</option>
+          <option value="625000" selected>$500K &ndash; $750K</option>
+          <option value="875000">$750K &ndash; $1M</option>
+          <option value="1250000">$1M+</option>
         </select>
       </div>
-      <div class="field"><label>Employment Type</label>
-        <select id="l-emp" onchange="toggleSelfEmp()">
-          <option value="W-2 Employee">W-2 Employee</option>
+      <div id="l-balance-section" style="display:none;">
+        <div class="field"><label>Roughly How Much Do You Still Owe? ($)</label>
+          <input type="number" id="l-bal" placeholder="e.g. 350,000"></div>
+      </div>
+      <div class="field"><label>ZIP Code</label>
+        <input id="l-zip" placeholder="90210"></div>
+
+      <div class="sec"><span>Your Profile</span></div>
+      <div class="field"><label>Credit Score Range</label>
+        <select id="l-cr">
+          <option value="720+">720+ &mdash; Excellent</option>
+          <option value="680-719">680&ndash;719 &mdash; Good</option>
+          <option value="620-679">620&ndash;679 &mdash; Fair</option>
+          <option value="Below 620">Below 620 &mdash; Building</option>
+          <option value="Not sure">Not sure</option>
+        </select>
+      </div>
+      <div class="field"><label>Annual Household Income</label>
+        <select id="l-income">
+          <option value="40000">Under $50K</option>
+          <option value="75000">$50K &ndash; $100K</option>
+          <option value="125000" selected>$100K &ndash; $150K</option>
+          <option value="175000">$150K &ndash; $200K</option>
+          <option value="250000">$200K+</option>
+        </select>
+      </div>
+      <div class="field"><label>Employment Status</label>
+        <select id="l-emp">
+          <option value="W-2 Employee">W-2 / Salaried</option>
           <option value="Self-Employed">Self-Employed / 1099</option>
+          <option value="Investor">Investor</option>
           <option value="Retired">Retired</option>
+          <option value="Military / VA">Military / VA</option>
           <option value="Other">Other</option>
         </select>
       </div>
-      <div id="self-emp-note" style="display:none">
-        <div class="ibox"><span class="ico">💼</span><strong>Self-Employed?</strong> No 2-year tax returns needed. Bank statement loans, DSCR loans, and asset-based options are available. We'll show you exactly what applies to you.</div>
+      <div class="field"><label id="loan-dp-label">Down Payment / Equity Available ($)</label>
+        <input type="number" id="l-dp" placeholder="e.g. 50,000"></div>
+      <div class="field"><label>Timeline</label>
+        <select id="l-tl">
+          <option value="ASAP">ASAP &mdash; ready now</option>
+          <option value="1-3 months">1&ndash;3 months</option>
+          <option value="3-6 months">3&ndash;6 months</option>
+          <option value="Just exploring">Just exploring</option>
+        </select>
       </div>
-      <div id="lf-standard">
-        <div class="row2">
-          <div class="field"><label>Current Balance ($)</label><input type="number" id="l-bal" placeholder="500,000"></div>
-          <div class="field"><label>Current Rate (%)</label><input type="number" id="l-rate" placeholder="7.5" step="0.1"></div>
-        </div>
-        <div class="field"><label>Current Monthly Payment ($)</label><input type="number" id="l-pmt" placeholder="3,500"></div>
-      </div>
-      <div id="lf-heloc" style="display:none">
-        <div class="row2">
-          <div class="field"><label>Home Value ($)</label><input type="number" id="l-hv" placeholder="900,000"></div>
-          <div class="field"><label>Mortgage Balance ($)</label><input type="number" id="l-mb" placeholder="400,000"></div>
-        </div>
-        <div class="row2">
-          <div class="field"><label>Amount to Borrow ($)</label><input type="number" id="l-br" placeholder="100,000"></div>
-          <div class="field"><label>HELOC Rate (%)</label><input type="number" id="l-hr" placeholder="8.5" step="0.1"></div>
-        </div>
-      </div>
-      <div class="row2">
-        <div class="field"><label>Monthly Income ($)</label><input type="number" id="l-inc" placeholder="8,500"></div>
-        <div class="field"><label>Monthly Debts ($)</label><input type="number" id="l-dbt" placeholder="500"></div>
-      </div>
-      <div class="row2">
-        <div class="field"><label>ZIP Code</label><input id="l-zip" placeholder="90210"></div>
-        <div class="field"><label>Credit Profile</label>
-          <select id="l-cr"><option value="Excellent (740+)">Excellent (740+)</option><option value="Good (680-739)">Good (680-739)</option><option value="Fair (620-679)">Fair (620-679)</option><option value="Building (Below 620)">Building</option></select>
-        </div>
-      </div>
-      <div id="lf-self" style="display:none">
-        <div class="row2">
-          <div class="field"><label>Monthly Revenue ($)</label><input type="number" id="l-rev" placeholder="15,000"></div>
-          <div class="field"><label>Bank Balance ($)</label><input type="number" id="l-bnk" placeholder="50,000"></div>
-        </div>
-        <div class="row2">
-          <div class="field"><label>Business Type</label>
-            <select id="l-btype"><option value="Freelancer / Contractor">Freelancer</option><option value="LLC Owner">LLC Owner</option><option value="S-Corp / C-Corp">S/C-Corp</option><option value="Sole Proprietor">Sole Proprietor</option><option value="Real Estate Investor">RE Investor</option></select>
-          </div>
-          <div class="field"><label>Years in Business</label>
-            <select id="l-yrs"><option value="Less than 1 year">&lt;1 Yr</option><option value="1 year">1 Yr</option><option value="2 years">2 Yrs</option><option value="3-5 years">3–5 Yrs</option><option value="5+ years">5+ Yrs</option></select>
-          </div>
-        </div>
-      </div>
-      <div class="field"><label>Notes / Questions</label><textarea id="l-notes" placeholder="Tell me your situation — I'll show you what's available..."></textarea></div>
     </div>
-    <button class="btn btn-gold" id="loanBtn" onclick="subLoan()"><span class="bl">Show Me My Options →</span><span class="dots"><span></span><span></span><span></span></span></button>
-    <button class="btn-back" onclick="back()">← Back</button>
+    <div style="margin-top:12px;padding:10px 13px;background:#f8f5ef;border-radius:7px;font-size:10px;color:#999;line-height:1.6;">
+      &#x26A0;&#xFE0F; <em>Estimates are not a loan offer. Rates and terms are subject to change based on full application review.</em>
+    </div>
+    <button class="btn btn-gold" id="loanBtn" onclick="subLoan()"><span class="bl">Show Me What I Qualify For &rarr;</span><span class="dots"><span></span><span></span><span></span></span></button>
+    <button class="btn-back" onclick="back()">&larr; Back</button>
   </div>
+
 
   <!-- ══════════════════════════════════════════════════════ -->
   <!-- S4-WAYOUT: Your Way Out details                       -->
@@ -610,29 +805,68 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:linear-
   <!-- S4-LEASE: Lease details                               -->
   <!-- ══════════════════════════════════════════════════════ -->
   <div class="screen" id="s4-lease">
-    <div class="q-step">What you need</div>
-    <div class="q-text">Tell me what you're looking for</div>
+    <div class="q-step">Step 3 &mdash; Lease / Rent</div>
+    <div class="q-text">Tell me what you&apos;re looking for</div>
     <div class="fields">
+
+      <div class="sec"><span>Location &amp; Budget</span></div>
       <div class="row2">
-        <div class="field"><label>Target Area</label><input id="r-area" placeholder="West LA, Pasadena..."></div>
-        <div class="field"><label>ZIP Code</label><input id="r-zip" placeholder="90210"></div>
+        <div class="field"><label>Target Area / City</label><input id="r-area" placeholder="West LA, Pasadena, Malibu..."></div>
+        <div class="field"><label>ZIP Code (optional)</label><input id="r-zip" placeholder="90210"></div>
       </div>
+      <div class="field"><label>Max Monthly Budget ($)</label>
+        <input type="number" id="r-bdg" placeholder="2,500"></div>
+
+      <div class="sec"><span>Property Type &amp; Size</span></div>
       <div class="row2">
-        <div class="field"><label>Max Budget ($/mo)</label><input type="number" id="r-bdg" placeholder="2,500"></div>
-        <div class="field"><label>Move-In Funds Ready?</label>
-          <select id="r-funds">
-            <option value="Yes - ready now">Yes — ready now</option>
-            <option value="Within 2 weeks">Within 2 weeks</option>
-            <option value="Within a month">Within a month</option>
-            <option value="Not yet - planning">Not yet — planning</option>
+        <div class="field"><label>Property Type</label>
+          <select id="r-sz">
+            <option value="Studio">Studio / Loft</option>
+            <option value="Apartment">Apartment</option>
+            <option value="Condo">Condo</option>
+            <option value="Townhouse">Townhouse</option>
+            <option value="House">House</option>
+          </select>
+        </div>
+        <div class="field"><label>Move-In</label>
+          <select id="r-mv">
+            <option value="ASAP">ASAP</option>
+            <option value="1 month">1 Month</option>
+            <option value="2-3 months">2&ndash;3 Months</option>
+            <option value="Flexible">Flexible</option>
           </select>
         </div>
       </div>
       <div class="row2">
-        <div class="field"><label>Unit Size</label><select id="r-sz"><option>Studio</option><option value="1BR">1 Bedroom</option><option value="2BR">2 Bedroom</option><option value="3BR">3 Bedroom</option><option>House</option></select></div>
-        <div class="field"><label>Move-In</label><select id="r-mv"><option>ASAP</option><option value="1 month">1 Month</option><option value="2-3 months">2–3 Months</option><option>Flexible</option></select></div>
+        <div class="field"><label>Bedrooms</label>
+          <select id="r-bd">
+            <option value="Studio">Studio</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4+">4+</option>
+          </select>
+        </div>
+        <div class="field"><label>Bathrooms</label>
+          <select id="r-ba">
+            <option value="1">1</option>
+            <option value="1.5">1.5</option>
+            <option value="2">2</option>
+            <option value="2.5">2.5</option>
+            <option value="3+">3+</option>
+          </select>
+        </div>
       </div>
-      <label style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);font-weight:500;display:block;">What Matters Most?</label>
+      <div class="field"><label>Move-In Funds Ready?</label>
+        <select id="r-funds">
+          <option value="Yes - ready now">Yes &mdash; ready now</option>
+          <option value="Within 2 weeks">Within 2 weeks</option>
+          <option value="Within a month">Within a month</option>
+          <option value="Not yet - planning">Not yet &mdash; planning</option>
+        </select>
+      </div>
+
+      <div class="sec"><span>What Matters Most?</span></div>
       <div class="ckg" id="r-mh">
         <div class="cki" onclick="ck(this)"><span class="ckb"></span>Private Parking</div>
         <div class="cki" onclick="ck(this)"><span class="ckb"></span>Pet Friendly</div>
@@ -640,51 +874,99 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:linear-
         <div class="cki" onclick="ck(this)"><span class="ckb"></span>Near Transit</div>
         <div class="cki" onclick="ck(this)"><span class="ckb"></span>Gym / Pool</div>
         <div class="cki" onclick="ck(this)"><span class="ckb"></span>Storage Space</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Balcony / Outdoor</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Quiet Building</div>
       </div>
-      <div class="row2">
-        <div class="field"><label>Parking Spaces</label><select id="r-pk"><option value="0">No car</option><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4+">4+ (special situation)</option></select></div>
-        <div class="field"><label>Pets?</label><input id="r-pets" placeholder="e.g. 1 large dog"></div>
+      <div class="row2" style="margin-top:10px;">
+        <div class="field"><label>Parking Spaces</label>
+          <select id="r-pk"><option value="0">No car</option><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4+">4+ (special)</option></select>
+        </div>
+        <div class="field"><label>Pets? (type &amp; size)</label>
+          <input id="r-pets" placeholder="e.g. 1 large dog">
+        </div>
       </div>
-      <div class="field"><label>Notes / Special Needs</label><textarea id="r-notes" placeholder="e.g. Need 5 spots for vintage cars — open to nearby garage..."></textarea></div>
+      <div class="field" style="margin-top:6px;"><label>Notes / Special Needs</label>
+        <textarea id="r-notes" placeholder="e.g. Need 5 spots for vintage cars &mdash; open to nearby garage..."></textarea>
+      </div>
     </div>
-    <button class="btn btn-gold" id="leaseBtn" onclick="subLease()"><span class="bl">Show Me My Options →</span><span class="dots"><span></span><span></span><span></span></span></button>
-    <button class="btn-back" onclick="back()">← Back</button>
+    <button class="btn btn-gold" id="leaseBtn" onclick="subLease()"><span class="bl">Show Me My Options &rarr;</span><span class="dots"><span></span><span></span><span></span></span></button>
+    <button class="btn-back" onclick="back()">&larr; Back</button>
   </div>
 
   <!-- ══════════════════════════════════════════════════════ -->
   <!-- S4-COMMERCIAL: Commercial details                     -->
   <!-- ══════════════════════════════════════════════════════ -->
   <div class="screen" id="s4-comm">
-    <div class="q-step">Your space</div>
+    <div class="q-step">Step 3 &mdash; Commercial Space</div>
     <div class="q-text">Tell me what you need</div>
     <div class="fields">
-      <div class="row2">
-        <div class="field"><label>Target Area</label><input id="m-area" placeholder="Culver City, DTLA..."></div>
-        <div class="field"><label>Max Budget ($/mo)</label><input type="number" id="m-bdg" placeholder="5,000"></div>
+
+      <div class="sec"><span>Lease or Purchase?</span></div>
+      <div class="choice-group" style="margin-bottom:10px;">
+        <div class="choice-btn sel" id="comm-lease-btn" onclick="setCommIntent('lease',this)">
+          <div class="cb-icon">&#x1F511;</div>
+          <div><div class="cb-title">Lease / Rent a Space</div><div class="cb-sub">Monthly rent &mdash; flexible term</div></div>
+        </div>
+        <div class="choice-btn" id="comm-buy-btn" onclick="setCommIntent('buy',this)">
+          <div class="cb-icon">&#x1F3E2;</div>
+          <div><div class="cb-title">Purchase a Commercial Property</div><div class="cb-sub">Own the building or unit</div></div>
+        </div>
       </div>
+
+      <div class="sec"><span>Location &amp; Budget</span></div>
+      <div class="row2">
+        <div class="field"><label>Target Area / City</label><input id="m-area" placeholder="Culver City, DTLA, Burbank..."></div>
+        <div class="field"><label id="m-bdg-label">Max Monthly Budget ($)</label>
+          <input type="number" id="m-bdg" placeholder="5,000"></div>
+      </div>
+      <div id="m-purchase-budget" style="display:none;">
+        <div class="field"><label>Max Purchase Price ($)</label>
+          <input type="number" id="m-pprice" placeholder="1,500,000"></div>
+      </div>
+
+      <div class="sec"><span>Space Details</span></div>
       <div class="row2">
         <div class="field"><label>Square Footage</label><input type="number" id="m-sqft" placeholder="2,000"></div>
         <div class="field"><label>Space Type</label>
-          <select id="m-type"><option value="Retail Storefront">Retail Storefront</option><option value="Office Space">Office Space</option><option value="Warehouse / Industrial">Warehouse</option><option value="Flex / Mixed Use">Flex / Mixed Use</option><option value="Restaurant / Food">Restaurant</option><option value="Medical / Dental">Medical / Dental</option><option value="Salon / Studio">Salon / Studio</option></select>
+          <select id="m-type">
+            <option value="Retail Storefront">Retail Storefront</option>
+            <option value="Office Space">Office Space</option>
+            <option value="Warehouse / Industrial">Warehouse / Industrial</option>
+            <option value="Flex Space">Flex Space</option>
+            <option value="Mixed-Use">Mixed-Use</option>
+            <option value="Restaurant / Food Service">Restaurant / Food Service</option>
+            <option value="Medical / Dental">Medical / Dental</option>
+            <option value="Salon / Studio / Creative">Salon / Studio / Creative</option>
+            <option value="Other">Other</option>
+          </select>
         </div>
       </div>
-      <label style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);font-weight:500;display:block;">Special Requirements</label>
+
+      <div class="sec"><span>Requirements</span></div>
       <div class="ckg" id="m-req">
         <div class="cki" onclick="ck(this)"><span class="ckb"></span>Loading Dock</div>
-        <div class="cki" onclick="ck(this)"><span class="ckb"></span>High Ceilings</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>High Ceilings (18ft+)</div>
         <div class="cki" onclick="ck(this)"><span class="ckb"></span>Drive-In Access</div>
         <div class="cki" onclick="ck(this)"><span class="ckb"></span>Street Visibility</div>
         <div class="cki" onclick="ck(this)"><span class="ckb"></span>Large Parking Lot</div>
         <div class="cki" onclick="ck(this)"><span class="ckb"></span>24/7 Access</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>ADA Compliant</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Signage Rights</div>
       </div>
-      <div class="row2">
-        <div class="field"><label>Parking Spaces</label><select id="m-pk"><option value="0-5">0–5</option><option value="6-10">6–10</option><option value="11-20">11–20</option><option value="20+">20+</option></select></div>
-        <div class="field"><label>Move-In</label><select id="m-mv"><option>ASAP</option><option>1–3 months</option><option>3–6 months</option><option>Flexible</option></select></div>
+      <div class="row2" style="margin-top:10px;">
+        <div class="field"><label>Parking Spaces</label>
+          <select id="m-pk"><option value="0-5">0&ndash;5</option><option value="6-10">6&ndash;10</option><option value="11-20">11&ndash;20</option><option value="20+">20+</option></select>
+        </div>
+        <div class="field"><label>Timeline</label>
+          <select id="m-mv"><option>ASAP</option><option>1&ndash;3 months</option><option>3&ndash;6 months</option><option>Flexible</option></select>
+        </div>
       </div>
-      <div class="field"><label>Notes / Specific Needs</label><textarea id="m-notes" placeholder="Loading dock + 20 parking — open to nearby overflow lot..."></textarea></div>
+      <div class="field" style="margin-top:6px;"><label>Notes / Specific Needs</label>
+        <textarea id="m-notes" placeholder="e.g. Loading dock + 20 parking &mdash; open to nearby overflow lot..."></textarea>
+      </div>
     </div>
-    <button class="btn btn-gold" id="commBtn" onclick="subComm()"><span class="bl">Show Me My Options →</span><span class="dots"><span></span><span></span><span></span></span></button>
-    <button class="btn-back" onclick="back()">← Back</button>
+    <button class="btn btn-gold" id="commBtn" onclick="subComm()"><span class="bl">Show Me My Options &rarr;</span><span class="dots"><span></span><span></span><span></span></span></button>
+    <button class="btn-back" onclick="back()">&larr; Back</button>
   </div>
 
   <!-- ══════════════════════════════════════════════════════ -->
@@ -692,49 +974,97 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:linear-
   <!-- ══════════════════════════════════════════════════════ -->
 
   <!-- BUY RESULT -->
+  <!-- BUY PATH A RESULTS: Found a Home -->
   <div class="result" id="res-buy">
     <div class="res-hero"><div class="res-eye">Your Estimated Monthly Payment</div><div class="res-big" id="r-piti">—<span class="res-mo">/mo</span></div><div id="r-qb"></div></div>
+    <div id="r-summary"></div>
     <div class="sec-t">📋 Full Payment Breakdown</div>
     <div class="bkgrid" id="r-bk"></div>
     <div class="sec-t">📊 Debt-to-Income</div>
     <div class="dtirow" id="r-dti"></div>
-    <div id="r-wish" style="display:none"><div class="sec-t">🏡 Your Wishlist</div><div class="wtags" id="r-wtags"></div></div>
-    <div id="r-dream" style="display:none">
-      <div class="sec-t">✨ Your Path to Your Dream Home</div>
-      <div class="tl" id="r-tl"></div>
-      <div class="sec-t">📈 Value Projection</div>
-      <div class="vchart"><div class="vbars" id="r-vb"></div></div>
-    </div>
+    <div id="r-cash"></div>
+    <div class="sec-t">🏦 Loan Options For You</div>
+    <div id="r-loan-recs"></div>
     <div class="metarow" id="r-meta"></div>
-    <a id="cta-buy" href="#" class="cta">📱 Text Shiva To Discuss Your Results</a>
+    <div style="text-align:center;margin:8px 0 4px;font-size:12px;color:var(--gray);">Have questions about your results?</div>
+    <a id="cta-buy" href="#" class="cta">💬 Chat Now — Get Pre-Approved</a>
+    <div class="restart"><button onclick="reset()">← Start over</button></div>
+  </div>
+
+  <!-- BUY PATH B RESULTS: Looking for Property -->
+  <div class="result" id="res-buy-b">
+    <div class="metarow" id="r-meta-b"></div>
+    <div id="r-power"></div>
+    <div id="r-power-details"></div>
+    <div class="sec-t">🏦 Loan Options That Match Your Profile</div>
+    <div id="r-power-loans"></div>
+    <div id="r-power-tips"></div>
+
+    <!-- Homes confirmation -->
+    <div style="background:linear-gradient(135deg,var(--navy),#0d2240);border-radius:11px;padding:20px;text-align:center;border:1px solid rgba(212,175,55,.25);margin-bottom:12px;">
+      <div style="font-size:28px;margin-bottom:8px;">🏡</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--gold);margin-bottom:6px;">We're on it.</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.55);line-height:1.7;margin-bottom:6px;">Based on your buying power, a local agent will personally reach out with matching homes in your target area — including new listings and upcoming open houses.</div>
+      <div id="r-search-prefs" style="font-size:11px;color:rgba(212,175,55,.7);margin-top:8px;"></div>
+    </div>
+
+    <!-- Tour booking -->
+    <div style="background:#e8f5e9;border:1.5px solid #a5d6a7;border-radius:8px;padding:14px;margin-bottom:12px;">
+      <div style="font-size:13px;font-weight:700;color:#1a5e20;margin-bottom:5px;">🗓️ Want to see a home in person?</div>
+      <div style="font-size:12px;color:#2e7d32;line-height:1.6;margin-bottom:10px;">A local agent can schedule private tours at no cost to you. Just let us know when you're available.</div>
+      <a href="sms:3104225608" class="cta" style="background:linear-gradient(135deg,#2e7d32,#1b5e20);color:#fff;border-color:#2e7d32;margin:0;display:block;text-align:center;padding:12px;border-radius:8px;font-family:'Jost',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none;">📅 Book a Free Tour</a>
+    </div>
+
+    <div style="text-align:center;margin:8px 0 4px;font-size:12px;color:var(--gray);">Have questions about your results?</div>
+    <a id="cta-buy-b" href="sms:3104225608" class="cta">💬 Chat Now</a>
     <div class="restart"><button onclick="reset()">← Start over</button></div>
   </div>
 
   <!-- SELL RESULT -->
   <div class="result" id="res-sell">
-    <div class="sec-t">🏡 Your Equity Report</div>
-    <div class="sgrid" id="r-sgrid"></div>
-    <div class="sec-t">✨ Your Possibilities</div>
-    <div id="r-sposs"></div>
     <div class="metarow" id="r-smeta"></div>
-    <a id="cta-sell" href="#" class="cta">📱 Text Shiva — Let's Talk Your Options</a>
-    <div class="restart"><button onclick="reset()">← Start over</button></div>
+
+    <!-- Value estimate -->
+    <div style="background:linear-gradient(135deg,var(--navy),#0d2240);border-radius:11px;padding:20px;border:1px solid rgba(212,175,55,.25);margin-bottom:14px;text-align:center;">
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px;">Estimated Market Value</div>
+      <div id="r-svalue-range" style="font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:700;color:var(--gold);line-height:1.1;"></div>
+      <div style="font-size:11px;color:rgba(255,255,255,.35);margin-top:5px;">Based on your inputs &amp; comparable sales in your area</div>
+    </div>
+
+    <!-- Net proceeds -->
+    <div class="sec-t">&#x1F4B0; Estimated Net Proceeds</div>
+    <div class="bkgrid" id="r-sproceeds"></div>
+
+    <!-- Comps -->
+    <div class="sec-t">&#x1F3E1; Similar Homes in Your Area</div>
+    <div style="font-size:11px;color:var(--gray);margin-bottom:10px;margin-top:-8px;">See what comparable homes are selling for near you</div>
+    <div id="r-scomps"></div>
+
+    <!-- Commission note -->
+    <div style="background:#f8f5ef;border:1px solid var(--border);border-radius:8px;padding:11px 13px;margin-bottom:12px;font-size:11px;color:#555;line-height:1.7;">
+      <strong style="color:var(--navy);display:block;margin-bottom:3px;">&#x2696;&#xFE0F; About Agent Commissions (2024)</strong>
+      Commissions are negotiable. As a seller, you may choose whether to offer compensation to a buyer&apos;s agent. There is no fixed rate &mdash; a local agent can walk you through your options.
+    </div>
+
+    <!-- Agent CTA -->
+    <div id="r-sagent"></div>
+
+    <div style="text-align:center;margin:8px 0 4px;font-size:12px;color:var(--gray);">Have questions about your results?</div>
+    <a id="cta-sell" href="sms:3104225608" class="cta">&#x1F4AC; Chat Now</a>
+    <div class="restart"><button onclick="reset()">&larr; Start over</button></div>
   </div>
 
   <!-- LOAN RESULT -->
   <div class="result" id="res-loan">
-    <div class="res-hero"><div class="res-eye">Your Estimated Payment</div><div class="res-big" id="r-lpiti">—<span class="res-mo">/mo</span></div><div id="r-lqb"></div></div>
-    <div class="sec-t">📋 Payment Breakdown</div>
-    <div class="bkgrid" id="r-lbk"></div>
-    <div id="r-lself" style="display:none">
-      <div class="sec-t">💼 Loan Options Available To You</div>
-      <div id="r-lloans"></div>
-      <div class="sec-t">🗺️ Your Roadmap</div>
-      <div class="rmap" id="r-lroad"></div>
-    </div>
     <div class="metarow" id="r-lmeta"></div>
-    <a id="cta-loan" href="#" class="cta">📱 Text Shiva — Let's Talk Your Options</a>
-    <div class="restart"><button onclick="reset()">← Start over</button></div>
+    <div id="r-loan-hero"></div>
+    <div class="sec-t">&#x1F3E6; Recommended Loan Options</div>
+    <div style="font-size:11px;color:var(--gray);margin-bottom:10px;margin-top:-8px;">Based on your profile &mdash; tailored to your situation</div>
+    <div id="r-loan-recs"></div>
+    <div id="r-loan-next-steps"></div>
+    <div style="text-align:center;margin:8px 0 4px;font-size:12px;color:var(--gray);">Ready to move forward?</div>
+    <a id="cta-loan" href="sms:3104225608" class="cta">&#x1F4AC; Chat Now &mdash; Get Pre-Qualified Free</a>
+    <div class="restart"><button onclick="reset()">&larr; Start over</button></div>
   </div>
 
   <!-- WAY OUT RESULT -->
@@ -745,7 +1075,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:linear-
     <div class="sec-t gr">🚪 Your Path Forward</div>
     <div id="r-wposs"></div>
     <div class="metarow" id="r-wmeta"></div>
-    <a id="cta-wayout" href="#" class="cta way">📱 Text Shiva — Confidential, No Pressure</a>
+    <div style="text-align:center;margin:8px 0 4px;font-size:12px;color:var(--gray);">Have questions? This is completely confidential.</div><a id="cta-wayout" href="#" class="cta way">💬 Chat Now</a>
     <div class="restart"><button onclick="reset()">← Start over</button></div>
   </div>
 
@@ -754,7 +1084,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:linear-
     <div class="sec-t">🔑 Your Leasing Options</div>
     <div id="r-lposs"></div>
     <div class="metarow" id="r-leasemeta"></div>
-    <a id="cta-lease" href="#" class="cta">📱 Text Shiva — Let's Find Your Place</a>
+    <div style="text-align:center;margin:8px 0 4px;font-size:12px;color:var(--gray);">Have questions about your results?</div><a id="cta-lease" href="#" class="cta">💬 Chat Now</a>
     <div class="restart"><button onclick="reset()">← Start over</button></div>
   </div>
 
@@ -763,7 +1093,7 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:linear-
     <div class="sec-t">🏢 Your Commercial Options</div>
     <div id="r-cposs"></div>
     <div class="metarow" id="r-commmeta"></div>
-    <a id="cta-comm" href="#" class="cta">📱 Text Shiva — Let's Find Your Space</a>
+    <div style="text-align:center;margin:8px 0 4px;font-size:12px;color:var(--gray);">Have questions about your results?</div><a id="cta-comm" href="#" class="cta">💬 Chat Now</a>
     <div class="restart"><button onclick="reset()">← Start over</button></div>
   </div>
 
@@ -771,13 +1101,23 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:linear-
     <strong>Shiva Tamara</strong> of ShivaLuxury · DRE# 02251909 · NMLS 2779492<br>
     Nobility and Monarchs Real Estate · Beverly Hills Financial Group · Beverly Hills, CA
   </div>
+
+  <!-- Agent popup modal -->
+  <div id="agent-modal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:#fff;border-radius:14px;padding:24px;max-width:320px;width:100%;text-align:center;border:2px solid var(--gold);box-shadow:0 20px 60px rgba(0,0,0,.4);">
+      <div style="font-size:28px;margin-bottom:10px;">🏡</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--navy);margin-bottom:8px;">You're in good hands.</div>
+      <div style="font-size:13px;color:#555;line-height:1.7;margin-bottom:18px;">Once you complete this form, a local agent will personally reach out to discuss your options — free, no obligation, no pressure.</div>
+      <button onclick="document.getElementById('agent-modal').style.display='none'" style="width:100%;padding:12px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);border:none;border-radius:8px;font-family:'Jost',sans-serif;font-size:13px;font-weight:700;letter-spacing:1.5px;cursor:pointer;">Got it ✓</button>
+    </div>
+  </div>
 </div>
 
 <script>
 const API = (location.hostname==='localhost'||location.hostname==='127.0.0.1')?'http://localhost:5001':'';
 const SMS = '3104225608';
 let path='', life='none', bm='price';
-let history=['s1'];
+let navHistory=['s1'];
 const TOTAL={buy:4,sell:4,loan:4,wayout:4,lease:4,commercial:4};
 
 // ── Show/hide screens ─────────────────────────────────────────────────────────
@@ -790,11 +1130,11 @@ function show(id,back=false){
   updateProg(id);
   window.scrollTo({top:0,behavior:'smooth'});
 }
-function go(id){history.push(id);show(id);}
+function go(id){navHistory.push(id);show(id);}
 function back(){
-  if(history.length>1){history.pop();show(history[history.length-1],true);}
+  if(navHistory.length>1){navHistory.pop();show(navHistory[navHistory.length-1],true);}
 }
-function reset(){path='';life='none';history=['s1'];document.querySelectorAll('.path-card,.gchoice').forEach(e=>e.classList.remove('sel'));show('s1');}
+function reset(){path='';life='none';navHistory=['s1'];document.querySelectorAll('.path-card,.gchoice').forEach(e=>e.classList.remove('sel'));show('s1');}
 
 function updateProg(id){
   const steps=['s1','s3',`s4-${path}`].filter(Boolean);
@@ -829,12 +1169,264 @@ function goDetails(){
 }
 
 // ── Field toggles ─────────────────────────────────────────────────────────────
+let buyIntent = 'found'; // 'found' or 'explore'
+
+function setBuyIntent(intent, el){
+  buyIntent = intent;
+  document.querySelectorAll('#s4-buy .choice-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function goBuyDetails(){
+  if(buyIntent === 'found') go('s4-buy-a');
+  else go('s4-buy-b');
+}
+
+// Path A sync functions
+function syncBaDP(){const p=+g('ba-hp'),pct=+g('ba-dpct');if(p&&pct)s('ba-dp',Math.round(p*pct/100));}
+function syncBaDPct(){const p=+g('ba-hp'),a=+g('ba-dp');if(p&&a)s('ba-dpct',(a/p*100).toFixed(1));}
+function syncBaDPAmt(){const p=+g('ba-hp'),pct=+g('ba-dpct');if(p&&pct)s('ba-dp',Math.round(p*pct/100));}
+
+// Rate by credit range
+function rateByCredit(cr){
+  if(cr==='720+') return 6.5;
+  if(cr==='680-719') return 6.875;
+  if(cr==='640-679') return 7.25;
+  if(cr==='620-639') return 7.75;
+  return 8.25; // Below 620
+}
+
+// Loan recommendations based on profile
+function getLoanRecs(cr, dp, hp, va, occ){
+  const recs = [];
+  const dpPct = hp > 0 ? (dp/hp*100) : 20;
+  const isVA = va && va !== 'No';
+
+  if(isVA){
+    recs.push({
+      name: 'VA Loan',
+      tag: '⭐ BEST MATCH',
+      why: '0% down payment available. No PMI. Lower rates. Exclusive to veterans and active military.',
+      color: '#1a6b3c'
+    });
+  }
+  if(cr === '720+' || cr === '680-719'){
+    recs.push({
+      name: 'Conventional Loan',
+      tag: dpPct >= 20 ? '✅ RECOMMENDED' : '✅ AVAILABLE',
+      why: dpPct >= 20
+        ? 'Your credit qualifies you for the best rates. No PMI with 20%+ down.'
+        : 'Strong credit. Put 20% down to eliminate PMI and lower your rate.',
+      color: '#0a192f'
+    });
+  }
+  if(dpPct < 20 || cr === '640-679' || cr === '620-639'){
+    recs.push({
+      name: 'FHA Loan',
+      tag: dpPct < 10 ? '✅ RECOMMENDED' : '✅ AVAILABLE',
+      why: 'As low as 3.5% down. More flexible credit requirements. Great for first-time buyers.',
+      color: '#b8962e'
+    });
+  }
+  if(hp >= 750000){
+    recs.push({
+      name: 'Jumbo Loan',
+      tag: '📋 AVAILABLE',
+      why: 'For loan amounts above conforming limits ($766,550). Requires strong credit and income.',
+      color: '#555'
+    });
+  }
+  if(recs.length === 0){
+    recs.push({
+      name: 'FHA Loan',
+      tag: '📋 AVAILABLE',
+      why: 'FHA loans accept credit scores as low as 580 with 3.5% down. A good starting point.',
+      color: '#b8962e'
+    });
+  }
+  return recs;
+}
+
+function renderLoanRecs(recs, containerId){
+  document.getElementById(containerId).innerHTML = recs.map(r => `
+    <div style="background:#f8f5ef;border:1.5px solid #e5ddd0;border-radius:8px;padding:11px 13px;margin-bottom:8px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+        <span style="font-size:12px;font-weight:700;color:${r.color};">${r.name}</span>
+        <span style="font-size:10px;font-weight:600;padding:2px 8px;background:${r.color};color:#fff;border-radius:10px;">${r.tag}</span>
+      </div>
+      <div style="font-size:11px;color:#555;line-height:1.5;">${r.why}</div>
+    </div>`).join('');
+}
+
+async function subBuyA(){
+  load('buyBtnA',true);
+  const hp=sf(g('ba-hp')), dp=sf(g('ba-dp'));
+  const dpct = hp>0 ? dp/hp*100 : sf(g('ba-dpct'))||20;
+  const la = hp - dp;
+  const cr = g('ba-cr');
+  const rate = rateByCredit(cr)/100;
+  const mor = rate/12; const n=360;
+  const pi = la*(mor*(1+mor)**n)/((1+mor)**n-1);
+  const inc = sf(g('ba-inc')), dbt = sf(g('ba-dbt'));
+  const hoa = sf(g('ba-hoa'));
+  const taxRate = 0.0125; // will be fetched by backend
+  const mtx = la*taxRate/12;
+  const mins = la*0.005/12;
+  const pmi = dpct < 20 ? la*0.0085/12 : 0;
+  const total = pi + mtx + mins + pmi + hoa;
+  const fdti = inc>0 ? (pi+mtx+mins+pmi)/inc*100 : 0;
+  const bdti = inc>0 ? (total+dbt)/inc*100 : 0;
+  const qualifies = fdti<=31 && bdti<=43;
+  const cashToClose = dp + (hp*0.03); // down + ~3% closing costs
+
+  const pay={path:'buyer',name:g('c-name'),phone:g('c-phone'),email:g('c-email'),
+    buy_intent:'found',buy_status:'found_home',
+    employment_type:g('ba-emp'),monthly_income:g('ba-inc'),monthly_debts:g('ba-dbt'),
+    home_price:hp,down_payment:dp,down_pct:dpct,loan_amount:la,
+    hoa:g('ba-hoa'),zip_code:g('ba-zip')||'90210',
+    property_type:g('ba-ptype'),occupancy:g('ba-occ'),
+    credit:cr,timeline:g('ba-tl'),military:g('ba-va'),
+    loan_type:'Purchase',budget_mode:'price',
+    life_event:'none',must_haves:'',commute:'',vibe:'',dream_home:''};
+
+  try{
+    const r = await post(pay);
+    const b = r.breakdown || {};
+    // Render results
+    document.getElementById('r-piti').innerHTML = `${fm(b.total_piti||total)}<span class="res-mo">/mo</span>`;
+    const qc = qualifies?'qy':'qn';
+    document.getElementById('r-qb').innerHTML = `<span class="qbadge ${qc}">${qualifies?'✅ Likely qualifies':'⚠️ May need review'} — Front ${fdti.toFixed(1)}% / Back ${bdti.toFixed(1)}%</span>`;
+
+    // Payment breakdown
+    const rows=[
+      {ico:'💵',lbl:'Principal & Interest',val:b.p_and_i||pi,note:`${(rate*100).toFixed(2)}% est. rate based on credit`},
+      {ico:'🏛️',lbl:'Property Tax',val:b.monthly_tax||mtx,note:`${b.tax_rate||'1.25%'} annual (real rate by ZIP)`},
+      {ico:'🔒',lbl:'Home Insurance',val:b.monthly_ins||mins,note:'~0.5% annually'},
+      {ico:'🛡️',lbl:'PMI',val:b.pmi||pmi,note:pmi>0?'Removed when you reach 20% equity':'None — 20%+ down ✅'},
+      {ico:'🏢',lbl:'HOA',val:b.hoa||hoa,note:hoa>0?'As entered':'N/A'},
+      {ico:'💳',lbl:'Total Monthly Payment',val:b.total_piti||total,note:'',tot:true}
+    ];
+    document.getElementById('r-bk').innerHTML=rows.map(row=>`<div class="brow ${row.tot?'tot':''}"><div class="blft"><div class="bico">${row.ico}</div><div><span class="blbl">${row.lbl}</span>${!row.tot?`<span class="bnote">${row.note}</span>`:''}</div></div><span class="bval">${fm(row.val)}/mo</span></div>`).join('');
+
+    // DTI
+    document.getElementById('r-dti').innerHTML=`<div class="dtibox ${fdti<=28?'dok':fdti<=31?'dwarn':'dbad'}"><span class="dn">${fdti.toFixed(1)}%</span><span class="dl">Front DTI · ideal ≤28%</span></div><div class="dtibox ${bdti<=36?'dok':bdti<=43?'dwarn':'dbad'}"><span class="dn">${bdti.toFixed(1)}%</span><span class="dl">Back DTI · ideal ≤43%</span></div>`;
+
+    // Cash to close
+    document.getElementById('r-cash').innerHTML=`<div style="background:#f8f5ef;border:1.5px solid #e5ddd0;border-radius:8px;padding:12px 14px;margin-bottom:12px;"><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#b8962e;font-weight:600;margin-bottom:6px;">💰 Estimated Cash to Close</div><div style="font-size:28px;font-weight:700;font-family:'Cormorant Garamond',serif;color:#0a192f;">${fms(cashToClose)}</div><div style="font-size:11px;color:#888;margin-top:3px;">Down payment + ~3% closing costs estimate</div></div>`;
+
+    // Loan recommendations
+    const recs = getLoanRecs(cr, dp, hp, g('ba-va'), g('ba-occ'));
+    renderLoanRecs(recs, 'r-loan-recs');
+
+    // What this means for you
+    let summary = qualifies
+      ? `You're in a strong position to buy. Your debt-to-income ratio looks good and your credit profile qualifies you for competitive loan options.`
+      : `Your profile shows some room to strengthen before applying. Consider reducing monthly debts or increasing your down payment to improve qualification.`;
+    document.getElementById('r-summary').innerHTML=`<div style="background:#e8f5e9;border:1px solid #a5d6a7;border-radius:8px;padding:12px 14px;margin-bottom:12px;font-size:12px;color:#1a5e20;line-height:1.6;"><strong>What this means for you:</strong> ${summary}</div>`;
+
+    document.getElementById('r-meta').innerHTML=`<div class="mpill">✅ Your report is on its way to your email</div>`;
+    document.getElementById('cta-buy').href=`sms:3104225608&body=${encodeURIComponent("Hi Shiva! I just got my home buying report and have a question.")}`;
+    go('res-buy');
+  }catch(e){alert('Connection error: '+e.message);}
+  finally{load('buyBtnA',false);}
+}
+
+async function subBuyB(){
+  load('buyBtnB',true);
+  const pmin=sf(g('bb-pmin'))||300000;
+  const pmax=sf(g('bb-pmax'))||600000;
+  const dp=sf(g('bb-dp'));
+  const area=g('bb-area')||g('bb-zip')||'your target area';
+  const zip=g('bb-zip')||'90210';
+  const beds=g('bb-bd')||'3';
+  const baths=g('bb-ba')||'2';
+  const ptype=g('bb-ptype')||'Any';
+  const tl=g('bb-tl');
+  const must=gc2('bb-mh').join(', ');
+  const priceLabel='$'+Math.round(pmin/1000)+'K\u2013$'+Math.round(pmax/1000)+'K';
+
+  // Search summary
+  if(document.getElementById('r-search-summary'))
+    document.getElementById('r-search-summary').textContent=priceLabel+' in '+area;
+  if(document.getElementById('r-search-prefs'))
+    document.getElementById('r-search-prefs').innerHTML=
+      beds+'+ bed &nbsp;&middot;&nbsp; '+baths+'+ bath &nbsp;&middot;&nbsp; '+tl+(must?' &nbsp;&middot;&nbsp; '+must:'');
+
+  // Sample listings
+  const mid=Math.round((pmin+pmax)/2);
+  const ldata=[
+    {price:Math.round(pmin*1.02/1000)*1000,beds:beds,baths:baths,sqft:1650,addr:'Oak Tree Lane',city:area.split(',')[0].trim(),tag:'Just Listed',desc:'Charming home with private yard, updated kitchen'},
+    {price:mid,beds:beds,baths:baths,sqft:1980,addr:'Maple Ridge Dr',city:area.split(',')[0].trim(),tag:'Price Reduced',desc:'Spacious layout, quiet neighborhood, move-in ready'},
+    {price:Math.round(pmax*0.97/1000)*1000,beds:beds,baths:baths,sqft:1820,addr:'Sunset View Ct',city:area.split(',')[0].trim(),tag:'Open House Sun',desc:'Great natural light, attached garage, beautiful area'},
+  ];
+  if(document.getElementById('r-listings'))
+    document.getElementById('r-listings').innerHTML=ldata.map(function(l){
+      return '<div style="background:var(--off);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:10px;">'
+        +'<div style="background:linear-gradient(135deg,#1a2a4a,#0a192f);padding:18px 16px;position:relative;">'
+        +'<div style="position:absolute;top:10px;right:10px;background:var(--gold);color:var(--navy);font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;">'+l.tag+'</div>'
+        +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:22px;font-weight:700;color:var(--gold);margin-top:8px;">$'+l.price.toLocaleString()+'</div>'
+        +'<div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;">'+l.addr+', '+l.city+'</div>'
+        +'</div>'
+        +'<div style="padding:11px 14px;">'
+        +'<div style="display:flex;gap:12px;margin-bottom:7px;">'
+        +'<span style="font-size:12px;font-weight:600;color:var(--navy);">'+l.beds+' bed</span>'
+        +'<span style="font-size:12px;font-weight:600;color:var(--navy);">'+l.baths+' bath</span>'
+        +'<span style="font-size:12px;font-weight:600;color:var(--navy);">'+l.sqft.toLocaleString()+' sqft</span>'
+        +'</div>'
+        +'<div style="font-size:11px;color:#666;line-height:1.5;">'+l.desc+'</div>'
+        +'</div></div>';
+    }).join('');
+
+  if(document.getElementById('r-meta-b'))
+    document.getElementById('r-meta-b').innerHTML='<div class="mpill">&#10003; Your search saved &mdash; agent will send real matches</div>';
+
+  try{
+    const pay={path:'buyer',name:g('c-name'),phone:g('c-phone'),email:g('c-email'),
+      buy_intent:'looking',buy_status:'looking_for_property',
+      employment_type:'N/A',monthly_income:0,monthly_debts:0,
+      home_price:pmax,down_payment:dp,down_pct:pmax>0?dp/pmax*100:0,
+      loan_amount:pmax-dp,hoa:0,zip_code:zip,property_type:ptype,
+      occupancy:'Primary Residence',credit:'N/A',timeline:tl,military:'No',
+      loan_type:'Purchase',budget_mode:'price',life_event:'none',
+      must_haves:must,commute:area,vibe:'',dream_home:'',
+      beds:beds,baths:baths,price_min:pmin,price_max:pmax};
+    await post(pay);
+  }catch(e){}
+  finally{load('buyBtnB',false);}
+  go('res-buy-b');
+}
+
+function subHomeSearch(){
+  // Save home preferences — in Phase 2 this triggers listing search
+  const prefs = {
+    area: g('b2-area'),
+    beds: g('b2-bd'),
+    baths: g('b2-ba'),
+    price: g('b2-price'),
+    timeline: g('b2-tl'),
+    must_haves: gc2('b2-mh').join(', ')
+  };
+  // For now just go to results with a thank you
+  document.getElementById('r-home-search').innerHTML=`
+    <div style="background:#e8f5e9;border:1px solid #a5d6a7;border-radius:8px;padding:14px;margin-bottom:12px;text-align:center;">
+      <div style="font-size:20px;margin-bottom:6px;">🏡</div>
+      <div style="font-size:14px;font-weight:600;color:#1a5e20;margin-bottom:4px;">We got your home preferences!</div>
+      <div style="font-size:12px;color:#2e7d32;line-height:1.6;">Shiva will personally reach out with homes matching your criteria in <strong>${g('b2-area')||'your target area'}</strong>. Open houses and listings — all free, no obligation.</div>
+    </div>`;
+  go('res-buy-b');
+}
+
 function bTab(m){
   bm=m;
   document.querySelectorAll('#s4-buy .ttab').forEach((b,i)=>b.classList.toggle('active',(i===0&&m==='price')||(i===1&&m==='loan')));
   document.getElementById('bp-price').style.display=m==='price'?'block':'none';
   document.getElementById('bp-loan').style.display=m==='loan'?'block':'none';
 }
+function toggleSellMtg(){
+  const hasMtg = g('s-hasmtg') === 'Yes';
+  document.getElementById('s-mtg-fields').style.display = hasMtg ? 'block' : 'none';
+}
+
 function toggleLoanFields(){
   const t=g('l-type');
   document.getElementById('lf-standard').style.display=t==='HELOC'?'none':'block';
@@ -884,62 +1476,286 @@ function renderBuy(r){
   document.getElementById('r-dti').innerHTML=`<div class="dtibox ${fd<=28?'dok':fd<=31?'dwarn':'dbad'}"><span class="dn">${fd.toFixed(1)}%</span><span class="dl">Front DTI · ≤28%</span></div><div class="dtibox ${bd2<=36?'dok':bd2<=43?'dwarn':'dbad'}"><span class="dn">${bd2.toFixed(1)}%</span><span class="dl">Back DTI · ≤43%</span></div>`;
   if(r.wishlist?.length){document.getElementById('r-wish').style.display='block';document.getElementById('r-wtags').innerHTML=r.wishlist.map(w=>`<span class="wtag">${w}</span>`).join('');}
   if(r.dream_path){document.getElementById('r-dream').style.display='block';document.getElementById('r-tl').innerHTML=r.dream_path.steps.map(s=>`<div class="tl-step"><div class="tl-dot">${s.icon}</div><div class="tl-b"><div class="tl-lbl">${s.label}</div><div class="tl-val">${s.value}</div><div class="tl-desc">${s.desc}</div></div></div>`).join('');const bars=r.dream_path.chart,mx=Math.max(...bars.map(b=>b.value));document.getElementById('r-vb').innerHTML=bars.map(b=>`<div class="vbw"><div class="vbv">${fms(b.value)}</div><div class="vbar" style="height:${Math.round(b.value/mx*75)}px"></div><div class="vbl">${b.label}</div></div>`).join('');}
-  document.getElementById('r-meta').innerHTML=`<div class="mpill"><div class="dot dg"></div>${r.segment}</div><div class="mpill"><div class="dot db"></div>Report Saved</div><div class="mpill"><div class="dot dgr"></div>Expect a call from Shiva</div>`;
-  document.getElementById('cta-buy').href=`sms:${SMS}&body=${encodeURIComponent("Hi Shiva! I just got my report and I'd love to discuss my results.")}`;
+  document.getElementById('r-meta').innerHTML=`<div class="mpill">✅ Your report is on its way to your email</div>`;
+  document.getElementById("cta-buy").href=`sms:3104225608&body=${encodeURIComponent("Hi Shiva! I just reviewed my You Can report and have a question.")}`;
 }
 
 async function subSell(){
   load('sellBtn',true);
-  const pay={path:'seller',life_event:life,name:g('c-name'),phone:g('c-phone'),email:g('c-email'),address:g('s-adr'),zip_code:g('s-zip')||'90210',year_purchased:g('s-yr'),beds:g('s-bd'),baths:'2',condition:g('s-cond'),stories:g('s-str'),mortgage_balance:g('s-mb'),owner_estimate:g('s-est'),why_selling:g('s-why'),has_mortgage:g('s-hasmtg'),current_rate:g('s-rate'),next_step:g('s-nxt'),concern:g('s-cnc'),timeline:g('s-tl'),notes:g('s-notes')};
-  try{const r=await post(pay);if(r.status==='success'){const sd=r.seller_data;document.getElementById('r-sgrid').innerHTML=`<div class="sstat"><span class="sn">${fms(sd.est_value)}</span><span class="sl">Est. Value</span></div><div class="sstat hi"><span class="sn">${fms(sd.net_equity)}</span><span class="sl">Net Equity</span></div><div class="sstat"><span class="sn">${fms(sd.after_commission)}</span><span class="sl">After Commission</span></div><div class="sstat hi"><span class="sn">${fms(sd.buying_power)}</span><span class="sl">Buying Power Next</span></div>`;document.getElementById('r-sposs').innerHTML=pcards(r.possibilities);document.getElementById('r-smeta').innerHTML=`<div class="mpill"><div class="dot dg"></div>${r.segment||'Seller'}</div><div class="mpill"><div class="dot db"></div>Report Saved</div><div class="mpill"><div class="dot dgr"></div>Expect a call from Shiva</div>`;document.getElementById('cta-sell').href=`sms:${SMS}&body=${encodeURIComponent("Hi Shiva! I saw my home report and I'd love to discuss my options.")}`;go('res-sell');}else alert('Error: '+r.message);}
-  catch(e){alert('Connection error: '+e.message);}finally{load('sellBtn',false);}
+  const est=sf(g('s-est'));
+  const purchase=sf(g('s-purchase'));
+  const bal=sf(g('s-mb'));
+  const zip=g('s-zip')||'90210';
+  const area=zip;
+  const beds=g('s-bd')||'3';
+  const baths=g('s-ba')||'2';
+  const ptype=g('s-ptype')||'Single-Family Home';
+  const cond=g('s-cond')||'Good';
+  const agentStatus=g('s-agent');
+
+  // Value estimate
+  const condMult={'Excellent':1.05,'Good':1.0,'Fair':0.93,'Needs Work':0.85};
+  const ev = est>0 ? est*(condMult[cond]||1.0) : (purchase>0 ? purchase*1.3 : 650000);
+  const evLow=Math.round(ev*0.95/1000)*1000;
+  const evHigh=Math.round(ev*1.05/1000)*1000;
+
+  // Costs
+  const commEst=ev*0.025; // conservative 2.5%
+  const closingCosts=ev*0.01;
+  const netProceeds=Math.max(0, ev-bal-commEst-closingCosts);
+
+  // Value range
+  document.getElementById('r-svalue-range').textContent=
+    '$'+Math.round(evLow/1000)+'K \u2013 $'+Math.round(evHigh/1000)+'K';
+
+  // Net proceeds breakdown
+  document.getElementById('r-sproceeds').innerHTML=[
+    {ico:'&#x1F3E0;',lbl:'Estimated Sale Price',val:ev,note:'Mid-range estimate',neg:false,tot:false},
+    {ico:'&#x1F3E6;',lbl:'Mortgage Payoff',val:bal,note:g('s-hasmtg')==='Yes'?'Remaining balance':'None \u2014 free &amp; clear',neg:true,tot:false},
+    {ico:'&#x1F4CB;',lbl:'Est. Agent Commission',val:commEst,note:'Negotiable \u2014 typically 2\u20133% listing side',neg:true,tot:false},
+    {ico:'&#x1F4DD;',lbl:'Closing Costs',val:closingCosts,note:'~1% \u2014 title, escrow, transfer taxes',neg:true,tot:false},
+    {ico:'&#x1F4B0;',lbl:'Estimated Net to You',val:netProceeds,note:'',neg:false,tot:true},
+  ].map(function(row){
+    var valStr = row.neg ? ('-$'+row.val.toLocaleString('en-US',{maximumFractionDigits:0})) : ('$'+row.val.toLocaleString('en-US',{maximumFractionDigits:0}));
+    return '<div class="brow '+(row.tot?'tot':'')+'"><div class="blft"><div class="bico">'+row.ico+'</div><div>'
+      +'<span class="blbl">'+row.lbl+'</span>'
+      +(row.note&&!row.tot?'<span class="bnote">'+row.note+'</span>':'')
+      +'</div></div>'
+      +'<span class="bval" style="'+(row.neg?'color:#c0392b':row.tot?'':'')+'">'+valStr+'</span>'
+      +'</div>';
+  }).join('');
+
+  // Sample comps
+  var mid=Math.round((evLow+evHigh)/2);
+  var comps=[
+    {price:Math.round(evLow*0.98/1000)*1000,beds:beds,baths:baths,sqft:1720,addr:'Pine Crest Dr',city:area,tag:'Sold 2 wks ago',status:'SOLD'},
+    {price:Math.round(mid*1.01/1000)*1000,beds:beds,baths:baths,sqft:1890,addr:'Valley Oak Ave',city:area,tag:'Active Listing',status:'ACTIVE'},
+    {price:Math.round(evHigh*0.99/1000)*1000,beds:String(parseInt(beds)+1||4),baths:baths,sqft:2100,addr:'Hillside Terrace',city:area,tag:'Sold 1 mo ago',status:'SOLD'},
+  ];
+  document.getElementById('r-scomps').innerHTML=comps.map(function(c){
+    var statusColor=c.status==='SOLD'?'#c0392b':'#1a6b3c';
+    return '<div style="background:var(--off);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:10px;">'
+      +'<div style="background:linear-gradient(135deg,#1a2a4a,#0a192f);padding:16px;position:relative;">'
+      +'<div style="position:absolute;top:10px;right:10px;background:'+statusColor+';color:#fff;font-size:9px;font-weight:700;padding:3px 8px;border-radius:10px;">'+c.tag+'</div>'
+      +'<div style="font-family:\'Cormorant Garamond\',serif;font-size:22px;font-weight:700;color:var(--gold);margin-top:4px;">$'+c.price.toLocaleString()+'</div>'
+      +'<div style="font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;">'+c.addr+', ZIP '+c.city+'</div>'
+      +'</div>'
+      +'<div style="padding:10px 14px;display:flex;gap:12px;">'
+      +'<span style="font-size:12px;font-weight:600;color:var(--navy);">'+c.beds+' bed</span>'
+      +'<span style="font-size:12px;font-weight:600;color:var(--navy);">'+c.baths+' bath</span>'
+      +'<span style="font-size:12px;font-weight:600;color:var(--navy);">'+c.sqft.toLocaleString()+' sqft</span>'
+      +'</div></div>';
+  }).join('');
+
+  // Agent CTA
+  var agentHtml='';
+  if(agentStatus==='No'||agentStatus==='FSBO'||agentStatus==='Interviewing'){
+    agentHtml='<div style="background:#e8f5e9;border:1.5px solid #a5d6a7;border-radius:10px;padding:16px;margin-bottom:12px;text-align:center;">'
+      +'<div style="font-size:14px;font-weight:700;color:#1a5e20;margin-bottom:5px;">&#x1F91D; Want help selling faster?</div>'
+      +'<div style="font-size:12px;color:#2e7d32;line-height:1.6;margin-bottom:12px;">A local agent can guide pricing, marketing, and legally help you sell faster &mdash; free consultation, no obligation.</div>'
+      +'<a href="sms:3104225608" style="display:block;padding:13px;background:linear-gradient(135deg,#2e7d32,#1b5e20);color:#fff;text-decoration:none;border-radius:8px;font-family:\'Jost\',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;">&#x1F4C5; Schedule a Free Consultation</a>'
+      +'</div>';
+  } else if(agentStatus==='Yes'){
+    agentHtml='<div style="background:#f8f5ef;border:1.5px solid var(--border);border-radius:8px;padding:14px;margin-bottom:12px;">'
+      +'<div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px;">&#x1F4CA; Want a Second Opinion on Pricing?</div>'
+      +'<div style="font-size:12px;color:#555;line-height:1.6;">I\'m happy to review comparable sales and share a pricing perspective &mdash; no pressure, no obligation.</div>'
+      +'</div>';
+  }
+  document.getElementById('r-sagent').innerHTML=agentHtml;
+
+  document.getElementById('r-smeta').innerHTML='<div class="mpill">&#x2705; Your report is on its way to your email</div>';
+  document.getElementById('cta-sell').href='sms:3104225608';
+
+  // Save to backend
+  try{
+    var pay={path:'seller',life_event:'none',
+      name:g('c-name'),phone:g('c-phone'),email:g('c-email'),
+      address:g('s-adr'),zip_code:zip,
+      year_purchased:g('s-yr'),beds:beds,baths:baths,
+      condition:cond,property_type:ptype,
+      purchase_price:purchase,owner_estimate:est,
+      has_mortgage:g('s-hasmtg'),mortgage_balance:bal,current_rate:g('s-rate'),
+      why_selling:g('s-why'),next_step:'N/A',concern:'N/A',
+      has_agent:agentStatus,timeline:g('s-tl')};
+    await post(pay);
+  }catch(e){}
+  finally{load('sellBtn',false);}
+  go('res-sell');
+}
+
+let loanIntent='buy', loanSubType='first';
+
+function setLoanIntent(intent, el){
+  loanIntent=intent;
+  document.querySelectorAll('#loan-intent-group .choice-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  // Show/hide sub-question
+  ['buy','refi','equity','invest'].forEach(function(t){
+    var el2=document.getElementById('loan-sub-'+t);
+    if(el2) el2.style.display=(t===intent?'block':'none');
+  });
+  // Default sub-type
+  var defaults={buy:'first',refi:'rate',equity:'line',invest:'rental',notsure:'notsure'};
+  loanSubType=defaults[intent]||'first';
+}
+
+function setLoanSubType(intent, sub, el){
+  loanSubType=sub;
+  document.querySelectorAll('#loan-'+intent+'-type-group .choice-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function goLoanPhase2(){
+  // Update phase 2 labels based on intent
+  var titles={buy:'Let\'s see what loan you qualify for',refi:'Let\'s find your best refi option',equity:'Let\'s see your equity options',invest:'Let\'s find your investment loan',notsure:'A few quick questions to match you'};
+  var el=document.getElementById('loan-p2-title');
+  if(el) el.textContent=titles[loanIntent]||titles.buy;
+  // Show balance field for refi/equity
+  var bs=document.getElementById('l-balance-section');
+  if(bs) bs.style.display=(loanIntent==='refi'||loanIntent==='equity')?'block':'none';
+  // Update DP label
+  var dpl=document.getElementById('loan-dp-label');
+  if(dpl) dpl.textContent=(loanIntent==='refi'||loanIntent==='equity')?'Equity Available ($)':'Down Payment Available ($)';
+  // Update price label
+  var pl=document.getElementById('loan-price-label');
+  if(pl) pl.textContent=(loanIntent==='refi'||loanIntent==='equity')?'Estimated Home Value ($)':'Estimated Purchase Price';
+  go('s4-loan-2');
 }
 
 async function subLoan(){
   load('loanBtn',true);
-  const lt=g('l-type'),isSelf=g('l-emp')==='Self-Employed';
-  const pay={path: isSelf ? 'self_employed' : 'buyer',life_event:life,name:g('c-name'),phone:g('c-phone'),email:g('c-email'),loan_type:lt,employment_type:g('l-emp'),monthly_income:g('l-inc'),monthly_debts:g('l-dbt'),credit:g('l-cr'),zip_code:g('l-zip')||'90210',refi_balance:g('l-bal'),refi_rate:g('l-rate'),refi_payment:g('l-pmt'),heloc_home_value:g('l-hv'),heloc_balance:g('l-mb'),heloc_borrow:g('l-br'),heloc_rate:g('l-hr'),monthly_revenue:g('l-rev'),bank_balance:g('l-bnk'),business_type:g('l-btype'),years_in_business:g('l-yrs'),home_price:0,loan_amount:sf(g('l-bal')),budget_mode:'loan',notes:g('l-notes')};
-  try{const r=await post(pay);if(r.status==='success'){
-    if(isSelf){
-      document.getElementById('r-lpiti').innerHTML=`<span style="font-size:22px">Loan Options Ready</span>`;
-      document.getElementById('r-lqb').innerHTML='';
-      document.getElementById('r-lbk').innerHTML='<div class="brow"><div class="blft"><div class="bico">💼</div><div><span class="blbl">Self-Employed Profile Reviewed</span><span class="bnote">See loan options below</span></div></div><span class="bval">✅</span></div>';
-      document.getElementById('r-lself').style.display='block';
-      document.getElementById('r-lloans').innerHTML=r.loan_options?.map(l=>`<div class="lopt"><div class="lo-tag">${l.tag}</div><div class="lo-title">${l.name}</div><div class="lo-desc">${l.desc}</div></div>`).join('')||'';
-      document.getElementById('r-lroad').innerHTML=r.roadmap?.map((s,i)=>`<div class="rms"><div class="rmn">${i+1}</div><div><div class="rmt">${s.title}</div><div class="rmd">${s.desc}</div></div></div>`).join('')||'';
-    } else {
-      const b=r.breakdown||{};
-      document.getElementById('r-lpiti').innerHTML=`${fm(b.total_piti||0)}<span class="res-mo">/mo</span>`;
-      const qc=r.qualifies===true?'qy':r.qualifies===false?'qn':'qna',qi=r.qualifies===true?'✅':r.qualifies===false?'⚠️':'ℹ️';
-      document.getElementById('r-lqb').innerHTML=`<span class="qbadge ${qc}">${qi} ${r.qualification||''}</span>`;
-      const rows=[{ico:'💵',lbl:'Principal & Interest',val:b.p_and_i||0,note:`${b.rate||''}`},{ico:'🏛️',lbl:'Property Tax',val:b.monthly_tax||0,note:`${b.tax_rate||''}`},{ico:'🔒',lbl:'Insurance',val:b.monthly_ins||0,note:''},{ico:'💳',lbl:'Total Monthly Payment',val:b.total_piti||0,note:'',tot:true}];
-      document.getElementById('r-lbk').innerHTML=rows.map(row=>`<div class="brow ${row.tot?'tot':''}"><div class="blft"><div class="bico">${row.ico}</div><div><span class="blbl">${row.lbl}</span>${!row.tot&&row.note?`<span class="bnote">${row.note}</span>`:''}</div></div><span class="bval">${fm(row.val)}/mo</span></div>`).join('');
-    }
-    document.getElementById('r-lmeta').innerHTML=`<div class="mpill"><div class="dot dg"></div>${r.segment||'Loan Review'}</div><div class="mpill"><div class="dot db"></div>Report Saved</div><div class="mpill"><div class="dot dgr"></div>Expect a call from Shiva</div>`;
-    document.getElementById('cta-loan').href=`sms:${SMS}&body=${encodeURIComponent("Hi Shiva! I just saw my loan options and I'd love to discuss them.")}`;
-    go('res-loan');
-  }else alert('Error: '+r.message);}
-  catch(e){alert('Connection error: '+e.message);}finally{load('loanBtn',false);}
+  var cr=g('l-cr'), emp=g('l-emp'), tl=g('l-tl');
+  var income=sf(g('l-income'))||sf(document.getElementById('l-income')?.options[document.getElementById('l-income')?.selectedIndex]?.value)||75000;
+  var priceVal=sf(document.getElementById('l-pricerange')?.options[document.getElementById('l-pricerange')?.selectedIndex]?.value)||500000;
+  var bal=sf(g('l-bal'));
+  var dp=sf(g('l-dp'));
+  var zip=g('l-zip')||'90210';
+  var monthlyInc=income/12;
+
+  // Build loan recommendations based on intent + profile
+  var recs=[];
+  var isVA=(emp==='Military / VA'||loanSubType==='va');
+  var isSelf=(emp==='Self-Employed');
+  var isLowCredit=(cr==='Below 620'||cr==='Not sure'||cr==='620-679');
+  var isHighPrice=(priceVal>=750000||loanSubType==='jumbo');
+
+  if(loanIntent==='buy'||loanIntent==='notsure'){
+    if(isVA) recs.push({name:'VA Loan',tag:'&#x2B50; BEST MATCH',why:'0% down, no PMI, lowest rates available. Exclusive to veterans and active military.',rate:'~6.25%',color:'#1a6b3c'});
+    if(loanSubType==='rural') recs.push({name:'USDA Loan',tag:'&#x2705; RECOMMENDED',why:'0% down for eligible rural and suburban areas. Low mortgage insurance.',rate:'~6.4%',color:'#2e7d32'});
+    if(loanSubType==='build') recs.push({name:'Construction Loan',tag:'&#x1F6A7; BUILD',why:'Funds released in stages as your home is built. Converts to permanent mortgage at completion.',rate:'~7.5%',color:'#5d4037'});
+    if(!isVA&&!isLowCredit&&!isHighPrice) recs.push({name:'Conventional Loan',tag:'&#x2705; RECOMMENDED',why:'Best long-term value with good credit. Lower total cost than FHA if you qualify.',rate:'~6.5%',color:'#0a192f'});
+    if(isHighPrice) recs.push({name:'Jumbo Loan',tag:'&#x1F3F0; HIGH-VALUE',why:'For loan amounts above $766,550. Requires strong credit (720+) and documented income.',rate:'~6.75%',color:'#4a148c'});
+    if(isLowCredit||dp<priceVal*0.1||loanSubType==='first') recs.push({name:'FHA Loan',tag:isLowCredit?'&#x1F4CB; BEST FOR YOUR PROFILE':'&#x1F511; FIRST-TIME BUYER',why:'As low as 3.5% down. Flexible credit requirements (580+). Great for first-time buyers.',rate:'~6.6%',color:'#b8962e'});
+  }
+
+  if(loanIntent==='refi'){
+    if(loanSubType==='rate') recs.push({name:'Rate & Term Refinance',tag:'&#x2B07;&#xFE0F; LOWER YOUR PAYMENT',why:'Replace your current loan with a lower rate. Best if rates have dropped since you bought.',rate:'~6.5%',color:'#0a192f'});
+    if(loanSubType==='cashout') recs.push({name:'Cash-Out Refinance',tag:'&#x1F4B5; ACCESS EQUITY',why:'Refinance for more than you owe and take the difference as cash. Use for renovations, debt payoff, or investing.',rate:'~6.75%',color:'#1a6b3c'});
+    recs.push({name:'No-Closing-Cost Refinance',tag:'&#x1F4CB; AVAILABLE',why:'Roll closing costs into the loan. Higher rate but no upfront costs.',rate:'~6.875%',color:'#555'});
+    if(isVA) recs.push({name:'VA IRRRL (Streamline Refi)',tag:'&#x2B50; VA OPTION',why:'Fastest refi for VA loan holders. Minimal paperwork, no appraisal required in most cases.',rate:'~6.25%',color:'#1a6b3c'});
+  }
+
+  if(loanIntent==='equity'){
+    if(loanSubType==='line') recs.push({name:'HELOC',tag:'&#x1F4CA; FLEXIBLE',why:'Revolving credit line. Draw what you need, when you need it. Only pay interest on what you use.',rate:'Prime + ~1%',color:'#0d47a1'});
+    if(loanSubType==='lump') recs.push({name:'Home Equity Loan',tag:'&#x1F4B0; LUMP SUM',why:'Fixed rate, fixed monthly payment. Predictable and great for one-time large expenses.',rate:'~7.5%',color:'#1a6b3c'});
+    recs.push({name:'Cash-Out Refinance',tag:'&#x1F3E0; AVAILABLE',why:'Replace your first mortgage and take equity as cash. Makes sense if your current rate is high.',rate:'~6.75%',color:'#555'});
+  }
+
+  if(loanIntent==='invest'){
+    if(loanSubType==='rental') recs.push({name:'DSCR Loan',tag:'&#x2B50; BEST FOR RENTALS',why:'Qualifies based on the property\'s rental income, not your personal income. No tax returns needed.',rate:'~7.25%',color:'#1a6b3c'});
+    recs.push({name:'Conventional Investment Loan',tag:'&#x1F4CB; AVAILABLE',why:'Standard loan for investment properties. Requires 15-25% down and strong personal credit.',rate:'~7.0%',color:'#0a192f'});
+    if(loanSubType==='flip') recs.push({name:'Bridge / Hard Money Loan',tag:'&#x1F528; FLIP FINANCING',why:'Short-term financing for buy-fix-sell. Fast approval, asset-based. Higher rates but fast close.',rate:'~10-12%',color:'#b71c1c'});
+    if(isSelf) recs.push({name:'Bank Statement Loan',tag:'&#x1F4BC; SELF-EMPLOYED',why:'12-24 months of bank statements instead of tax returns. Great for business owners with strong cash flow.',rate:'~7.5%',color:'#5d4037'});
+  }
+
+  if(recs.length===0){
+    recs.push({name:'FHA Loan',tag:'&#x1F4CB; AVAILABLE',why:'FHA loans accept credit scores as low as 580 with 3.5% down. A great starting point.',rate:'~6.6%',color:'#b8962e'});
+  }
+
+  // Hero message
+  var heroMsg='Based on your profile, here are your best options:';
+  if(isVA) heroMsg='As a veteran, you have access to VA benefits most people never use.';
+  else if(isLowCredit) heroMsg='Good news &mdash; there are options even with a lower credit score.';
+  else if(loanIntent==='refi') heroMsg='Based on your situation, here\'s how to optimize your mortgage:';
+  else if(loanIntent==='invest') heroMsg='Here are the best financing options for your investment strategy:';
+
+  document.getElementById('r-loan-hero').innerHTML=
+    '<div style="background:#f8f5ef;border:1.5px solid var(--border);border-radius:8px;padding:13px 14px;margin-bottom:12px;">'
+    +'<div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:2px;">'+heroMsg+'</div>'
+    +'<div style="font-size:11px;color:#666;">'+recs.length+' loan option'+(recs.length!==1?'s':'')+' matched to your profile</div>'
+    +'</div>';
+
+  document.getElementById('r-loan-recs').innerHTML=recs.map(function(r){
+    return '<div style="background:var(--off);border:1.5px solid var(--border);border-radius:8px;padding:12px 14px;margin-bottom:8px;">'
+      +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px;">'
+      +'<span style="font-size:13px;font-weight:700;color:'+r.color+';">'+r.name+'</span>'
+      +'<span style="font-size:10px;font-weight:600;padding:2px 8px;background:'+r.color+';color:#fff;border-radius:10px;">'+r.tag+'</span>'
+      +'</div>'
+      +'<div style="font-size:11px;color:#555;line-height:1.55;margin-bottom:5px;">'+r.why+'</div>'
+      +'<div style="font-size:11px;font-weight:600;color:var(--gold2);">Est. rate: '+r.rate+'</div>'
+      +'</div>';
+  }).join('');
+
+  // Next steps
+  document.getElementById('r-loan-next-steps').innerHTML=
+    '<div style="background:#e8f5e9;border:1.5px solid #a5d6a7;border-radius:10px;padding:16px;margin:12px 0;text-align:center;">'
+    +'<div style="font-size:13px;font-weight:700;color:#1a5e20;margin-bottom:5px;">&#x1F91D; Ready to take the next step?</div>'
+    +'<div style="font-size:12px;color:#2e7d32;line-height:1.6;">I\'ll connect you with the right lender for your situation &mdash; no cost, no obligation, no credit pull to get started.</div>'
+    +'</div>';
+
+  document.getElementById('r-lmeta').innerHTML='<div class="mpill">&#x2705; Your report is on its way to your email</div>';
+  document.getElementById('cta-loan').href='sms:3104225608';
+
+  try{
+    var pay={path:'buyer',name:g('c-name'),phone:g('c-phone'),email:g('c-email'),
+      loan_type:loanIntent+'/'+loanSubType,employment_type:emp,
+      monthly_income:income/12,monthly_debts:0,
+      home_price:priceVal,down_payment:dp,down_pct:priceVal>0?dp/priceVal*100:0,
+      loan_amount:priceVal-dp,hoa:0,zip_code:zip,
+      property_type:'Primary Residence',occupancy:'Primary Residence',
+      credit:cr,timeline:tl,military:isVA?'Yes':'No',
+      budget_mode:'price',life_event:'none',
+      must_haves:'',commute:'',vibe:'',dream_home:''};
+    await post(pay);
+  }catch(e){}
+  finally{load('loanBtn',false);}
+  go('res-loan');
 }
 
 async function subWayOut(){
   load('wayBtn',true);
   const pay={path:'fresh_start',name:g('c-name'),phone:g('c-phone'),email:g('c-email'),situation:g('w-sit'),address:g('w-adr'),zip_code:g('w-zip')||'90210',property_value:g('w-val'),mortgage_balance:g('w-mtg'),back_taxes:g('w-tax'),other_liens:g('w-lien'),years_behind:g('w-yrs'),want_to_keep:g('w-keep'),urgency:g('w-urgency'),primary_need:g('w-need'),notes:g('w-notes')};
-  try{const r=await post(pay);if(r.status==='success'){document.getElementById('r-wwalk').textContent=fms(r.fresh_data.walkaway_cash);document.getElementById('r-wbk').innerHTML=r.breakdown_rows.map(row=>`<div class="brow ${row.tot?'wtot':''}"><div class="blft"><div class="bico">${row.ico}</div><div><span class="blbl">${row.lbl}</span><span class="bnote">${row.note}</span></div></div><span class="bval">${row.val}</span></div>`).join('');document.getElementById('r-wposs').innerHTML=pcards(r.possibilities,true);document.getElementById('r-wmeta').innerHTML=`<div class="mpill"><div class="dot dr"></div>Confidential</div><div class="mpill"><div class="dot db"></div>Saved Securely</div><div class="mpill"><div class="dot dgr"></div>Shiva will reach out privately</div>`;document.getElementById('cta-wayout').href=`sms:${SMS}&body=${encodeURIComponent("Hi Shiva, this is confidential. I need help with my property situation.")}`;go('res-wayout');}else alert('Error: '+r.message);}
+  try{const r=await post(pay);if(r.status==='success'){document.getElementById('r-wwalk').textContent=fms(r.fresh_data.walkaway_cash);document.getElementById('r-wbk').innerHTML=r.breakdown_rows.map(row=>`<div class="brow ${row.tot?'wtot':''}"><div class="blft"><div class="bico">${row.ico}</div><div><span class="blbl">${row.lbl}</span><span class="bnote">${row.note}</span></div></div><span class="bval">${row.val}</span></div>`).join('');document.getElementById('r-wposs').innerHTML=pcards(r.possibilities,true);document.getElementById('r-wmeta').innerHTML=`<div class="mpill">✅ Your report is on its way to your email</div>`;document.getElementById('cta-wayout').href=`sms:${SMS}&body=${encodeURIComponent("Hi Shiva, this is confidential. I need help with my property situation.")}`;go('res-wayout');}else alert('Error: '+r.message);}
   catch(e){alert('Connection error: '+e.message);}finally{load('wayBtn',false);}
+}
+
+let commIntent='lease';
+function setCommIntent(intent, el){
+  commIntent=intent;
+  document.querySelectorAll('#s4-comm .choice-btn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  var pb=document.getElementById('m-purchase-budget');
+  var lbl=document.getElementById('m-bdg-label');
+  if(intent==='buy'){
+    if(pb) pb.style.display='block';
+    if(lbl) lbl.textContent='Max Monthly Budget ($) - optional';
+  } else {
+    if(pb) pb.style.display='none';
+    if(lbl) lbl.textContent='Max Monthly Budget ($)';
+  }
 }
 
 async function subLease(){
   load('leaseBtn',true);
   const pay={path:'lease',life_event:life,name:g('c-name'),phone:g('c-phone'),email:g('c-email'),zip_code:g('r-zip')||'',area:g('r-area'),budget:g('r-bdg'),size:g('r-sz'),move_in:g('r-mv'),lease_length:'12 months',parking:g('r-pk'),pets:g('r-pets'),must_haves:gc2('r-mh').join(', '),move_in_funds:g('r-funds'),notes:g('r-notes')};
-  try{const r=await post(pay);if(r.status==='success'){document.getElementById('r-lposs').innerHTML=pcards(r.possibilities);document.getElementById('r-leasemeta').innerHTML=`<div class="mpill"><div class="dot db"></div>Report Saved</div><div class="mpill"><div class="dot dgr"></div>Expect a call from Shiva</div>`;document.getElementById('cta-lease').href=`sms:${SMS}&body=${encodeURIComponent("Hi Shiva! I submitted my leasing needs and I'd love to discuss options.")}`;go('res-lease');}else alert('Error: '+r.message);}
+  try{const r=await post(pay);if(r.status==='success'){document.getElementById('r-lposs').innerHTML=pcards(r.possibilities);document.getElementById('r-leasemeta').innerHTML=`<div class="mpill">✅ Your report is on its way to your email</div>`;document.getElementById('cta-lease').href=`sms:${SMS}&body=${encodeURIComponent("Hi Shiva! I submitted my leasing needs and I'd love to discuss options.")}`;go('res-lease');}else alert('Error: '+r.message);}
   catch(e){alert('Connection error: '+e.message);}finally{load('leaseBtn',false);}
 }
 
 async function subComm(){
   load('commBtn',true);
   const pay={path:'commercial',name:g('c-name'),phone:g('c-phone'),email:g('c-email'),area:g('m-area'),budget:g('m-bdg'),sqft:g('m-sqft'),space_type:g('m-type'),lease_length:'1 year',requirements:gc2('m-req').join(', '),use_type:'Mixed',parking:g('m-pk'),move_in:g('m-mv'),notes:g('m-notes')};
-  try{const r=await post(pay);if(r.status==='success'){document.getElementById('r-cposs').innerHTML=pcards(r.possibilities);document.getElementById('r-commmeta').innerHTML=`<div class="mpill"><div class="dot db"></div>Report Saved</div><div class="mpill"><div class="dot dgr"></div>Expect a call from Shiva</div>`;document.getElementById('cta-comm').href=`sms:${SMS}&body=${encodeURIComponent("Hi Shiva! I submitted my commercial needs and I'd love to discuss options.")}`;go('res-comm');}else alert('Error: '+r.message);}
+  try{const r=await post(pay);if(r.status==='success'){document.getElementById('r-cposs').innerHTML=pcards(r.possibilities);document.getElementById('r-commmeta').innerHTML=`<div class="mpill">✅ Your report is on its way to your email</div>`;document.getElementById('cta-comm').href=`sms:${SMS}&body=${encodeURIComponent("Hi Shiva! I submitted my commercial needs and I'd love to discuss options.")}`;go('res-comm');}else alert('Error: '+r.message);}
   catch(e){alert('Connection error: '+e.message);}finally{load('commBtn',false);}
 }
 </script>
