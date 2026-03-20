@@ -23,23 +23,15 @@ SCOPES = ["https://spreadsheets.google.com/feeds",
           "https://www.googleapis.com/auth/spreadsheets",
           "https://www.googleapis.com/auth/drive"]
 
-TABS = {
-    'buyer':         'Buyers2026',
-    'seller':        'Sellers2026',
-    'fresh_start':   'FreshStart2026',
-    'lease':         'Leases2026',
-    'commercial':    'Commercial2026',
-    'self_employed': 'SelfEmployed2026'
-}
+LEADS_TAB = 'Leads2026'
 
-HEADERS = {
-    'buyer':       ["Timestamp","Life Event","Name","Phone","Email","ZIP","Employment","Loan Type","Budget Mode","Home Price","Down Payment","Down %","Loan Amount","Purchase Price","Asking Price","Price/SqFt","P&I","Monthly Tax","Tax Rate","Insurance","PMI","HOA","Total PITI","Monthly Income","Monthly Debts","Front DTI","Back DTI","Qualifies?","Credit","Timeline","Priority","Segment","Beds","Baths","Stories","Garage","Must-Haves","Commute","Vibe","Dream Home","Buy Status","Purpose","Privacy","Notes"],
-    'seller':      ["Timestamp","Life Event","Name","Phone","Email","ZIP","Address","Year Bought","Beds","Baths","Condition","Stories","Mortgage Balance","Owner Estimate","Est. Value","Net Equity","After Commission","Buying Power","Next Step","Concern","Timeline","Why Selling","Has Mortgage","Current Rate","Priority","Segment","Notes"],
-    'fresh_start': ["Timestamp","Name","Phone","Email","ZIP","Address","Situation","Years Behind","Property Value","Mortgage Balance","Back Taxes","Other Liens","Total Owed","Est. Equity","Walkaway Cash","Primary Need","Want to Keep","Urgency","Notes","Priority"],
-    'lease':       ["Timestamp","Life Event","Name","Phone","Email","ZIP","Area","Budget","Unit Size","Move-In","Lease Length","Parking","Pets","Must-Haves","Move-In Funds","Notes","Priority"],
-    'commercial':  ["Timestamp","Name","Phone","Email","Area","Budget","Sq Ft","Space Type","Lease Length","Requirements","Use Type","Parking","Move-In","Notes","Priority"],
-    'self_employed':["Timestamp","Name","Phone","Email","ZIP","Business Type","Years in Biz","Monthly Revenue","Monthly Income","Bank Balance","Investments","Credit","Target Price","Notes","Priority","Loan Options"]
-}
+TABS = {k: LEADS_TAB for k in ['buyer','seller','fresh_start','lease','commercial','self_employed']}
+
+LEADS_HEADER = ["Timestamp","Path","Name","Phone","Email","ZIP","Priority","Segment",
+                "Key Figure","P&I / Monthly","Income / Revenue","Debts / Balance",
+                "Credit","Timeline","Location","Property / Budget","Details","Notes","Script Opener"]
+
+HEADERS = {k: LEADS_HEADER for k in ['buyer','seller','fresh_start','lease','commercial','self_employed']}
 
 # ─── SHEETS ───────────────────────────────────────────────────────────────────
 def get_client():
@@ -227,16 +219,11 @@ def buyer(data):
         }
     }
 
-    row=[ts(),life,name,phone,email,zip_c,emp,loan_type,bm,
-         fmt_s(hp) if hp else "N/A",fmt_s(dp) if dp else "N/A",
-         f"{dpct:.1f}%" if dpct else "N/A",fmt_s(la),
-         fmt_s(pp) if pp else "N/A",fmt_s(asp) if asp else "N/A",fmt_s(ppsf) if ppsf else "N/A",
-         f"${pi:,.2f}",f"${mtx:,.2f}",f"{tax_rate*100:.3f}%",
-         f"${mins:,.2f}",f"${pmi:,.2f}",f"${hoa:,.2f}",f"${total:,.2f}",
-         fmt_s(inc),fmt_s(dbt),f"{fdti:.1f}%",f"{bdti:.1f}%",
-         "Yes" if qualifies else ("No" if qualifies is False else "N/A"),
-         credit,timeline,priority,seg,beds,baths,stories,garage,must,commute,vibe,dream[:80],
-         buy_status,purpose,privacy,notes[:80]]
+    details=", ".join(filter(None,[f"{beds}bd/{baths}ba" if beds else "",stories,buy_status,purpose,privacy]))
+    row=[ts(),"Buyer",name,phone,email,zip_c,priority,seg,
+         f"${total:,.2f}/mo",f"${pi:,.2f}",fmt_s(inc),fmt_s(dbt),
+         credit,timeline,zip_c,fmt_s(hp) if hp else fmt_s(la),
+         details,notes[:80],script['call_opener'][:120]]
     saved,err=save('buyer',row)
     if saved: highlight('buyer','gold' if ref>=750_000 else 'pink' if pn==1 else None)
     try:
@@ -312,10 +299,11 @@ def seller(data):
         "possibilities":f"Here's what I want you to see, {first}: You have {fmt_s(net_eq)} in equity. After commission you walk away with {fmt_s(after_com)}. Buying power of {fmt_s(buying_power)} for your next home. And the buyer pays for their own agent — not you. Your life doesn't have to stay the same."
     }
 
-    row=[ts(),life,name,phone,email,zip_c,address,yr,beds,baths,cond,stories,
-         fmt_s(bal),fmt_s(est) if est else "N/A",fmt_s(ev),fmt_s(net_eq),
-         fmt_s(after_com),fmt_s(buying_power),nxt,concern,tl,
-         why_selling,has_mortgage,current_rate,priority,seg,notes[:80]]
+    details=", ".join(filter(None,[f"{beds}bd" if beds else "",cond,why_selling[:40] if why_selling else "",has_mortgage]))
+    row=[ts(),"Seller",name,phone,email,zip_c,priority,seg,
+         fmt_s(net_eq),fmt_s(buying_power),fmt_s(ev),fmt_s(bal),
+         "N/A",tl,address or zip_c,fmt_s(ev),
+         details,notes[:80],script['opener'][:120]]
     saved,err=save('seller',row)
     try:
         from email_system import send_lead_alert, send_welcome_email
@@ -387,10 +375,11 @@ def fresh_start(data):
         "walk_away_clean":f"Here's what I want you to understand, {first}: you have {fmt_s(est_equity)} in equity right now. If we don't act, that equity disappears into foreclosure and you walk away with nothing. If we act now, you could walk away with {fmt_s(walkaway_cash)} in your pocket, zero debt on this property, and your credit protected. Which option sounds better to you?"
     }
 
-    row=[ts(),name,phone,email,zip_c,address,situation,years_behind,
-         fmt_s(prop_val),fmt_s(mtg_bal),fmt_s(back_taxes),fmt_s(other_liens),
-         fmt_s(total_owed),fmt_s(est_equity),fmt_s(walkaway_cash),primary_need,
-         want_to_keep,urgency,notes[:100],priority]
+    details=", ".join(filter(None,[situation,f"{years_behind}yr behind",primary_need,want_to_keep]))
+    row=[ts(),"Your Way Out",name,phone,email,zip_c,priority,"Distressed",
+         fmt_s(walkaway_cash),"N/A",fmt_s(est_equity),fmt_s(total_owed),
+         "N/A",urgency,address or zip_c,fmt_s(prop_val),
+         details,notes[:80],script['opener'][:120]]
     saved,err=save('fresh_start',row)
     if saved: highlight('fresh_start','red')
     try:
@@ -436,7 +425,11 @@ def lease(data):
     if life=='divorce': poss.append({"icon":"💔","title":"Fast placement — I understand your timeline","desc":"Divorce situations often need fast housing. I'll prioritize quick move-in options and work around your timeline."})
 
     script={"opener":f"Hi {first}! Shiva Tamara — ShivaLuxury, DRE 02251909. I saw your leasing inquiry for a {size} in {area}. I have some options that match — including {parking} parking. Do you have a few minutes?","sms":f"Hi {first}! 🔑 It's Shiva. I found {size} options in {area} within your budget. Reply YES to chat!"}
-    row=[ts(),life,name,phone,email,zip_c,area,budget,size,move_in,ll,parking,pets,must,move_in_funds,notes[:80],priority]
+    details=", ".join(filter(None,[size,ll,f"{parking} parking" if parking else "",pets,must[:40] if must else ""]))
+    row=[ts(),"Lease",name,phone,email,zip_c or "",priority,"Renter",
+         f"${budget}/mo",f"${budget}/mo","N/A","N/A",
+         "N/A",move_in,area or zip_c,f"${budget}/mo",
+         details,notes[:80],script['opener'][:120]]
     saved,err=save('lease',row)
     try:
         from email_system import send_lead_alert, send_welcome_email
@@ -470,7 +463,11 @@ def commercial(data):
     if any(x in parking for x in ["20+","11-20"]): poss.append({"icon":"🅿️","title":f"Large parking — creative solutions","desc":f"Finding {parking} spaces on-site can be challenging. I can combine on-site parking with nearby private lots to meet your total need at a lower cost."})
 
     script={"opener":f"Hi {first}! Shiva Tamara — ShivaLuxury, DRE 02251909. I saw your commercial inquiry for {sqft} sq ft in {area}. I have spaces that match your specific requirements. Do you have 10 minutes?","sms":f"Hi {first}! 🏢 It's Shiva. I found {stype} options in {area} that match your needs. Reply YES!"}
-    row=[ts(),name,phone,email,area,budget,sqft,stype,ll,reqs,use,parking,mv,notes[:80],priority]
+    details=", ".join(filter(None,[f"{sqft} sqft",stype,reqs[:40] if reqs else "",f"{parking} parking" if parking else ""]))
+    row=[ts(),"Commercial",name,phone,email,"",priority,"Commercial",
+         f"${budget}/mo",f"${budget}/mo","N/A","N/A",
+         "N/A",mv,area,f"{sqft} sqft · ${budget}/mo",
+         details,notes[:80],script['opener'][:120]]
     saved,err=save('commercial',row)
     try:
         from email_system import send_lead_alert, send_welcome_email
@@ -524,7 +521,12 @@ def self_employed(data):
     script={"opener":f"Hi {first}! Shiva Tamara — ShivaLuxury, DRE 02251909. I reviewed your self-employed profile. The good news — you have options most agents don't even know exist. I have lender partners who work specifically with business owners. Do you have 10 minutes?","sms":f"Hi {first}! 💼 It's Shiva. Your possibilities report is ready — you have loan options even without 2 years of tax returns. Reply YES to learn more!"}
 
     opts_str='; '.join([l['name'] for l in loan_opts])
-    row=[ts(),name,phone,email,zip_c,btype,yrs,fmt_s(rev),fmt_s(inc),fmt_s(bnk),fmt_s(inv),credit,fmt_s(hp),notes[:80],priority,opts_str]
+    details=", ".join(filter(None,[btype,f"{yrs} in biz",opts_str[:50]]))
+    seg2=("Ultra Luxury ($1M+)" if hp>=1_000_000 else "Luxury ($750K+)" if hp>=750_000 else "Premium ($500K+)" if hp>=500_000 else "Business Owner") if hp>0 else "Business Owner"
+    row=[ts(),"Self-Employed",name,phone,email,zip_c,priority,seg2,
+         fmt_s(hp) if hp else "TBD",fmt_s(rev),fmt_s(inc),fmt_s(bnk),
+         credit,"N/A",zip_c,fmt_s(hp) if hp else "TBD",
+         details,notes[:80],script['opener'][:120]]
     saved,err=save('self_employed',row)
     try:
         from email_system import send_lead_alert, send_welcome_email
