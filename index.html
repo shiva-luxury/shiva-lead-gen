@@ -282,46 +282,17 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:linear-
   </div>
 
   <!-- ══════════════════════════════════════════════════════ -->
-  <!-- S2: Life situation (shown for buy/sell/lease)         -->
-  <!-- ══════════════════════════════════════════════════════ -->
-  <div class="screen" id="s2">
-    <div class="q-step">Quick question</div>
-    <div class="q-text">Is there a situation behind this?</div>
-    <div class="q-sub">This helps us personalize your results. Tap one or skip.</div>
-    <div class="grid2" id="lifeGrid">
-      <div class="gchoice" onclick="pickLife('none',this)"><div class="gc-ico">➡️</div><div class="gc-lbl">None / Just exploring</div></div>
-      <div class="gchoice" onclick="pickLife('separation',this)"><div class="gc-ico">⚖️</div><div class="gc-lbl">Separation</div><div class="gc-sub">Property needs to be addressed</div></div>
-      <div class="gchoice" onclick="pickLife('coborrower',this)"><div class="gc-ico">🤝</div><div class="gc-lbl">Adding Co-Borrower</div><div class="gc-sub">Combined income / joint application</div></div>
-      <div class="gchoice" onclick="pickLife('occupants',this)"><div class="gc-ico">🏠</div><div class="gc-lbl">Additional Occupants</div><div class="gc-sub">Need space for more people</div></div>
-      <div class="gchoice" onclick="pickLife('relocate',this)"><div class="gc-ico">📦</div><div class="gc-lbl">Relocating</div><div class="gc-sub">Moving to or within California</div></div>
-      <div class="gchoice" onclick="pickLife('other',this)"><div class="gc-ico">✨</div><div class="gc-lbl">Other Life Change</div></div>
-    </div>
-    <button class="btn-back" onclick="back()">← Back</button>
-  </div>
-
-  <!-- ══════════════════════════════════════════════════════ -->
   <!-- S3: Contact info (all paths)                          -->
   <!-- ══════════════════════════════════════════════════════ -->
   <div class="screen" id="s3">
-    <div class="q-step">Almost there</div>
-    <div class="q-text" id="s3title">Tell me a little about you</div>
+    <div class="q-step">Let's get started</div>
+    <div class="q-text" id="s3title">How can I reach you?</div>
     <div class="q-sub">Your info is private and never sold or shared.</div>
     <div class="fields">
-      <div class="field"><label>Full Name</label><input id="c-name" placeholder="Your full name"></div>
+      <div class="field"><label>Full Name *</label><input id="c-name" placeholder="Your full name"></div>
       <div class="row2">
-        <div class="field"><label>Phone</label><input type="tel" id="c-phone" placeholder="(310) 000-0000"></div>
-        <div class="field"><label>Email</label><input type="email" id="c-email" placeholder="you@email.com"></div>
-      </div>
-      <div class="field" id="s3-life" style="display:none">
-        <label>Is there a life situation behind this?</label>
-        <select id="c-life">
-          <option value="none">None / Just exploring</option>
-          <option value="separation">Separation / Divorce</option>
-          <option value="coborrower">Adding a Co-Borrower</option>
-          <option value="occupants">Growing Family / More Space</option>
-          <option value="relocate">Relocating</option>
-          <option value="other">Other Life Change</option>
-        </select>
+        <div class="field"><label>Phone *</label><input type="tel" id="c-phone" placeholder="(310) 000-0000"></div>
+        <div class="field"><label>Email *</label><input type="email" id="c-email" placeholder="you@email.com"></div>
       </div>
     </div>
     <button class="btn btn-gold" onclick="goDetails()"><span class="bl">Continue →</span><span class="dots"><span></span><span></span><span></span></span></button>
@@ -882,8 +853,6 @@ function updateProg(id){
 function pickPath(p,el){
   document.querySelectorAll('.path-card').forEach(e=>e.classList.remove('sel'));
   el.classList.add('sel'); path=p;
-  const showLife=!['wayout','commercial'].includes(p);
-  document.getElementById('s3-life').style.display=showLife?'block':'none';
   setTimeout(()=>go('s3'),280);
 }
 function pickLife(e,el){
@@ -896,7 +865,7 @@ function pickLife(e,el){
 function goDetails(){
   if(!g('c-name').trim()){alert('Please enter your name.');return;}
   if(!g('c-phone').trim()){alert('Please enter your phone number.');return;}
-  life=g('c-life')||'none';
+  if(!g('c-email').trim()){alert('Please enter your email.');return;}
   const map={buy:'s4-buy',sell:'s4-sell',loan:'s4-loan',wayout:'s4-wayout',lease:'s4-lease',commercial:'s4-comm'};
   go(map[path]||'s4-buy');
 }
