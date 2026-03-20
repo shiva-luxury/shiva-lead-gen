@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShivaLuxury | 2026 Buying Power Audit</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy:   #0a192f;
+            --gold:   #d4af37;
+            --gold2:  #b8962e;
+            --gold3:  #f5e199;
+            --white:  #ffffff;
+            --off:    #f7f4ee;
+            --gray:   #888;
+            --dark:   #222;
+            --green:  #2e7d52;
+            --red:    #8b1a1a;
+            --border: #e0d8c8;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Jost', sans-serif;
+            background: var(--navy);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 30px 16px 60px;
+        }
+
+        /* Subtle grid pattern on navy */
+        body::before {
+            content: '';
+            position: fixed; inset: 0;
+            background-image:
+                linear-gradient(rgba(212,175,55,0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(212,175,55,0.04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 500px;
+            border: 1.5px solid var(--gold);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(212,175,55,0.15);
+            overflow: hidden;
+            position: relative;
+            animation: rise 0.6s ease both;
+        }
+
+        @keyframes rise {
+            from { opacity:0; transform:translateY(24px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+
+        /* Gold header bar */
+        .card-header {
+            background: var(--navy);
+            padding: 28px 32px 22px;
+            text-align: center;
+            border-bottom: 2px solid var(--gold);
+            position: relative;
+        }
+        .card-header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; left: 50%;
+            transform: translateX(-50%);
+            width: 60px; height: 2px;
+            background: var(--gold3);
+        }
+
+        .brand {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+        }
+        .brand span { color: var(--white); font-weight: 400; }
+
+        .tagline {
+            font-size: 11px;
+            letter-spacing: 3px;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        .audit-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--white);
+            margin-top: 14px;
+            letter-spacing: 1px;
+        }
+
+        /* Form body */
+        .card-body { padding: 28px 32px; }
+
+        .field-group { margin-bottom: 14px; }
+
+        label {
+            display: block;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gray);
+            font-weight: 500;
+            margin-bottom: 5px;
+            padding-left: 2px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            font-family: 'Jost', sans-serif;
+            font-size: 14px;
+            color: var(--dark);
+            background: var(--off);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        input:focus, select:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(212,175,55,0.15);
+            background: #fff;
+        }
+        input::placeholder { color: #bbb; }
+
+        .row-2 { display: flex; gap: 12px; }
+        .row-2 .field-group { flex: 1; }
+
+        .section-divider {
+            display: flex; align-items: center; gap: 10px;
+            margin: 18px 0 14px;
+        }
+        .section-divider span {
+            font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+            color: var(--gold2); font-weight: 600; white-space: nowrap;
+        }
+        .section-divider::before, .section-divider::after {
+            content: ''; flex: 1; height: 1px; background: var(--border);
+        }
+
+        .btn-gold {
+            width: 100%;
+            padding: 15px;
+            background: var(--gold);
+            color: var(--navy);
+            border: none;
+            border-radius: 6px;
+            font-family: 'Jost', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.25s;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-gold:hover {
+            background: var(--gold2);
+            box-shadow: 0 6px 24px rgba(212,175,55,0.4);
+            transform: translateY(-1px);
+        }
+        .btn-gold:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+        /* Loading dots */
+        .loading-dots { display: none; }
+        .loading-dots span {
+            display: inline-block; width: 6px; height: 6px;
+            background: var(--navy); border-radius: 50%; margin: 0 2px;
+            animation: dot-bounce 0.9s infinite ease-in-out;
+        }
+        .loading-dots span:nth-child(2) { animation-delay: 0.15s; }
+        .loading-dots span:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes dot-bounce { 0%,80%,100%{transform:scale(0.6)} 40%{transform:scale(1)} }
+        .btn-gold.loading .btn-label { display: none; }
+        .btn-gold.loading .loading-dots { display: inline-block; }
+
+        /* Result panel */
+        #result {
+            margin-top: 22px;
+            display: none;
+            animation: rise 0.4s ease both;
+        }
+        #result.show { display: block; }
+
+        .result-main {
+            background: var(--navy);
+            border-radius: 8px;
+            padding: 20px 22px;
+            text-align: center;
+            border: 1px solid rgba(212,175,55,0.3);
+        }
+        .piti-label {
+            font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase;
+            color: rgba(255,255,255,0.45); margin-bottom: 4px;
+        }
+        .piti-amount {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 42px; font-weight: 700;
+            color: var(--gold);
+            line-height: 1;
+        }
+        .piti-breakdown {
+            font-size: 12px; color: rgba(255,255,255,0.45);
+            margin-top: 6px;
+        }
+
+        .qualification-badge {
+            margin-top: 12px;
+            padding: 8px 14px;
+            border-radius: 4px;
+            font-size: 12px; font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        .badge-yes { background: rgba(46,125,82,0.2); color: #4ade80; border: 1px solid rgba(74,222,128,0.2); }
+        .badge-no  { background: rgba(139,26,26,0.25); color: #fca5a5; border: 1px solid rgba(252,165,165,0.2); }
+        .badge-na  { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.1); }
+
+        .result-meta {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 10px; margin-top: 14px;
+        }
+        .meta-item {
+            background: var(--off);
+            border-radius: 5px; padding: 10px 12px;
+            border: 1px solid var(--border);
+        }
+        .meta-item .meta-label {
+            font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+            color: var(--gray); display: block; margin-bottom: 2px;
+        }
+        .meta-item .meta-val {
+            font-size: 13px; font-weight: 600; color: var(--dark);
+        }
+        .meta-item .meta-val.gold { color: var(--gold2); }
+
+        /* Script accordion */
+        .script-section {
+            margin-top: 14px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .script-toggle {
+            width: 100%; padding: 12px 16px;
+            background: var(--off);
+            border: none; cursor: pointer;
+            font-family: 'Jost', sans-serif;
+            font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+            font-weight: 600; color: var(--navy);
+            display: flex; justify-content: space-between; align-items: center;
+            transition: background 0.2s;
+        }
+        .script-toggle:hover { background: #eee; }
+        .script-toggle .arrow { transition: transform 0.3s; }
+        .script-toggle.open .arrow { transform: rotate(180deg); }
+
+        .script-body {
+            padding: 0 16px;
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.3s;
+            background: #fff;
+        }
+        .script-body.open { max-height: 600px; padding: 14px 16px; }
+
+        .script-block { margin-bottom: 14px; }
+        .script-block:last-child { margin-bottom: 0; }
+        .script-block h4 {
+            font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+            color: var(--gold2); margin-bottom: 6px; font-weight: 600;
+        }
+        .script-block p {
+            font-size: 13px; color: #444; line-height: 1.6;
+            background: var(--off); padding: 10px 12px;
+            border-radius: 4px; border-left: 3px solid var(--gold);
+            font-style: italic;
+        }
+
+        /* CTA button */
+        .sms-btn {
+            display: block; width: 100%; margin-top: 14px;
+            padding: 15px; text-align: center;
+            background: var(--navy); color: var(--gold);
+            text-decoration: none; border-radius: 6px;
+            font-family: 'Jost', sans-serif; font-size: 13px; font-weight: 600;
+            letter-spacing: 2px; text-transform: uppercase;
+            border: 1.5px solid var(--gold);
+            transition: all 0.25s;
+        }
+        .sms-btn:hover {
+            background: var(--gold); color: var(--navy);
+            box-shadow: 0 6px 20px rgba(212,175,55,0.3);
+        }
+
+        /* Footer */
+        .card-footer {
+            background: var(--off);
+            border-top: 1px solid var(--border);
+            padding: 14px 32px;
+            text-align: center;
+            font-size: 10px;
+            color: var(--gray);
+            letter-spacing: 1px;
+        }
+        .card-footer strong { color: var(--gold2); }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <!-- Header -->
+        <div class="card-header">
+            <div class="brand">Shiva<span>Luxury</span></div>
+            <div class="tagline">Real Estate · Mortgage · 2026</div>
+            <div class="audit-title">Buying Power Audit</div>
+        </div>
+
+        <!-- Form -->
+        <div class="card-body">
+            <!-- Contact -->
+            <div class="section-divider"><span>Contact</span></div>
+
+            <div class="field-group">
+                <label>Full Name</label>
+                <input type="text" id="name" placeholder="Your full name">
+            </div>
+            <div class="row-2">
+                <div class="field-group">
+                    <label>Phone</label>
+                    <input type="tel" id="phone" placeholder="(310) 000-0000">
+                </div>
+                <div class="field-group">
+                    <label>Email</label>
+                    <input type="email" id="email" placeholder="you@email.com">
+                </div>
+            </div>
+
+            <!-- Financials -->
+            <div class="section-divider"><span>Financials</span></div>
+
+            <div class="row-2">
+                <div class="field-group">
+                    <label>Monthly Income ($)</label>
+                    <input type="number" id="income" placeholder="8,500">
+                </div>
+                <div class="field-group">
+                    <label>Monthly Debts ($)</label>
+                    <input type="number" id="debts" placeholder="500">
+                </div>
+            </div>
+            <div class="row-2">
+                <div class="field-group">
+                    <label>Loan Amount ($)</label>
+                    <input type="number" id="loan_amount" placeholder="650,000">
+                </div>
+                <div class="field-group">
+                    <label>Property ZIP Code</label>
+                    <input type="text" id="zip_code" placeholder="90210">
+                </div>
+            </div>
+
+            <!-- Profile -->
+            <div class="section-divider"><span>Profile</span></div>
+
+            <div class="field-group">
+                <label>Credit Profile</label>
+                <select id="credit">
+                    <option value="Excellent (740+)">Excellent (740+)</option>
+                    <option value="Good (680-739)">Good (680-739)</option>
+                    <option value="Fair (620-679)">Fair (620-679)</option>
+                    <option value="Building (Below 620)">Building (Below 620)</option>
+                </select>
+            </div>
+            <div class="row-2">
+                <div class="field-group">
+                    <label>Loan Type</label>
+                    <select id="loan_type">
+                        <option value="Purchase">Purchase</option>
+                        <option value="Refinance">Refinance</option>
+                        <option value="Cash-Out Refi">Cash-Out Refi</option>
+                        <option value="Investment">Investment Property</option>
+                    </select>
+                </div>
+                <div class="field-group">
+                    <label>Purchase Timeline</label>
+                    <select id="timeline">
+                        <option value="Immediate (1-3 months)">Immediate (1-3 mo)</option>
+                        <option value="Planning (3-6 months)">Planning (3-6 mo)</option>
+                        <option value="Researching (6+ months)">Researching (6+ mo)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn-gold" id="auditBtn" onclick="sendData()">
+                <span class="btn-label">Generate My 2026 Audit</span>
+                <span class="loading-dots"><span></span><span></span><span></span></span>
+            </button>
+
+            <!-- Results -->
+            <div id="result">
+                <!-- PITI main -->
+                <div class="result-main">
+                    <div class="piti-label">Estimated Monthly PITI</div>
+                    <div class="piti-amount" id="pitiAmt">—</div>
+                    <div class="piti-breakdown" id="pitiBreakdown"></div>
+                    <div class="qualification-badge" id="qualBadge"></div>
+                </div>
+
+                <!-- Meta grid -->
+                <div class="result-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">Tax Rate</span>
+                        <span class="meta-val gold" id="taxRate">—</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Segment</span>
+                        <span class="meta-val gold" id="segmentVal">—</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Lead Priority</span>
+                        <span class="meta-val" id="priorityVal">—</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Saved to Sheets</span>
+                        <span class="meta-val" id="sheetsVal">—</span>
+                    </div>
+                </div>
+
+                <!-- Refi flag -->
+                <div id="refiFlag" style="display:none;margin-top:10px;padding:8px 12px;background:#fff8e1;border:1px solid #f9a825;border-radius:4px;font-size:12px;color:#7c5900;font-weight:600;"></div>
+
+                <!-- Conversation script accordion -->
+                <div class="script-section">
+                    <button class="script-toggle" id="scriptToggle" onclick="toggleScript()">
+                        <span>📞 View Conversation Script</span>
+                        <span class="arrow">▼</span>
+                    </button>
+                    <div class="script-body" id="scriptBody">
+                        <div class="script-block">
+                            <h4>Call Opener</h4>
+                            <p id="scriptOpener"></p>
+                        </div>
+                        <div class="script-block">
+                            <h4>SMS Follow-Up</h4>
+                            <p id="scriptSMS"></p>
+                        </div>
+                        <div class="script-block">
+                            <h4>Voicemail</h4>
+                            <p id="scriptVM"></p>
+                        </div>
+                        <div class="script-block">
+                            <h4>Objection — "Just Looking"</h4>
+                            <p id="scriptObjLook"></p>
+                        </div>
+                        <div class="script-block">
+                            <h4>Objection — Credit Concern</h4>
+                            <p id="scriptObjCredit"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SMS CTA -->
+                <a id="smsBtn" href="#" class="sms-btn">📱 Text Shiva For Strategy</a>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <strong>Shiva Tamara</strong> · Licensed Agent · DRE# 02251909 · NMLS 2779492<br>
+            Nobility and Monarchs Real Estate
+        </div>
+    </div>
+
+<script>
+    // ── Auto-detect backend URL ────────────────────────────────────────────────
+    // Works locally (localhost:5001) AND on Render (same origin)
+    const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:5001'
+        : '';   // same origin on Render
+
+    async function sendData() {
+        const btn    = document.getElementById('auditBtn');
+        const result = document.getElementById('result');
+
+        btn.classList.add('loading');
+        btn.disabled = true;
+        result.classList.remove('show');
+
+        const data = {
+            name:           document.getElementById('name').value.trim(),
+            phone:          document.getElementById('phone').value.trim(),
+            email:          document.getElementById('email').value.trim(),
+            monthly_income: document.getElementById('income').value,
+            monthly_debts:  document.getElementById('debts').value,
+            loan_amount:    document.getElementById('loan_amount').value,
+            zip_code:       document.getElementById('zip_code').value.trim() || '90210',
+            credit:         document.getElementById('credit').value,
+            loan_type:      document.getElementById('loan_type').value,
+            timeline:       document.getElementById('timeline').value
+        };
+
+        try {
+            const resp = await fetch(`${API_BASE}/audit`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const r = await resp.json();
+
+            if (r.status === 'success') {
+                // PITI
+                document.getElementById('pitiAmt').textContent       = r.message.replace('Total Est. PITI: ','');
+                document.getElementById('pitiBreakdown').textContent  = r.breakdown || '';
+
+                // Qualification badge
+                const qb = document.getElementById('qualBadge');
+                qb.textContent = r.qualification || '';
+                qb.className   = 'qualification-badge ' +
+                    (r.qualifies === true ? 'badge-yes' : r.qualifies === false ? 'badge-no' : 'badge-na');
+
+                // Meta
+                document.getElementById('taxRate').textContent    = r.tax_rate   || '—';
+                document.getElementById('segmentVal').textContent  = r.segment    || '—';
+                document.getElementById('priorityVal').textContent = r.priority   || '—';
+                document.getElementById('sheetsVal').textContent   = r.sheets_saved ? '✅ Saved' : '⚠️ ' + (r.sheets_error || 'Not saved');
+
+                // Refi flag
+                const rf = document.getElementById('refiFlag');
+                if (r.refi_flag) {
+                    rf.textContent = '🔁 ' + r.refi_flag;
+                    rf.style.display = 'block';
+                } else {
+                    rf.style.display = 'none';
+                }
+
+                // Scripts
+                if (r.script) {
+                    document.getElementById('scriptOpener').textContent    = r.script.call_opener   || '';
+                    document.getElementById('scriptSMS').textContent       = r.script.sms_followup  || '';
+                    document.getElementById('scriptVM').textContent        = r.script.voicemail      || '';
+                    document.getElementById('scriptObjLook').textContent   = r.script.objections?.just_looking || '';
+                    document.getElementById('scriptObjCredit').textContent = r.script.objections?.bad_credit   || '';
+                }
+
+                // SMS CTA
+                const phone  = "3104225608";
+                const msg    = encodeURIComponent("Hi Shiva! I just finished my 2026 Buying Power Audit and I'd love to discuss my results.");
+                document.getElementById('smsBtn').href = `sms:${phone}&body=${msg}`;
+
+                result.classList.add('show');
+                result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                alert('Error: ' + (r.message || 'Something went wrong'));
+            }
+        } catch (err) {
+            alert('Connection error — make sure Python app is running.\n\n' + err.message);
+        } finally {
+            btn.classList.remove('loading');
+            btn.disabled = false;
+        }
+    }
+
+    function toggleScript() {
+        const toggle = document.getElementById('scriptToggle');
+        const body   = document.getElementById('scriptBody');
+        toggle.classList.toggle('open');
+        body.classList.toggle('open');
+    }
+</script>
+</body>
+</html>

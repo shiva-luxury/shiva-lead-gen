@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "shiva-lead-gen",
+  "private_key_id": "76897a1dbdb5e5966968f4d2aa27c8b736fd8ccc",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDCqGXE5gR8b2h4\nSpCOBOWsfhBGfXvNUZ0uj+mr9ELLGgQHnxMdQuSaFGCKVU1ZyvFKagaWDqTccykT\nbut12+G9IuBtyID2ikdJ3/xFWyLC2b03KUgFxHs8f1eiQC38W1ycYk+mZ0v0flkH\nyH4F+Ymh14GhWPkkxY5t3RCikHoeflvI/s5oi5MQHco1moTRqGEsZsIshEun5Z13\n4l/+gXIzKwaxTMe6KAbSX9fbmyQtQQ/qe1m7tC/MqqzGZgckgvalf9bT8GmpKBDT\nvTsJZi/NElZP6tjx1gTpT88+qqtq9icNtPGo8NalG0I5ubEiaZGKFG4CtvotgKG1\njapOWKF1AgMBAAECggEAAURMSUA/9jlZYjMGBs6UWg+F9pd5d0gZMETifep8hsrY\nDN6lprKZP0FzsWLFupheAqB3A4H7461iLoyxvpYcPXldIYnFARW8SghJoX/q1X7K\nQvIjVFpHfQjNHrKxOeu0ShY/s3MHpQMvfCP7YfmSQjnfT5f/IxSgDSn7ojszeEBS\nWNIe0ZpgePRFVsSXv07AjhrKlnIVC19FsECtBMzLFSJ0nUnTqmVtXbOd71AnxVUO\nQc1m0ySrzbtTWED0buF/cPKar8sdTsAcD8Kngjjh3Fh3bp7Oj30++vDe5xEGhMod\noFEo5Kj3k4Z61vljxR+s+hSIXWmOx9b4lyw8LIErwQKBgQD0DDEkKdgDfJq6nby6\nG06kp/CgZ4GSsZOnCbx/uqtjnU5Nu2xrI/WbNdMt+/YVd+aGqHDtu4sdJVucS5W9\nYufAJBFZn9Ypfs4iCE69a4EzlVacst1qavcpORp0ZIJpVPgu2qIsukX/xwGb278/\npjGSfrQO4jfbf2ufRKKkBZNtFQKBgQDMMPfl1Yr/6+aGHcJ41xBKQjpLCyLXTSoC\nuFu79x50qyXNONZ8Q+i79zHyPm18QjZ377ac5I1YCfhI2qvcnLu7fYC3MAUuiiNs\nny9N+OU8TliFCnOpxbYPfxQixJeM7RhuL5myIhI86XiRYvFLD+i0djZjXJEC1KVo\nZQSgZpM64QKBgQCovqFf8vrk9kx6isTLHkSTf3fXQZqLVvPURNwsqWMGfud8wgJm\nVrfleSMrIZP3Ji+knmVvTAUVwxYEDRNdnzzFU2sXwHgxuvdG+t2PBf2RMEpyEQ8e\nHRYHT++l2TV/JXxx0UTfjnEGOZE4NoqXtQ+Dzs4rmGmtAP7mYmve4+gbPQKBgBaS\nr0UEN2qVXJWlApOzSsS6z5DuOTrN9//2+4UrC33gUbx/NQ7lvvvQlv/tsNLUywq1\nQF3V0l5SM9Vx/x/TX9mZRTp7H4eGk+X1LxiSlFz3WEfU4PZ6uea6qLIzQ4G70ECW\nGIqdw6BiOwbvhjdDGfmhO9/+IrXKZkLFMB6/WDVhAoGATMpogkNINuVm+ja0m0Gi\nbnRTdA44+A6U3hZ8TMBc/J5Ay6rwujs8tc8lbLDiS3fxW2ifglHcLRwRduJ7ZmZR\nVDpuo3b1QnH2ixTHnqKV6qWdY+JiHNspC1nJl8ynMwYdQXZ3AtjaevN+FUC2Tnj3\nNXC2kmWCWicBiDG8EgckffU=\n-----END PRIVATE KEY-----\n",
+  "client_email": "shiva-leads@shiva-lead-gen.iam.gserviceaccount.com",
+  "client_id": "106793831930576578912",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/shiva-leads%40shiva-lead-gen.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
