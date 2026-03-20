@@ -1,8 +1,8 @@
 """
-ShivaLuxury — Know Your Possibilities Engine (FINAL Phase 1)
-=============================================================
+ShivaLuxury — Know Your Possibilities Engine (Phase 1 + Phase 2)
+=================================================================
 6 Paths: Buyer | Seller | Fresh Start | Lease | Commercial | Self-Employed
-Life Events: Divorce | Getting Married | Growing Family | Relocating
+Phase 2: Email alerts, social content generator, outbound prospect finder
 Google Sheets: 6 tabs auto-created with correct headers
 """
 
@@ -239,6 +239,15 @@ def buyer(data):
          buy_status,purpose,privacy,notes[:80]]
     saved,err=save('buyer',row)
     if saved: highlight('buyer','gold' if ref>=750_000 else 'pink' if pn==1 else None)
+    try:
+        from email_system import send_lead_alert, send_welcome_email
+        _calc={'total_piti':total,'pi':pi,'monthly_tax':mtx,'insurance':mins,'pmi':pmi,'hoa':hoa,
+               'front_dti':fdti,'back_dti':bdti,'qualification':qual_msg,'qualifies':qualifies,
+               'priority':priority,'segment':seg,'script':script,'rate':INT_RATE,
+               'loan_amount':la,'home_price':hp}
+        send_lead_alert('buyer', data, _calc)
+        if email: send_welcome_email('buyer', data, _calc)
+    except Exception as _em: print(f"[EMAIL WARN] {_em}")
     print(f"[OK] Buyer → {name} | {seg} | {priority}")
     return jsonify({"status":"success","qualification":qual_msg,"qualifies":qualifies,
         "priority":priority,"segment":seg,"life_event":life,"wishlist":wishlist,
@@ -308,6 +317,13 @@ def seller(data):
          fmt_s(after_com),fmt_s(buying_power),nxt,concern,tl,
          why_selling,has_mortgage,current_rate,priority,seg,notes[:80]]
     saved,err=save('seller',row)
+    try:
+        from email_system import send_lead_alert, send_welcome_email
+        _calc={'est_value':ev,'net_equity':net_eq,'after_commission':after_com,
+               'buying_power':buying_power,'priority':priority,'segment':seg,'script':script}
+        send_lead_alert('seller', data, _calc)
+        if email: send_welcome_email('seller', data, _calc)
+    except Exception as _em: print(f"[EMAIL WARN] {_em}")
     print(f"[OK] Seller → {name} | {seg} | {priority}")
     return jsonify({"status":"success","priority":priority,"segment":seg,
         "sheets_saved":saved,"sheets_error":err,"script":script,"possibilities":poss,
@@ -377,6 +393,13 @@ def fresh_start(data):
          want_to_keep,urgency,notes[:100],priority]
     saved,err=save('fresh_start',row)
     if saved: highlight('fresh_start','red')
+    try:
+        from email_system import send_lead_alert, send_welcome_email
+        _calc={'prop_value':prop_val,'total_owed':total_owed,'est_equity':est_equity,
+               'walkaway_cash':walkaway_cash,'priority':priority,'script':script}
+        send_lead_alert('fresh_start', data, _calc)
+        if email: send_welcome_email('fresh_start', data, _calc)
+    except Exception as _em: print(f"[EMAIL WARN] {_em}")
     print(f"[OK] Fresh Start → {name} | {priority}")
     return jsonify({"status":"success","priority":priority,"sheets_saved":saved,"sheets_error":err,
         "script":script,"possibilities":poss,"breakdown_rows":breakdown_rows,
@@ -415,6 +438,12 @@ def lease(data):
     script={"opener":f"Hi {first}! Shiva Tamara — ShivaLuxury, DRE 02251909. I saw your leasing inquiry for a {size} in {area}. I have some options that match — including {parking} parking. Do you have a few minutes?","sms":f"Hi {first}! 🔑 It's Shiva. I found {size} options in {area} within your budget. Reply YES to chat!"}
     row=[ts(),life,name,phone,email,zip_c,area,budget,size,move_in,ll,parking,pets,must,move_in_funds,notes[:80],priority]
     saved,err=save('lease',row)
+    try:
+        from email_system import send_lead_alert, send_welcome_email
+        _calc={'priority':priority,'area':area,'budget':budget,'size':size,'script':script}
+        send_lead_alert('lease', data, _calc)
+        if email: send_welcome_email('lease', data, _calc)
+    except Exception as _em: print(f"[EMAIL WARN] {_em}")
     print(f"[OK] Lease → {name} | {priority}")
     return jsonify({"status":"success","priority":priority,"sheets_saved":saved,"sheets_error":err,"script":script,"possibilities":poss})
 
@@ -443,6 +472,12 @@ def commercial(data):
     script={"opener":f"Hi {first}! Shiva Tamara — ShivaLuxury, DRE 02251909. I saw your commercial inquiry for {sqft} sq ft in {area}. I have spaces that match your specific requirements. Do you have 10 minutes?","sms":f"Hi {first}! 🏢 It's Shiva. I found {stype} options in {area} that match your needs. Reply YES!"}
     row=[ts(),name,phone,email,area,budget,sqft,stype,ll,reqs,use,parking,mv,notes[:80],priority]
     saved,err=save('commercial',row)
+    try:
+        from email_system import send_lead_alert, send_welcome_email
+        _calc={'priority':priority,'area':area,'sqft':sqft,'space_type':stype,'script':script}
+        send_lead_alert('commercial', data, _calc)
+        if email: send_welcome_email('commercial', data, _calc)
+    except Exception as _em: print(f"[EMAIL WARN] {_em}")
     print(f"[OK] Commercial → {name} | {priority}")
     return jsonify({"status":"success","priority":priority,"sheets_saved":saved,"sheets_error":err,"script":script,"possibilities":poss})
 
@@ -491,8 +526,60 @@ def self_employed(data):
     opts_str='; '.join([l['name'] for l in loan_opts])
     row=[ts(),name,phone,email,zip_c,btype,yrs,fmt_s(rev),fmt_s(inc),fmt_s(bnk),fmt_s(inv),credit,fmt_s(hp),notes[:80],priority,opts_str]
     saved,err=save('self_employed',row)
+    try:
+        from email_system import send_lead_alert, send_welcome_email
+        _calc={'priority':priority,'loan_options':loan_opts,'roadmap':roadmap,'script':script}
+        send_lead_alert('self_employed', data, _calc)
+        if email: send_welcome_email('self_employed', data, _calc)
+    except Exception as _em: print(f"[EMAIL WARN] {_em}")
     print(f"[OK] Self-Employed → {name} | {priority}")
     return jsonify({"status":"success","priority":priority,"sheets_saved":saved,"sheets_error":err,"script":script,"loan_options":loan_opts,"roadmap":roadmap})
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PHASE 2 ROUTES
+# ══════════════════════════════════════════════════════════════════════════════
+
+@app.route('/social-content', methods=['POST'])
+def social_content():
+    try:
+        from content_gen import generate_content
+        d = request.get_json(force=True) or {}
+        path     = d.get('path', 'buy')
+        platform = d.get('platform', 'all')
+        lead     = d.get('lead_data', {})
+        content  = generate_content(path, lead, platform if platform != 'all' else None)
+        return jsonify({"status":"success","path":path,"content":content,
+                        "enhanced_by_ai":bool(os.getenv('ANTHROPIC_API_KEY'))})
+    except Exception as e:
+        import traceback; traceback.print_exc()
+        return jsonify({"status":"error","message":str(e)}), 500
+
+@app.route('/find-prospects', methods=['POST'])
+def find_prospects():
+    try:
+        from prospector import search_prospects
+        d      = request.get_json(force=True) or {}
+        intent = d.get('intent','all')
+        subs   = d.get('subreddits', None)
+        limit  = min(int(d.get('limit', 10)), 25)
+        result = search_prospects(
+            intent     = intent if intent != 'all' else None,
+            subreddits = subs,
+            limit      = limit
+        )
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"status":"error","message":str(e)}), 500
+
+@app.route('/content-calendar', methods=['GET'])
+def content_calendar():
+    try:
+        from content_gen import generate_calendar
+        month = request.args.get('month', datetime.now().month, type=int)
+        year  = request.args.get('year',  datetime.now().year,  type=int)
+        return jsonify(generate_calendar(month=month, year=year))
+    except Exception as e:
+        return jsonify({"status":"error","message":str(e)}), 500
 
 # ─── HEALTH ───────────────────────────────────────────────────────────────────
 @app.route('/health')
