@@ -312,6 +312,17 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:linear-
         <div class="field"><label>Phone</label><input type="tel" id="c-phone" placeholder="(310) 000-0000"></div>
         <div class="field"><label>Email</label><input type="email" id="c-email" placeholder="you@email.com"></div>
       </div>
+      <div class="field" id="s3-life" style="display:none">
+        <label>Is there a life situation behind this?</label>
+        <select id="c-life">
+          <option value="none">None / Just exploring</option>
+          <option value="separation">Separation / Divorce</option>
+          <option value="coborrower">Adding a Co-Borrower</option>
+          <option value="occupants">Growing Family / More Space</option>
+          <option value="relocate">Relocating</option>
+          <option value="other">Other Life Change</option>
+        </select>
+      </div>
     </div>
     <button class="btn btn-gold" onclick="goDetails()"><span class="bl">Continue →</span><span class="dots"><span></span><span></span><span></span></span></button>
     <button class="btn-back" onclick="back()">← Back</button>
@@ -369,22 +380,48 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:linear-
           <select id="b-tl"><option value="Immediate (1-3 months)">Immediate (1-3 mo)</option><option value="Planning (3-6 months)">Planning (3-6 mo)</option><option value="Researching (6+ months)">Researching (6+ mo)</option></select>
         </div>
       </div>
+      <div class="row2">
+        <div class="field"><label>Where Are You in the Process?</label>
+          <select id="b-status">
+            <option value="Just starting">Just starting to look</option>
+            <option value="Pre-qualified">Pre-qualified</option>
+            <option value="Pre-approved">Pre-approved</option>
+            <option value="Have a realtor">Already have a realtor</option>
+          </select>
+        </div>
+        <div class="field"><label>Purpose</label>
+          <select id="b-purpose">
+            <option value="Primary Residence">Primary Residence</option>
+            <option value="Investment Property">Investment Property</option>
+            <option value="Vacation Home">Vacation Home</option>
+          </select>
+        </div>
+      </div>
     </div>
-    <button class="btn btn-gold" onclick="goWishlist()"><span class="bl">Continue →</span><span class="dots"><span></span><span></span><span></span></span></button>
-    <button class="btn-back" onclick="back()">← Back</button>
-  </div>
-
-  <!-- ══════════════════════════════════════════════════════ -->
-  <!-- S4B-BUY: Wishlist                                     -->
-  <!-- ══════════════════════════════════════════════════════ -->
-  <div class="screen" id="s4b-buy">
-    <div class="q-step">Your dream home</div>
-    <div class="q-text">What are you looking for?</div>
-    <div class="q-sub">Tell me your must-haves — even if it feels out of reach right now.</div>
-    <div class="fields">
+    <div class="q-step" style="margin-top:16px;">Your dream home</div>
+    <div class="q-text" style="font-size:18px;">What are you looking for?</div>
+    <div class="fields" style="margin-top:10px;">
       <div class="row2">
         <div class="field"><label>Bedrooms</label><select id="b-bd"><option value="">Any</option><option>1</option><option>2</option><option>3</option><option>4</option><option value="5+">5+</option></select></div>
         <div class="field"><label>Bathrooms</label><select id="b-ba"><option value="">Any</option><option>1</option><option>2</option><option>3</option><option value="4+">4+</option></select></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Stories</label>
+          <select id="b-stories">
+            <option value="">No preference</option>
+            <option value="Single Story">Single Story</option>
+            <option value="Two Story">Two Story</option>
+            <option value="Multi-Level">Multi-Level / Condo</option>
+          </select>
+        </div>
+        <div class="field"><label>Privacy Preference</label>
+          <select id="b-privacy">
+            <option value="">No preference</option>
+            <option value="Gated Community">Gated Community</option>
+            <option value="Private / No HOA">Private / No HOA</option>
+            <option value="Very Private Estate">Very Private Estate</option>
+          </select>
+        </div>
       </div>
       <label style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);font-weight:500;display:block;">Must-Haves</label>
       <div class="ckg" id="b-mh">
@@ -433,6 +470,27 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:linear-
       <div class="row2">
         <div class="field"><label>Remaining Mortgage ($)</label><input type="number" id="s-mb" placeholder="350,000"></div>
         <div class="field"><label>Estimated Value ($)</label><input type="number" id="s-est" placeholder="750,000"></div>
+      </div>
+      <div class="field"><label>Why Are You Selling?</label>
+        <select id="s-why">
+          <option value="Upgrading / Upsizing">Upgrading / Upsizing</option>
+          <option value="Downsizing">Downsizing</option>
+          <option value="Relocating">Relocating</option>
+          <option value="Divorce / Separation">Divorce / Separation</option>
+          <option value="Financial reasons">Financial reasons</option>
+          <option value="Inherited property">Inherited property</option>
+          <option value="Investment sale">Investment sale</option>
+          <option value="Just exploring value">Just exploring my value</option>
+        </select>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Do You Have a Mortgage?</label>
+          <select id="s-hasmtg">
+            <option value="Yes">Yes</option>
+            <option value="No - own free and clear">No — Own free &amp; clear</option>
+          </select>
+        </div>
+        <div class="field"><label>Current Rate (%)</label><input type="number" id="s-rate" placeholder="4.5" step="0.1"></div>
       </div>
       <div class="field"><label>After Selling I Want To...</label>
         <select id="s-nxt"><option value="Buy smaller / single-story">Buy smaller / single-story</option><option value="Buy in a new area">Buy in a new area</option><option value="Retire / downsize">Retire or downsize</option><option value="Invest equity">Invest the equity</option><option value="Rent for a while">Rent for a while</option><option value="Not sure yet">Not sure yet</option></select>
@@ -551,6 +609,23 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:linear-
         <div class="field"><label>Other Liens ($)</label><input type="number" id="w-lien" placeholder="0"></div>
         <div class="field"><label>Years Behind</label><select id="w-yrs"><option>1</option><option>2</option><option>3</option><option>4</option><option value="5+">5+</option></select></div>
       </div>
+      <div class="row2">
+        <div class="field"><label>Do You Want to Keep the Property?</label>
+          <select id="w-keep">
+            <option value="No - want to sell">No — I want to sell</option>
+            <option value="Yes if possible">Yes, if possible</option>
+            <option value="Not sure">Not sure</option>
+          </select>
+        </div>
+        <div class="field"><label>How Urgent Is This?</label>
+          <select id="w-urgency">
+            <option value="Very urgent - days">Very urgent — days</option>
+            <option value="Urgent - weeks">Urgent — weeks</option>
+            <option value="1-3 months">1–3 months</option>
+            <option value="Just exploring options">Just exploring options</option>
+          </select>
+        </div>
+      </div>
       <div class="field"><label>What Would Help You Most?</label>
         <select id="w-need"><option value="Stop foreclosure and walk away clean">Stop foreclosure and walk away clean</option><option value="Pay off taxes and get some cash">Pay off taxes and get some cash</option><option value="Understand all my options">Understand all my options first</option><option value="Sell fast no hassle">Sell fast with no hassle</option></select>
       </div>
@@ -569,7 +644,18 @@ body::after{content:'';position:fixed;inset:0;z-index:0;background-image:linear-
     <div class="fields">
       <div class="row2">
         <div class="field"><label>Target Area</label><input id="r-area" placeholder="West LA, Pasadena..."></div>
+        <div class="field"><label>ZIP Code</label><input id="r-zip" placeholder="90210"></div>
+      </div>
+      <div class="row2">
         <div class="field"><label>Max Budget ($/mo)</label><input type="number" id="r-bdg" placeholder="2,500"></div>
+        <div class="field"><label>Move-In Funds Ready?</label>
+          <select id="r-funds">
+            <option value="Yes - ready now">Yes — ready now</option>
+            <option value="Within 2 weeks">Within 2 weeks</option>
+            <option value="Within a month">Within a month</option>
+            <option value="Not yet - planning">Not yet — planning</option>
+          </select>
+        </div>
       </div>
       <div class="row2">
         <div class="field"><label>Unit Size</label><select id="r-sz"><option>Studio</option><option value="1BR">1 Bedroom</option><option value="2BR">2 Bedroom</option><option value="3BR">3 Bedroom</option><option>House</option></select></div>
@@ -763,7 +849,7 @@ const API = (location.hostname==='localhost'||location.hostname==='127.0.0.1')?'
 const SMS = '3104225608';
 let path='', life='none', bm='price';
 let history=['s1'];
-const TOTAL={buy:5,sell:4,loan:4,wayout:4,lease:4,commercial:4};
+const TOTAL={buy:4,sell:4,loan:4,wayout:4,lease:4,commercial:4};
 
 // ── Show/hide screens ─────────────────────────────────────────────────────────
 function show(id,back=false){
@@ -782,9 +868,9 @@ function back(){
 function reset(){path='';life='none';history=['s1'];document.querySelectorAll('.path-card,.gchoice').forEach(e=>e.classList.remove('sel'));show('s1');}
 
 function updateProg(id){
-  const steps=['s1','s2','s3',`s4-${path}`,`s4b-${path}`].filter(Boolean);
+  const steps=['s1','s3',`s4-${path}`].filter(Boolean);
   const idx=steps.indexOf(id);
-  const tot=TOTAL[path]||5;
+  const tot=TOTAL[path]||4;
   const pct=idx<0?100:Math.round(((idx+1)/tot)*100);
   document.getElementById('prog').style.width=pct+'%';
   const si=document.getElementById('stepInfo');
@@ -796,8 +882,9 @@ function updateProg(id){
 function pickPath(p,el){
   document.querySelectorAll('.path-card').forEach(e=>e.classList.remove('sel'));
   el.classList.add('sel'); path=p;
-  const skipLife=['wayout','commercial'];
-  setTimeout(()=>go(skipLife.includes(p)?'s3':'s2'),280);
+  const showLife=!['wayout','commercial'].includes(p);
+  document.getElementById('s3-life').style.display=showLife?'block':'none';
+  setTimeout(()=>go('s3'),280);
 }
 function pickLife(e,el){
   document.querySelectorAll('.gchoice').forEach(c=>c.classList.remove('sel'));
@@ -809,10 +896,10 @@ function pickLife(e,el){
 function goDetails(){
   if(!g('c-name').trim()){alert('Please enter your name.');return;}
   if(!g('c-phone').trim()){alert('Please enter your phone number.');return;}
+  life=g('c-life')||'none';
   const map={buy:'s4-buy',sell:'s4-sell',loan:'s4-loan',wayout:'s4-wayout',lease:'s4-lease',commercial:'s4-comm'};
   go(map[path]||'s4-buy');
 }
-function goWishlist(){go('s4b-buy');}
 
 // ── Field toggles ─────────────────────────────────────────────────────────────
 function bTab(m){
@@ -854,7 +941,7 @@ async function subBuy(){
   let hp=0,dp=0,dpct=0,la=0;
   if(bm==='price'){hp=sf(g('b-hp'));dpct=sf(g('b-dpct'))||20;dp=sf(g('b-damt'))||hp*dpct/100;la=hp-dp;}
   else la=sf(g('b-la'));
-  const pay={path:'buyer',life_event:life,name:g('c-name'),phone:g('c-phone'),email:g('c-email'),monthly_income:g('b-inc'),monthly_debts:g('b-dbt'),employment_type:g('b-emp'),loan_type:'Purchase',property_type:g('b-ptype'),zip_code:g('b-zip')||'90210',hoa:g('b-hoa'),credit:g('b-cr'),timeline:g('b-tl'),budget_mode:bm,home_price:hp,down_payment:dp,down_pct:dpct,loan_amount:la,beds:g('b-bd'),baths:g('b-ba'),must_haves:gc2('b-mh').join(', '),commute:g('b-com'),vibe:g('b-vibe'),dream_home:g('b-dream'),notes:g('b-notes')};
+  const pay={path:'buyer',life_event:life,name:g('c-name'),phone:g('c-phone'),email:g('c-email'),monthly_income:g('b-inc'),monthly_debts:g('b-dbt'),employment_type:g('b-emp'),loan_type:'Purchase',property_type:g('b-ptype'),zip_code:g('b-zip')||'90210',hoa:g('b-hoa'),credit:g('b-cr'),timeline:g('b-tl'),budget_mode:bm,home_price:hp,down_payment:dp,down_pct:dpct,loan_amount:la,beds:g('b-bd'),baths:g('b-ba'),stories:g('b-stories'),must_haves:gc2('b-mh').join(', '),commute:g('b-com'),vibe:g('b-vibe'),dream_home:g('b-dream'),buy_status:g('b-status'),purpose:g('b-purpose'),privacy:g('b-privacy'),notes:g('b-notes')};
   try{const r=await post(pay);if(r.status==='success'){renderBuy(r);go('res-buy');}else alert('Error: '+r.message);}
   catch(e){alert('Connection error: '+e.message);}finally{load('buyBtn',false);}
 }
@@ -877,7 +964,7 @@ function renderBuy(r){
 
 async function subSell(){
   load('sellBtn',true);
-  const pay={path:'seller',life_event:life,name:g('c-name'),phone:g('c-phone'),email:g('c-email'),address:g('s-adr'),zip_code:g('s-zip')||'90210',year_purchased:g('s-yr'),beds:g('s-bd'),baths:'2',condition:g('s-cond'),stories:g('s-str'),mortgage_balance:g('s-mb'),owner_estimate:g('s-est'),next_step:g('s-nxt'),concern:g('s-cnc'),timeline:g('s-tl'),notes:g('s-notes')};
+  const pay={path:'seller',life_event:life,name:g('c-name'),phone:g('c-phone'),email:g('c-email'),address:g('s-adr'),zip_code:g('s-zip')||'90210',year_purchased:g('s-yr'),beds:g('s-bd'),baths:'2',condition:g('s-cond'),stories:g('s-str'),mortgage_balance:g('s-mb'),owner_estimate:g('s-est'),why_selling:g('s-why'),has_mortgage:g('s-hasmtg'),current_rate:g('s-rate'),next_step:g('s-nxt'),concern:g('s-cnc'),timeline:g('s-tl'),notes:g('s-notes')};
   try{const r=await post(pay);if(r.status==='success'){const sd=r.seller_data;document.getElementById('r-sgrid').innerHTML=`<div class="sstat"><span class="sn">${fms(sd.est_value)}</span><span class="sl">Est. Value</span></div><div class="sstat hi"><span class="sn">${fms(sd.net_equity)}</span><span class="sl">Net Equity</span></div><div class="sstat"><span class="sn">${fms(sd.after_commission)}</span><span class="sl">After Commission</span></div><div class="sstat hi"><span class="sn">${fms(sd.buying_power)}</span><span class="sl">Buying Power Next</span></div>`;document.getElementById('r-sposs').innerHTML=pcards(r.possibilities);document.getElementById('r-smeta').innerHTML=`<div class="mpill"><div class="dot dg"></div>${r.priority}</div>${r.sheets_saved?'<div class="mpill"><div class="dot db"></div>Saved to CRM</div>':''}`;if(r.script){document.getElementById('ss-sop').textContent=r.script.opener||'';document.getElementById('ss-ssms').textContent=r.script.sms||'';document.getElementById('ss-scnc').textContent=r.script.concern_response||'';document.getElementById('ss-sposs').textContent=r.script.possibilities||'';}document.getElementById('cta-sell').href=`sms:${SMS}&body=${encodeURIComponent("Hi Shiva! I saw my home report and I'd love to discuss my options.")}`;go('res-sell');}else alert('Error: '+r.message);}
   catch(e){alert('Connection error: '+e.message);}finally{load('sellBtn',false);}
 }
@@ -912,14 +999,14 @@ async function subLoan(){
 
 async function subWayOut(){
   load('wayBtn',true);
-  const pay={path:'fresh_start',name:g('c-name'),phone:g('c-phone'),email:g('c-email'),situation:g('w-sit'),address:g('w-adr'),zip_code:g('w-zip')||'90210',property_value:g('w-val'),mortgage_balance:g('w-mtg'),back_taxes:g('w-tax'),other_liens:g('w-lien'),years_behind:g('w-yrs'),primary_need:g('w-need'),notes:g('w-notes')};
+  const pay={path:'fresh_start',name:g('c-name'),phone:g('c-phone'),email:g('c-email'),situation:g('w-sit'),address:g('w-adr'),zip_code:g('w-zip')||'90210',property_value:g('w-val'),mortgage_balance:g('w-mtg'),back_taxes:g('w-tax'),other_liens:g('w-lien'),years_behind:g('w-yrs'),want_to_keep:g('w-keep'),urgency:g('w-urgency'),primary_need:g('w-need'),notes:g('w-notes')};
   try{const r=await post(pay);if(r.status==='success'){document.getElementById('r-wwalk').textContent=fms(r.fresh_data.walkaway_cash);document.getElementById('r-wbk').innerHTML=r.breakdown_rows.map(row=>`<div class="brow ${row.tot?'wtot':''}"><div class="blft"><div class="bico">${row.ico}</div><div><span class="blbl">${row.lbl}</span><span class="bnote">${row.note}</span></div></div><span class="bval">${row.val}</span></div>`).join('');document.getElementById('r-wposs').innerHTML=pcards(r.possibilities,true);document.getElementById('r-wmeta').innerHTML=`<div class="mpill"><div class="dot dr"></div>${r.priority}</div>${r.sheets_saved?'<div class="mpill"><div class="dot db"></div>Saved Confidentially</div>':''}`;if(r.script){document.getElementById('ss-wop').textContent=r.script.opener||'';document.getElementById('ss-wsms').textContent=r.script.sms||'';document.getElementById('ss-whes').textContent=r.script.hesitant||'';document.getElementById('ss-wclean').textContent=r.script.walk_away_clean||'';}document.getElementById('cta-wayout').href=`sms:${SMS}&body=${encodeURIComponent("Hi Shiva, this is confidential. I need help with my property situation.")}`;go('res-wayout');}else alert('Error: '+r.message);}
   catch(e){alert('Connection error: '+e.message);}finally{load('wayBtn',false);}
 }
 
 async function subLease(){
   load('leaseBtn',true);
-  const pay={path:'lease',life_event:life,name:g('c-name'),phone:g('c-phone'),email:g('c-email'),area:g('r-area'),budget:g('r-bdg'),size:g('r-sz'),move_in:g('r-mv'),lease_length:'12 months',parking:g('r-pk'),pets:g('r-pets'),must_haves:gc2('r-mh').join(', '),notes:g('r-notes')};
+  const pay={path:'lease',life_event:life,name:g('c-name'),phone:g('c-phone'),email:g('c-email'),zip_code:g('r-zip')||'',area:g('r-area'),budget:g('r-bdg'),size:g('r-sz'),move_in:g('r-mv'),lease_length:'12 months',parking:g('r-pk'),pets:g('r-pets'),must_haves:gc2('r-mh').join(', '),move_in_funds:g('r-funds'),notes:g('r-notes')};
   try{const r=await post(pay);if(r.status==='success'){document.getElementById('r-lposs').innerHTML=pcards(r.possibilities);document.getElementById('r-leasemeta').innerHTML=`<div class="mpill"><div class="dot dgr"></div>${r.priority}</div>${r.sheets_saved?'<div class="mpill"><div class="dot db"></div>Saved to CRM</div>':''}`;if(r.script){document.getElementById('ss-rop').textContent=r.script.opener||'';document.getElementById('ss-rsms').textContent=r.script.sms||'';}document.getElementById('cta-lease').href=`sms:${SMS}&body=${encodeURIComponent("Hi Shiva! I submitted my leasing needs and I'd love to discuss options.")}`;go('res-lease');}else alert('Error: '+r.message);}
   catch(e){alert('Connection error: '+e.message);}finally{load('leaseBtn',false);}
 }

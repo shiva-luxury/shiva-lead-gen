@@ -33,10 +33,10 @@ TABS = {
 }
 
 HEADERS = {
-    'buyer':       ["Timestamp","Life Event","Name","Phone","Email","ZIP","Employment","Loan Type","Budget Mode","Home Price","Down Payment","Down %","Loan Amount","Purchase Price","Asking Price","Price/SqFt","P&I","Monthly Tax","Tax Rate","Insurance","PMI","HOA","Total PITI","Monthly Income","Monthly Debts","Front DTI","Back DTI","Qualifies?","Credit","Timeline","Priority","Segment","Beds","Baths","Garage","Must-Haves","Commute","Vibe","Dream Home","Notes"],
-    'seller':      ["Timestamp","Life Event","Name","Phone","Email","ZIP","Address","Year Bought","Beds","Baths","Condition","Stories","Mortgage Balance","Owner Estimate","Est. Value","Net Equity","After Commission","Buying Power","Next Step","Concern","Timeline","Notes","Priority","Segment"],
-    'fresh_start': ["Timestamp","Name","Phone","Email","ZIP","Address","Situation","Years Behind","Property Value","Mortgage Balance","Back Taxes","Other Liens","Total Owed","Est. Equity","Walkaway Cash","Primary Need","Notes","Priority"],
-    'lease':       ["Timestamp","Life Event","Name","Phone","Email","Area","Budget","Unit Size","Move-In","Lease Length","Parking","Pets","Must-Haves","Notes","Priority"],
+    'buyer':       ["Timestamp","Life Event","Name","Phone","Email","ZIP","Employment","Loan Type","Budget Mode","Home Price","Down Payment","Down %","Loan Amount","Purchase Price","Asking Price","Price/SqFt","P&I","Monthly Tax","Tax Rate","Insurance","PMI","HOA","Total PITI","Monthly Income","Monthly Debts","Front DTI","Back DTI","Qualifies?","Credit","Timeline","Priority","Segment","Beds","Baths","Stories","Garage","Must-Haves","Commute","Vibe","Dream Home","Buy Status","Purpose","Privacy","Notes"],
+    'seller':      ["Timestamp","Life Event","Name","Phone","Email","ZIP","Address","Year Bought","Beds","Baths","Condition","Stories","Mortgage Balance","Owner Estimate","Est. Value","Net Equity","After Commission","Buying Power","Next Step","Concern","Timeline","Why Selling","Has Mortgage","Current Rate","Priority","Segment","Notes"],
+    'fresh_start': ["Timestamp","Name","Phone","Email","ZIP","Address","Situation","Years Behind","Property Value","Mortgage Balance","Back Taxes","Other Liens","Total Owed","Est. Equity","Walkaway Cash","Primary Need","Want to Keep","Urgency","Notes","Priority"],
+    'lease':       ["Timestamp","Life Event","Name","Phone","Email","ZIP","Area","Budget","Unit Size","Move-In","Lease Length","Parking","Pets","Must-Haves","Move-In Funds","Notes","Priority"],
     'commercial':  ["Timestamp","Name","Phone","Email","Area","Budget","Sq Ft","Space Type","Lease Length","Requirements","Use Type","Parking","Move-In","Notes","Priority"],
     'self_employed':["Timestamp","Name","Phone","Email","ZIP","Business Type","Years in Biz","Monthly Revenue","Monthly Income","Bank Balance","Investments","Credit","Target Price","Notes","Priority","Loan Options"]
 }
@@ -131,7 +131,11 @@ def buyer(data):
     dream=str(data.get('dream_home','')); notes=str(data.get('notes',''))
     commute=str(data.get('commute','')); vibe=str(data.get('vibe',''))
     beds=str(data.get('beds','')); baths=str(data.get('baths',''))
+    stories=str(data.get('stories',''))
     garage=str(data.get('garage','')); must=str(data.get('must_haves',''))
+    buy_status=str(data.get('buy_status',''))
+    purpose=str(data.get('purpose','Primary Residence'))
+    privacy=str(data.get('privacy',''))
     inc=sf(data.get('monthly_income')); dbt=sf(data.get('monthly_debts'))
     hoa=sf(data.get('hoa')); hp=sf(data.get('home_price'))
     dp=sf(data.get('down_payment')); dpct=sf(data.get('down_pct')); la=sf(data.get('loan_amount'))
@@ -231,7 +235,8 @@ def buyer(data):
          f"${mins:,.2f}",f"${pmi:,.2f}",f"${hoa:,.2f}",f"${total:,.2f}",
          fmt_s(inc),fmt_s(dbt),f"{fdti:.1f}%",f"{bdti:.1f}%",
          "Yes" if qualifies else ("No" if qualifies is False else "N/A"),
-         credit,timeline,priority,seg,beds,baths,garage,must,commute,vibe,dream[:80],notes[:80]]
+         credit,timeline,priority,seg,beds,baths,stories,garage,must,commute,vibe,dream[:80],
+         buy_status,purpose,privacy,notes[:80]]
     saved,err=save('buyer',row)
     if saved: highlight('buyer','gold' if ref>=750_000 else 'pink' if pn==1 else None)
     print(f"[OK] Buyer → {name} | {seg} | {priority}")
@@ -255,6 +260,9 @@ def seller(data):
     nxt=str(data.get('next_step','')); concern=str(data.get('concern',''))
     tl=str(data.get('timeline','')); notes=str(data.get('notes',''))
     life=str(data.get('life_event','none'))
+    why_selling=str(data.get('why_selling',''))
+    has_mortgage=str(data.get('has_mortgage',''))
+    current_rate=str(data.get('current_rate',''))
     bal=sf(data.get('mortgage_balance')); est=sf(data.get('owner_estimate'))
 
     cm={'Excellent':1.05,'Good':1.0,'Fair':0.93,'Needs Work':0.85}
@@ -297,7 +305,8 @@ def seller(data):
 
     row=[ts(),life,name,phone,email,zip_c,address,yr,beds,baths,cond,stories,
          fmt_s(bal),fmt_s(est) if est else "N/A",fmt_s(ev),fmt_s(net_eq),
-         fmt_s(after_com),fmt_s(buying_power),nxt,concern,tl,notes[:80],priority,seg]
+         fmt_s(after_com),fmt_s(buying_power),nxt,concern,tl,
+         why_selling,has_mortgage,current_rate,priority,seg,notes[:80]]
     saved,err=save('seller',row)
     print(f"[OK] Seller → {name} | {seg} | {priority}")
     return jsonify({"status":"success","priority":priority,"segment":seg,
@@ -315,6 +324,8 @@ def fresh_start(data):
     situation=str(data.get('situation','Tax Delinquent'))
     years_behind=str(data.get('years_behind','1'))
     primary_need=str(data.get('primary_need',''))
+    want_to_keep=str(data.get('want_to_keep',''))
+    urgency=str(data.get('urgency',''))
     notes=str(data.get('notes',''))
 
     prop_val=sf(data.get('property_value')); mtg_bal=sf(data.get('mortgage_balance'))
@@ -362,7 +373,8 @@ def fresh_start(data):
 
     row=[ts(),name,phone,email,zip_c,address,situation,years_behind,
          fmt_s(prop_val),fmt_s(mtg_bal),fmt_s(back_taxes),fmt_s(other_liens),
-         fmt_s(total_owed),fmt_s(est_equity),fmt_s(walkaway_cash),primary_need,notes[:100],priority]
+         fmt_s(total_owed),fmt_s(est_equity),fmt_s(walkaway_cash),primary_need,
+         want_to_keep,urgency,notes[:100],priority]
     saved,err=save('fresh_start',row)
     if saved: highlight('fresh_start','red')
     print(f"[OK] Fresh Start → {name} | {priority}")
@@ -377,10 +389,13 @@ def fresh_start(data):
 def lease(data):
     name=str(data.get('name','')).strip(); phone=str(data.get('phone','')).strip()
     email=str(data.get('email','')).strip(); life=str(data.get('life_event','none'))
+    zip_c=str(data.get('zip_code',''))
     area=str(data.get('area','')); budget=str(data.get('budget',''))
     size=str(data.get('size','')); move_in=str(data.get('move_in',''))
     ll=str(data.get('lease_length','')); parking=str(data.get('parking','1'))
-    pets=str(data.get('pets','')); must=str(data.get('must_haves','')); notes=str(data.get('notes',''))
+    pets=str(data.get('pets','')); must=str(data.get('must_haves',''))
+    move_in_funds=str(data.get('move_in_funds',''))
+    notes=str(data.get('notes',''))
 
     if "ASAP" in move_in: priority="🔥 HOT — Immediate"
     elif "1 month" in move_in: priority="⚡ WARM — 30 Days"
@@ -398,7 +413,7 @@ def lease(data):
     if life=='divorce': poss.append({"icon":"💔","title":"Fast placement — I understand your timeline","desc":"Divorce situations often need fast housing. I'll prioritize quick move-in options and work around your timeline."})
 
     script={"opener":f"Hi {first}! Shiva Tamara — ShivaLuxury, DRE 02251909. I saw your leasing inquiry for a {size} in {area}. I have some options that match — including {parking} parking. Do you have a few minutes?","sms":f"Hi {first}! 🔑 It's Shiva. I found {size} options in {area} within your budget. Reply YES to chat!"}
-    row=[ts(),life,name,phone,email,area,budget,size,move_in,ll,parking,pets,must,notes[:80],priority]
+    row=[ts(),life,name,phone,email,zip_c,area,budget,size,move_in,ll,parking,pets,must,move_in_funds,notes[:80],priority]
     saved,err=save('lease',row)
     print(f"[OK] Lease → {name} | {priority}")
     return jsonify({"status":"success","priority":priority,"sheets_saved":saved,"sheets_error":err,"script":script,"possibilities":poss})
