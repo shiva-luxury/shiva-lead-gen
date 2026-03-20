@@ -1,5 +1,13 @@
+<<<<<<< HEAD
 flask
 flask-cors
 gspread
 google-auth
 requests
+=======
+Flask
+Flask-Cors
+gspread
+oauth2client
+gunicorn
+>>>>>>> 2eec9b6bf2d38abd2f4b60fe88b2dd12ef8cf387

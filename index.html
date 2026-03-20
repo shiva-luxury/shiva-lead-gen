@@ -1,587 +1,935 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShivaLuxury | 2026 Buying Power Audit</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --navy:   #0a192f;
-            --gold:   #d4af37;
-            --gold2:  #b8962e;
-            --gold3:  #f5e199;
-            --white:  #ffffff;
-            --off:    #f7f4ee;
-            --gray:   #888;
-            --dark:   #222;
-            --green:  #2e7d52;
-            --red:    #8b1a1a;
-            --border: #e0d8c8;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>You Can. | ShivaLuxury</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0a192f;--navy2:#0d2240;--gold:#d4af37;--gold2:#b8962e;
+  --white:#fff;--off:#f8f5ef;--gray:#888;--dark:#1a1a1a;
+  --border:#e5ddd0;--green:#1a6b3c;--green2:#d4edda;
+  --red:#7b1f1f;--red2:#fde8e8;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Jost',sans-serif;background:var(--navy);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 16px 60px;position:relative;}
+body::before{content:'';position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 80% 50% at 20% 20%,rgba(212,175,55,.07) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 80% 80%,rgba(212,175,55,.05) 0%,transparent 50%);}
+body::after{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(212,175,55,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(212,175,55,.03) 1px,transparent 1px);background-size:44px 44px;}
 
-        body {
-            font-family: 'Jost', sans-serif;
-            background: var(--navy);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 30px 16px 60px;
-        }
+.card{background:var(--white);border-radius:16px;width:100%;max-width:520px;border:1.5px solid rgba(212,175,55,.5);box-shadow:0 24px 80px rgba(0,0,0,.55);overflow:hidden;position:relative;z-index:1;}
 
-        /* Subtle grid pattern on navy */
-        body::before {
-            content: '';
-            position: fixed; inset: 0;
-            background-image:
-                linear-gradient(rgba(212,175,55,0.04) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(212,175,55,0.04) 1px, transparent 1px);
-            background-size: 40px 40px;
-            pointer-events: none;
-        }
+/* Header */
+.hdr{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);padding:26px 28px 22px;text-align:center;border-bottom:2px solid var(--gold);}
+.brand{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;color:var(--gold);letter-spacing:5px;text-transform:uppercase;}
+.brand em{color:rgba(255,255,255,.7);font-style:normal;font-weight:400;}
+.tagline{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:3px;}
+.hero-h{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--white);margin-top:14px;line-height:1.2;}
+.hero-h span{color:var(--gold);font-style:italic;}
+.hero-sub{font-size:12px;color:rgba(255,255,255,.45);margin-top:6px;}
+.trust{font-size:10px;color:rgba(255,255,255,.22);margin-top:7px;letter-spacing:.5px;}
 
-        .card {
-            background: var(--white);
-            border-radius: 12px;
-            width: 100%;
-            max-width: 500px;
-            border: 1.5px solid var(--gold);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(212,175,55,0.15);
-            overflow: hidden;
-            position: relative;
-            animation: rise 0.6s ease both;
-        }
+/* Progress */
+.prog-wrap{background:rgba(0,0,0,.15);height:3px;}
+.prog-bar{height:3px;background:linear-gradient(90deg,var(--gold2),var(--gold));transition:width .5s ease;width:0%;}
+.step-info{padding:9px 22px;background:var(--off);border-bottom:1px solid var(--border);font-size:11px;color:var(--gray);display:none;justify-content:space-between;}
+.step-info.show{display:flex;}
+.step-info span{font-weight:600;color:var(--gold2);}
 
-        @keyframes rise {
-            from { opacity:0; transform:translateY(24px); }
-            to   { opacity:1; transform:translateY(0); }
-        }
+/* Screens */
+.screen{display:none;padding:26px 26px 22px;animation:si .35s ease;}
+.screen.active{display:block;}
+.screen.back{animation:sb .35s ease;}
+.result{display:none;padding:22px 26px;animation:si .4s ease;}
+.result.show{display:block;}
+@keyframes si{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:translateX(0)}}
+@keyframes sb{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:translateX(0)}}
 
-        /* Gold header bar */
-        .card-header {
-            background: var(--navy);
-            padding: 28px 32px 22px;
-            text-align: center;
-            border-bottom: 2px solid var(--gold);
-            position: relative;
-        }
-        .card-header::after {
-            content: '';
-            position: absolute;
-            bottom: -1px; left: 50%;
-            transform: translateX(-50%);
-            width: 60px; height: 2px;
-            background: var(--gold3);
-        }
+/* Question */
+.q-step{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold2);font-weight:600;margin-bottom:7px;}
+.q-text{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--dark);margin-bottom:5px;line-height:1.25;}
+.q-sub{font-size:13px;color:var(--gray);margin-bottom:18px;line-height:1.5;}
 
-        .brand {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--gold);
-            letter-spacing: 4px;
-            text-transform: uppercase;
-        }
-        .brand span { color: var(--white); font-weight: 400; }
+/* Path choice cards */
+.paths{display:flex;flex-direction:column;gap:9px;}
+.path-card{display:flex;align-items:center;gap:14px;padding:15px 16px;background:var(--off);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;user-select:none;}
+.path-card:hover{border-color:var(--gold);background:rgba(212,175,55,.05);transform:translateX(3px);}
+.path-card.sel{border-color:var(--gold);background:rgba(212,175,55,.08);}
+.pc-icon{font-size:24px;width:38px;text-align:center;flex-shrink:0;}
+.pc-body{flex:1;}
+.pc-title{font-size:14px;font-weight:600;color:var(--dark);}
+.pc-desc{font-size:11px;color:var(--gray);margin-top:2px;line-height:1.4;}
+.pc-arrow{color:var(--border);font-size:16px;transition:color .2s;}
+.path-card:hover .pc-arrow,.path-card.sel .pc-arrow{color:var(--gold);}
 
-        .tagline {
-            font-size: 11px;
-            letter-spacing: 3px;
-            color: rgba(255,255,255,0.5);
-            text-transform: uppercase;
-            margin-top: 4px;
-        }
+/* Grid choices */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.gchoice{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 10px;background:var(--off);border:1.5px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;text-align:center;user-select:none;}
+.gchoice:hover{border-color:var(--gold);background:rgba(212,175,55,.05);}
+.gchoice.sel{border-color:var(--gold);background:rgba(212,175,55,.08);}
+.gc-ico{font-size:26px;}
+.gc-lbl{font-size:12px;font-weight:600;color:var(--dark);line-height:1.3;}
+.gc-sub{font-size:10px;color:var(--gray);line-height:1.3;}
 
-        .audit-title {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 18px;
-            font-weight: 500;
-            color: var(--white);
-            margin-top: 14px;
-            letter-spacing: 1px;
-        }
+/* Fields */
+.fields{display:flex;flex-direction:column;gap:11px;}
+.field{display:flex;flex-direction:column;gap:5px;}
+.field label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);font-weight:500;}
+.field input,.field select,.field textarea{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:7px;font-family:'Jost',sans-serif;font-size:14px;color:var(--dark);background:var(--off);outline:none;transition:all .2s;-webkit-appearance:none;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(212,175,55,.12);background:#fff;}
+.field input::placeholder,.field textarea::placeholder{color:#ccc;}
+.field textarea{resize:vertical;min-height:65px;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
 
-        /* Form body */
-        .card-body { padding: 28px 32px; }
+/* Checkboxes */
+.ckg{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:4px;}
+.cki{display:flex;align-items:center;gap:7px;padding:8px 11px;background:var(--off);border:1.5px solid var(--border);border-radius:7px;cursor:pointer;transition:all .2s;font-size:12px;color:var(--dark);user-select:none;}
+.cki:hover{border-color:rgba(212,175,55,.4);}
+.cki.on{border-color:var(--gold);background:rgba(212,175,55,.07);font-weight:500;}
+.ckb{width:15px;height:15px;border:1.5px solid var(--border);border-radius:3px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .2s;}
+.cki.on .ckb{background:var(--gold);border-color:var(--gold);color:#000;}
 
-        .field-group { margin-bottom: 14px; }
+/* Info box */
+.ibox{border:1px solid rgba(212,175,55,.25);border-radius:8px;padding:12px 14px;margin-bottom:13px;font-size:12px;color:var(--dark);line-height:1.6;background:rgba(212,175,55,.04);}
+.ibox .ico{font-size:15px;margin-bottom:3px;display:block;}
+.ibox strong{color:var(--navy);}
+.ibox.way{background:#e8f5e9;border-color:#81c784;}
 
-        label {
-            display: block;
-            font-size: 10px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--gray);
-            font-weight: 500;
-            margin-bottom: 5px;
-            padding-left: 2px;
-        }
+/* Toggle tabs */
+.ttabs{display:flex;background:var(--off);border:1.5px solid var(--border);border-radius:7px;overflow:hidden;margin-bottom:12px;}
+.ttab{flex:1;padding:9px 6px;background:transparent;border:none;font-family:'Jost',sans-serif;font-size:11px;font-weight:500;color:var(--gray);cursor:pointer;transition:all .2s;}
+.ttab.active{background:var(--navy);color:var(--gold);font-weight:600;}
 
-        input, select {
-            width: 100%;
-            padding: 11px 14px;
-            border: 1px solid var(--border);
-            border-radius: 5px;
-            font-family: 'Jost', sans-serif;
-            font-size: 14px;
-            color: var(--dark);
-            background: var(--off);
-            transition: border-color 0.2s, box-shadow 0.2s;
-            outline: none;
-            -webkit-appearance: none;
-        }
-        input:focus, select:focus {
-            border-color: var(--gold);
-            box-shadow: 0 0 0 3px rgba(212,175,55,0.15);
-            background: #fff;
-        }
-        input::placeholder { color: #bbb; }
+/* Buttons */
+.btn{width:100%;padding:14px;border:none;border-radius:8px;font-family:'Jost',sans-serif;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .25s;margin-top:14px;position:relative;overflow:hidden;}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--navy);box-shadow:0 4px 20px rgba(212,175,55,.3);}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(212,175,55,.45);}
+.btn-green{background:linear-gradient(135deg,#2e7d32,#1b5e20);color:#fff;box-shadow:0 4px 20px rgba(46,125,50,.3);}
+.btn-green:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(46,125,50,.4);}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.bl{position:relative;z-index:1;}
+.dots{display:none;position:relative;z-index:1;}
+.dots span{display:inline-block;width:6px;height:6px;background:var(--navy);border-radius:50%;margin:0 2px;animation:db .9s infinite ease-in-out;}
+.dots span:nth-child(2){animation-delay:.15s;}
+.dots span:nth-child(3){animation-delay:.3s;}
+@keyframes db{0%,80%,100%{transform:scale(.5)}40%{transform:scale(1)}}
+.btn.loading .bl{display:none;}
+.btn.loading .dots{display:inline-block;}
+.btn-green .dots span,.btn-way .dots span{background:#fff;}
+.btn-back{background:none;border:none;color:var(--gray);font-family:'Jost',sans-serif;font-size:12px;cursor:pointer;padding:8px 0;margin-top:8px;display:flex;align-items:center;gap:4px;}
+.btn-back:hover{color:var(--dark);}
 
-        .row-2 { display: flex; gap: 12px; }
-        .row-2 .field-group { flex: 1; }
-
-        .section-divider {
-            display: flex; align-items: center; gap: 10px;
-            margin: 18px 0 14px;
-        }
-        .section-divider span {
-            font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-            color: var(--gold2); font-weight: 600; white-space: nowrap;
-        }
-        .section-divider::before, .section-divider::after {
-            content: ''; flex: 1; height: 1px; background: var(--border);
-        }
-
-        .btn-gold {
-            width: 100%;
-            padding: 15px;
-            background: var(--gold);
-            color: var(--navy);
-            border: none;
-            border-radius: 6px;
-            font-family: 'Jost', sans-serif;
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.25s;
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-gold:hover {
-            background: var(--gold2);
-            box-shadow: 0 6px 24px rgba(212,175,55,0.4);
-            transform: translateY(-1px);
-        }
-        .btn-gold:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-        /* Loading dots */
-        .loading-dots { display: none; }
-        .loading-dots span {
-            display: inline-block; width: 6px; height: 6px;
-            background: var(--navy); border-radius: 50%; margin: 0 2px;
-            animation: dot-bounce 0.9s infinite ease-in-out;
-        }
-        .loading-dots span:nth-child(2) { animation-delay: 0.15s; }
-        .loading-dots span:nth-child(3) { animation-delay: 0.3s; }
-        @keyframes dot-bounce { 0%,80%,100%{transform:scale(0.6)} 40%{transform:scale(1)} }
-        .btn-gold.loading .btn-label { display: none; }
-        .btn-gold.loading .loading-dots { display: inline-block; }
-
-        /* Result panel */
-        #result {
-            margin-top: 22px;
-            display: none;
-            animation: rise 0.4s ease both;
-        }
-        #result.show { display: block; }
-
-        .result-main {
-            background: var(--navy);
-            border-radius: 8px;
-            padding: 20px 22px;
-            text-align: center;
-            border: 1px solid rgba(212,175,55,0.3);
-        }
-        .piti-label {
-            font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase;
-            color: rgba(255,255,255,0.45); margin-bottom: 4px;
-        }
-        .piti-amount {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 42px; font-weight: 700;
-            color: var(--gold);
-            line-height: 1;
-        }
-        .piti-breakdown {
-            font-size: 12px; color: rgba(255,255,255,0.45);
-            margin-top: 6px;
-        }
-
-        .qualification-badge {
-            margin-top: 12px;
-            padding: 8px 14px;
-            border-radius: 4px;
-            font-size: 12px; font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-        .badge-yes { background: rgba(46,125,82,0.2); color: #4ade80; border: 1px solid rgba(74,222,128,0.2); }
-        .badge-no  { background: rgba(139,26,26,0.25); color: #fca5a5; border: 1px solid rgba(252,165,165,0.2); }
-        .badge-na  { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.1); }
-
-        .result-meta {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 10px; margin-top: 14px;
-        }
-        .meta-item {
-            background: var(--off);
-            border-radius: 5px; padding: 10px 12px;
-            border: 1px solid var(--border);
-        }
-        .meta-item .meta-label {
-            font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
-            color: var(--gray); display: block; margin-bottom: 2px;
-        }
-        .meta-item .meta-val {
-            font-size: 13px; font-weight: 600; color: var(--dark);
-        }
-        .meta-item .meta-val.gold { color: var(--gold2); }
-
-        /* Script accordion */
-        .script-section {
-            margin-top: 14px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            overflow: hidden;
-        }
-        .script-toggle {
-            width: 100%; padding: 12px 16px;
-            background: var(--off);
-            border: none; cursor: pointer;
-            font-family: 'Jost', sans-serif;
-            font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
-            font-weight: 600; color: var(--navy);
-            display: flex; justify-content: space-between; align-items: center;
-            transition: background 0.2s;
-        }
-        .script-toggle:hover { background: #eee; }
-        .script-toggle .arrow { transition: transform 0.3s; }
-        .script-toggle.open .arrow { transform: rotate(180deg); }
-
-        .script-body {
-            padding: 0 16px;
-            max-height: 0; overflow: hidden;
-            transition: max-height 0.4s ease, padding 0.3s;
-            background: #fff;
-        }
-        .script-body.open { max-height: 600px; padding: 14px 16px; }
-
-        .script-block { margin-bottom: 14px; }
-        .script-block:last-child { margin-bottom: 0; }
-        .script-block h4 {
-            font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-            color: var(--gold2); margin-bottom: 6px; font-weight: 600;
-        }
-        .script-block p {
-            font-size: 13px; color: #444; line-height: 1.6;
-            background: var(--off); padding: 10px 12px;
-            border-radius: 4px; border-left: 3px solid var(--gold);
-            font-style: italic;
-        }
-
-        /* CTA button */
-        .sms-btn {
-            display: block; width: 100%; margin-top: 14px;
-            padding: 15px; text-align: center;
-            background: var(--navy); color: var(--gold);
-            text-decoration: none; border-radius: 6px;
-            font-family: 'Jost', sans-serif; font-size: 13px; font-weight: 600;
-            letter-spacing: 2px; text-transform: uppercase;
-            border: 1.5px solid var(--gold);
-            transition: all 0.25s;
-        }
-        .sms-btn:hover {
-            background: var(--gold); color: var(--navy);
-            box-shadow: 0 6px 20px rgba(212,175,55,0.3);
-        }
-
-        /* Footer */
-        .card-footer {
-            background: var(--off);
-            border-top: 1px solid var(--border);
-            padding: 14px 32px;
-            text-align: center;
-            font-size: 10px;
-            color: var(--gray);
-            letter-spacing: 1px;
-        }
-        .card-footer strong { color: var(--gold2); }
-    </style>
+/* ── RESULTS ── */
+.res-hero{background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:11px;padding:20px;text-align:center;border:1px solid rgba(212,175,55,.25);margin-bottom:13px;}
+.res-hero.way{background:linear-gradient(135deg,#0d3b2e,#1b5e20);}
+.res-eye{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px;}
+.res-big{font-family:'Cormorant Garamond',serif;font-size:46px;font-weight:700;color:var(--gold);line-height:1;}
+.res-big.gr{color:#4ade80;}
+.res-mo{font-size:15px;color:rgba(255,255,255,.4);}
+.qbadge{display:inline-flex;align-items:center;gap:6px;margin-top:9px;padding:6px 13px;border-radius:20px;font-size:11px;font-weight:600;}
+.qy{background:rgba(26,107,60,.25);color:#4ade80;border:1px solid rgba(74,222,128,.25);}
+.qn{background:rgba(123,31,31,.3);color:#fca5a5;border:1px solid rgba(252,165,165,.2);}
+.qna{background:rgba(255,255,255,.06);color:rgba(255,255,255,.35);border:1px solid rgba(255,255,255,.1);}
+.sec-t{font-size:10px;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold2);font-weight:600;margin:13px 0 8px;}
+.sec-t.gr{color:#1a6b3c;}
+.bkgrid{display:flex;flex-direction:column;border:1.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:13px;}
+.brow{display:flex;justify-content:space-between;align-items:center;padding:10px 13px;border-bottom:1px solid var(--border);transition:background .15s;}
+.brow:last-child{border-bottom:none;}
+.brow:hover{background:var(--off);}
+.brow.tot{background:var(--navy);border-top:2px solid var(--gold);}
+.brow.wtot{background:#0d3b2e;border-top:2px solid #4caf50;}
+.brow.tot .blbl,.brow.wtot .blbl{color:rgba(255,255,255,.7);font-weight:600;}
+.brow.tot .bval{color:var(--gold);font-size:16px;font-weight:700;font-family:'Cormorant Garamond',serif;}
+.brow.wtot .bval{color:#4ade80;font-size:16px;font-weight:700;font-family:'Cormorant Garamond',serif;}
+.blft{display:flex;align-items:center;gap:8px;}
+.bico{width:26px;height:26px;border-radius:5px;background:var(--off);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.brow.tot .bico,.brow.wtot .bico{background:rgba(255,255,255,.08);}
+.blbl{font-size:12px;color:var(--dark);}
+.bnote{font-size:10px;color:var(--gray);display:block;}
+.bval{font-size:13px;font-weight:600;color:var(--navy);}
+.dtirow{display:flex;gap:8px;margin-bottom:13px;}
+.dtibox{flex:1;background:var(--off);border:1.5px solid var(--border);border-radius:7px;padding:10px;text-align:center;}
+.dn{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;display:block;}
+.dl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);display:block;margin-top:2px;}
+.dok{border-color:rgba(26,107,60,.3);background:var(--green2);} .dok .dn{color:var(--green);}
+.dwarn{border-color:rgba(212,175,55,.4);background:#fffde7;} .dwarn .dn{color:#8a6d00;}
+.dbad{border-color:rgba(123,31,31,.3);background:var(--red2);} .dbad .dn{color:var(--red);}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:13px;}
+.sstat{text-align:center;padding:10px;background:var(--off);border:1.5px solid var(--border);border-radius:8px;}
+.sn{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:var(--navy);display:block;}
+.sl{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray);display:block;margin-top:2px;}
+.sstat.hi .sn{color:var(--green);}
+.pcard{background:var(--off);border:1.5px solid var(--border);border-radius:8px;padding:11px 13px;margin-bottom:8px;display:flex;gap:10px;}
+.pcard.way{background:#e8f5e9;border-color:#a5d6a7;}
+.pico{font-size:20px;flex-shrink:0;margin-top:2px;}
+.ptitle{font-size:12px;font-weight:600;color:var(--dark);margin-bottom:2px;}
+.pdesc{font-size:11px;color:#555;line-height:1.5;}
+.tl{position:relative;margin-bottom:13px;}
+.tl::before{content:'';position:absolute;left:16px;top:16px;bottom:16px;width:2px;background:linear-gradient(to bottom,var(--gold),rgba(212,175,55,.2));}
+.tl-step{display:flex;gap:12px;padding:7px 0;}
+.tl-dot{width:32px;height:32px;border-radius:50%;background:var(--navy);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;position:relative;z-index:1;}
+.tl-b{flex:1;padding-top:2px;}
+.tl-lbl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold2);font-weight:600;}
+.tl-val{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:700;color:var(--navy);}
+.tl-desc{font-size:11px;color:#555;margin-top:1px;line-height:1.4;}
+.vchart{background:var(--off);border:1.5px solid var(--border);border-radius:8px;padding:12px;margin-bottom:13px;}
+.vbars{display:flex;align-items:flex-end;gap:5px;height:80px;margin-top:6px;}
+.vbw{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.vbar{width:100%;background:linear-gradient(to top,var(--gold2),var(--gold));border-radius:3px 3px 0 0;min-height:4px;}
+.vbl{font-size:9px;color:var(--gray);text-align:center;}
+.vbv{font-size:9px;font-weight:600;color:var(--navy);text-align:center;}
+.wtags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:13px;}
+.wtag{padding:4px 10px;background:var(--navy);color:var(--gold);border-radius:20px;font-size:10px;font-weight:500;}
+.metarow{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:13px;}
+.mpill{display:flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;background:var(--off);border:1px solid var(--border);font-size:10px;font-weight:500;color:var(--dark);}
+.dot{width:6px;height:6px;border-radius:50%;}
+.dg{background:var(--gold);} .dgr{background:#22c55e;} .db{background:#3b82f6;} .dr{background:#ef4444;}
+.sacc{border:1.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:13px;}
+.sh{width:100%;padding:11px 14px;background:var(--off);border:none;cursor:pointer;font-family:'Jost',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:600;color:var(--navy);display:flex;justify-content:space-between;align-items:center;}
+.sh:hover{background:#eee;}
+.chev{transition:transform .3s;font-style:normal;}
+.sh.open .chev{transform:rotate(180deg);}
+.sb{max-height:0;overflow:hidden;transition:max-height .4s ease;}
+.sb.open{max-height:900px;}
+.si{padding:13px;display:flex;flex-direction:column;gap:11px;}
+.sblk h4{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gold2);margin-bottom:4px;font-weight:600;}
+.sblk p{font-size:12px;color:#444;line-height:1.65;background:var(--off);padding:9px 12px;border-radius:5px;border-left:3px solid var(--gold);font-style:italic;}
+.sblk.way p{border-left-color:#4caf50;}
+.rmap{display:flex;flex-direction:column;gap:7px;margin-bottom:13px;}
+.rms{display:flex;gap:9px;padding:10px 12px;background:var(--off);border:1.5px solid var(--border);border-radius:7px;}
+.rmn{width:22px;height:22px;border-radius:50%;background:var(--gold);color:var(--navy);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.rmt{font-size:12px;font-weight:600;color:var(--navy);margin-bottom:2px;}
+.rmd{font-size:11px;color:#555;line-height:1.4;}
+.lopt{background:var(--off);border:1.5px solid var(--border);border-radius:8px;padding:11px 13px;margin-bottom:8px;}
+.lo-tag{display:inline-block;padding:2px 8px;background:var(--gold);color:var(--navy);border-radius:10px;font-size:9px;font-weight:700;margin-bottom:4px;}
+.lo-title{font-size:12px;font-weight:600;color:var(--navy);margin-bottom:2px;}
+.lo-desc{font-size:11px;color:#555;line-height:1.5;}
+.cta{display:block;width:100%;padding:13px;text-align:center;background:var(--navy);color:var(--gold);text-decoration:none;border-radius:8px;font-family:'Jost',sans-serif;font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;border:1.5px solid var(--gold);transition:all .25s;margin-bottom:5px;}
+.cta:hover{background:var(--gold);color:var(--navy);transform:translateY(-1px);}
+.cta.way{background:#0d3b2e;color:#4ade80;border-color:#4caf50;}
+.cta.way:hover{background:#4caf50;color:#fff;}
+.restart{text-align:center;padding:10px;border-top:1px solid var(--border);}
+.restart button{background:none;border:none;color:var(--gray);font-family:'Jost',sans-serif;font-size:11px;cursor:pointer;text-decoration:underline;}
+.card-footer{background:var(--off);border-top:1px solid var(--border);padding:12px 24px;text-align:center;font-size:10px;color:var(--gray);letter-spacing:.4px;line-height:1.8;}
+.card-footer strong{color:var(--gold2);}
+@media(max-width:480px){
+  .screen,.result{padding:18px 15px;}
+  .row2{grid-template-columns:1fr;}
+  .ckg{grid-template-columns:1fr;}
+  .res-big{font-size:38px;}
+  .grid2{grid-template-columns:1fr 1fr;}
+}
+</style>
 </head>
 <body>
-    <div class="card">
-        <!-- Header -->
-        <div class="card-header">
-            <div class="brand">Shiva<span>Luxury</span></div>
-            <div class="tagline">Real Estate · Mortgage · 2026</div>
-            <div class="audit-title">Buying Power Audit</div>
-        </div>
+<div class="card">
 
-        <!-- Form -->
-        <div class="card-body">
-            <!-- Contact -->
-            <div class="section-divider"><span>Contact</span></div>
+  <!-- Header -->
+  <div class="hdr">
+    <div class="brand">Shiva<em>Luxury</em></div>
+    <div class="tagline">Real Estate · Mortgage · Leasing · Investments</div>
+    <div class="hero-h">You Can.<br><span>See what's possible for you</span></div>
+    <div class="hero-sub">Just a few questions — no obligation · no credit impact</div>
+    <div class="trust">Free · Confidential · No pressure</div>
+  </div>
 
-            <div class="field-group">
-                <label>Full Name</label>
-                <input type="text" id="name" placeholder="Your full name">
-            </div>
-            <div class="row-2">
-                <div class="field-group">
-                    <label>Phone</label>
-                    <input type="tel" id="phone" placeholder="(310) 000-0000">
-                </div>
-                <div class="field-group">
-                    <label>Email</label>
-                    <input type="email" id="email" placeholder="you@email.com">
-                </div>
-            </div>
+  <!-- Progress -->
+  <div class="prog-wrap"><div class="prog-bar" id="prog"></div></div>
+  <div class="step-info" id="stepInfo">
+    <span id="stepLbl">Step 1</span>
+    <span id="stepFrac">1 of 5</span>
+  </div>
 
-            <!-- Financials -->
-            <div class="section-divider"><span>Financials</span></div>
-
-            <div class="row-2">
-                <div class="field-group">
-                    <label>Monthly Income ($)</label>
-                    <input type="number" id="income" placeholder="8,500">
-                </div>
-                <div class="field-group">
-                    <label>Monthly Debts ($)</label>
-                    <input type="number" id="debts" placeholder="500">
-                </div>
-            </div>
-            <div class="row-2">
-                <div class="field-group">
-                    <label>Loan Amount ($)</label>
-                    <input type="number" id="loan_amount" placeholder="650,000">
-                </div>
-                <div class="field-group">
-                    <label>Property ZIP Code</label>
-                    <input type="text" id="zip_code" placeholder="90210">
-                </div>
-            </div>
-
-            <!-- Profile -->
-            <div class="section-divider"><span>Profile</span></div>
-
-            <div class="field-group">
-                <label>Credit Profile</label>
-                <select id="credit">
-                    <option value="Excellent (740+)">Excellent (740+)</option>
-                    <option value="Good (680-739)">Good (680-739)</option>
-                    <option value="Fair (620-679)">Fair (620-679)</option>
-                    <option value="Building (Below 620)">Building (Below 620)</option>
-                </select>
-            </div>
-            <div class="row-2">
-                <div class="field-group">
-                    <label>Loan Type</label>
-                    <select id="loan_type">
-                        <option value="Purchase">Purchase</option>
-                        <option value="Refinance">Refinance</option>
-                        <option value="Cash-Out Refi">Cash-Out Refi</option>
-                        <option value="Investment">Investment Property</option>
-                    </select>
-                </div>
-                <div class="field-group">
-                    <label>Purchase Timeline</label>
-                    <select id="timeline">
-                        <option value="Immediate (1-3 months)">Immediate (1-3 mo)</option>
-                        <option value="Planning (3-6 months)">Planning (3-6 mo)</option>
-                        <option value="Researching (6+ months)">Researching (6+ mo)</option>
-                    </select>
-                </div>
-            </div>
-
-            <button class="btn-gold" id="auditBtn" onclick="sendData()">
-                <span class="btn-label">Generate My 2026 Audit</span>
-                <span class="loading-dots"><span></span><span></span><span></span></span>
-            </button>
-
-            <!-- Results -->
-            <div id="result">
-                <!-- PITI main -->
-                <div class="result-main">
-                    <div class="piti-label">Estimated Monthly PITI</div>
-                    <div class="piti-amount" id="pitiAmt">—</div>
-                    <div class="piti-breakdown" id="pitiBreakdown"></div>
-                    <div class="qualification-badge" id="qualBadge"></div>
-                </div>
-
-                <!-- Meta grid -->
-                <div class="result-meta">
-                    <div class="meta-item">
-                        <span class="meta-label">Tax Rate</span>
-                        <span class="meta-val gold" id="taxRate">—</span>
-                    </div>
-                    <div class="meta-item">
-                        <span class="meta-label">Segment</span>
-                        <span class="meta-val gold" id="segmentVal">—</span>
-                    </div>
-                    <div class="meta-item">
-                        <span class="meta-label">Lead Priority</span>
-                        <span class="meta-val" id="priorityVal">—</span>
-                    </div>
-                    <div class="meta-item">
-                        <span class="meta-label">Saved to Sheets</span>
-                        <span class="meta-val" id="sheetsVal">—</span>
-                    </div>
-                </div>
-
-                <!-- Refi flag -->
-                <div id="refiFlag" style="display:none;margin-top:10px;padding:8px 12px;background:#fff8e1;border:1px solid #f9a825;border-radius:4px;font-size:12px;color:#7c5900;font-weight:600;"></div>
-
-                <!-- Conversation script accordion -->
-                <div class="script-section">
-                    <button class="script-toggle" id="scriptToggle" onclick="toggleScript()">
-                        <span>📞 View Conversation Script</span>
-                        <span class="arrow">▼</span>
-                    </button>
-                    <div class="script-body" id="scriptBody">
-                        <div class="script-block">
-                            <h4>Call Opener</h4>
-                            <p id="scriptOpener"></p>
-                        </div>
-                        <div class="script-block">
-                            <h4>SMS Follow-Up</h4>
-                            <p id="scriptSMS"></p>
-                        </div>
-                        <div class="script-block">
-                            <h4>Voicemail</h4>
-                            <p id="scriptVM"></p>
-                        </div>
-                        <div class="script-block">
-                            <h4>Objection — "Just Looking"</h4>
-                            <p id="scriptObjLook"></p>
-                        </div>
-                        <div class="script-block">
-                            <h4>Objection — Credit Concern</h4>
-                            <p id="scriptObjCredit"></p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SMS CTA -->
-                <a id="smsBtn" href="#" class="sms-btn">📱 Text Shiva For Strategy</a>
-            </div>
-        </div>
-
-        <div class="card-footer">
-            <strong>Shiva Tamara</strong> · Licensed Agent · DRE# 02251909 · NMLS 2779492<br>
-            Nobility and Monarchs Real Estate
-        </div>
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- S1: What are you looking to do?                       -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="screen active" id="s1">
+    <div class="q-step">Let's get started</div>
+    <div class="q-text">What are you looking to do?</div>
+    <div class="q-sub">Choose what fits — we'll tailor everything to you.</div>
+    <div class="paths">
+      <div class="path-card" onclick="pickPath('buy',this)">
+        <div class="pc-icon">🏠</div>
+        <div class="pc-body"><div class="pc-title">Buy a Home</div><div class="pc-desc">Find out what you qualify for and what's possible</div></div>
+        <div class="pc-arrow">›</div>
+      </div>
+      <div class="path-card" onclick="pickPath('sell',this)">
+        <div class="pc-icon">🏡</div>
+        <div class="pc-body"><div class="pc-title">Sell My Home</div><div class="pc-desc">See what your home is worth and what's next</div></div>
+        <div class="pc-arrow">›</div>
+      </div>
+      <div class="path-card" onclick="pickPath('loan',this)">
+        <div class="pc-icon">💰</div>
+        <div class="pc-body"><div class="pc-title">Loan Options</div><div class="pc-desc">Refinance, HELOC, cash-out, or explore what you qualify for</div></div>
+        <div class="pc-arrow">›</div>
+      </div>
+      <div class="path-card" onclick="pickPath('wayout',this)">
+        <div class="pc-icon">🚪</div>
+        <div class="pc-body"><div class="pc-title">Your Way Out</div><div class="pc-desc">Behind on taxes, facing foreclosure, or need a way forward</div></div>
+        <div class="pc-arrow">›</div>
+      </div>
+      <div class="path-card" onclick="pickPath('lease',this)">
+        <div class="pc-icon">🔑</div>
+        <div class="pc-body"><div class="pc-title">Lease / Rent</div><div class="pc-desc">Find the right place for where you are right now</div></div>
+        <div class="pc-arrow">›</div>
+      </div>
+      <div class="path-card" onclick="pickPath('commercial',this)">
+        <div class="pc-icon">🏢</div>
+        <div class="pc-body"><div class="pc-title">Commercial Space</div><div class="pc-desc">Retail, office, warehouse, studio or flex space</div></div>
+        <div class="pc-arrow">›</div>
+      </div>
     </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- S2: Life situation (shown for buy/sell/lease)         -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="screen" id="s2">
+    <div class="q-step">Quick question</div>
+    <div class="q-text">Is there a situation behind this?</div>
+    <div class="q-sub">This helps us personalize your results. Tap one or skip.</div>
+    <div class="grid2" id="lifeGrid">
+      <div class="gchoice" onclick="pickLife('none',this)"><div class="gc-ico">➡️</div><div class="gc-lbl">None / Just exploring</div></div>
+      <div class="gchoice" onclick="pickLife('separation',this)"><div class="gc-ico">⚖️</div><div class="gc-lbl">Separation</div><div class="gc-sub">Property needs to be addressed</div></div>
+      <div class="gchoice" onclick="pickLife('coborrower',this)"><div class="gc-ico">🤝</div><div class="gc-lbl">Adding Co-Borrower</div><div class="gc-sub">Combined income / joint application</div></div>
+      <div class="gchoice" onclick="pickLife('occupants',this)"><div class="gc-ico">🏠</div><div class="gc-lbl">Additional Occupants</div><div class="gc-sub">Need space for more people</div></div>
+      <div class="gchoice" onclick="pickLife('relocate',this)"><div class="gc-ico">📦</div><div class="gc-lbl">Relocating</div><div class="gc-sub">Moving to or within California</div></div>
+      <div class="gchoice" onclick="pickLife('other',this)"><div class="gc-ico">✨</div><div class="gc-lbl">Other Life Change</div></div>
+    </div>
+    <button class="btn-back" onclick="back()">← Back</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- S3: Contact info (all paths)                          -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="screen" id="s3">
+    <div class="q-step">Almost there</div>
+    <div class="q-text" id="s3title">Tell me a little about you</div>
+    <div class="q-sub">Your info is private and never sold or shared.</div>
+    <div class="fields">
+      <div class="field"><label>Full Name</label><input id="c-name" placeholder="Your full name"></div>
+      <div class="row2">
+        <div class="field"><label>Phone</label><input type="tel" id="c-phone" placeholder="(310) 000-0000"></div>
+        <div class="field"><label>Email</label><input type="email" id="c-email" placeholder="you@email.com"></div>
+      </div>
+    </div>
+    <button class="btn btn-gold" onclick="goDetails()"><span class="bl">Continue →</span><span class="dots"><span></span><span></span><span></span></span></button>
+    <button class="btn-back" onclick="back()">← Back</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- S4-BUY: Buy details                                   -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="screen" id="s4-buy">
+    <div class="q-step">Your finances</div>
+    <div class="q-text">Let's see what's possible for you</div>
+    <div class="fields">
+      <div class="row2">
+        <div class="field"><label>Monthly Income ($)</label><input type="number" id="b-inc" placeholder="8,500"></div>
+        <div class="field"><label>Monthly Debts ($)</label><input type="number" id="b-dbt" placeholder="500"></div>
+      </div>
+      <div class="field"><label>Employment Type</label>
+        <select id="b-emp">
+          <option value="W-2 Employee">W-2 Employee</option>
+          <option value="Self-Employed">Self-Employed / 1099</option>
+          <option value="Retired">Retired</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="field"><label>Property Type</label>
+        <select id="b-ptype">
+          <option value="Primary Residence">Primary Residence</option>
+          <option value="Investment Property">Investment Property</option>
+          <option value="Vacation Home">Vacation Home</option>
+        </select>
+      </div>
+      <div class="ttabs">
+        <button class="ttab active" onclick="bTab('price')">🏠 Home Price + Down</button>
+        <button class="ttab" onclick="bTab('loan')">💰 Loan Amount</button>
+      </div>
+      <div id="bp-price">
+        <div class="field"><label>Home Price ($)</label><input type="number" id="b-hp" placeholder="800,000" oninput="syncDP()"></div>
+        <div class="row2">
+          <div class="field"><label>Down Payment (%)</label><input type="number" id="b-dpct" placeholder="20" oninput="syncDPAmt()"></div>
+          <div class="field"><label>Down Payment ($)</label><input type="number" id="b-damt" placeholder="160,000" oninput="syncDPPct()"></div>
+        </div>
+      </div>
+      <div id="bp-loan" style="display:none">
+        <div class="field"><label>Loan Amount ($)</label><input type="number" id="b-la" placeholder="640,000"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>ZIP Code</label><input id="b-zip" placeholder="90210"></div>
+        <div class="field"><label>HOA ($/mo)</label><input type="number" id="b-hoa" placeholder="0"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Credit Profile</label>
+          <select id="b-cr"><option value="Excellent (740+)">Excellent (740+)</option><option value="Good (680-739)">Good (680-739)</option><option value="Fair (620-679)">Fair (620-679)</option><option value="Building (Below 620)">Building (Below 620)</option></select>
+        </div>
+        <div class="field"><label>Timeline</label>
+          <select id="b-tl"><option value="Immediate (1-3 months)">Immediate (1-3 mo)</option><option value="Planning (3-6 months)">Planning (3-6 mo)</option><option value="Researching (6+ months)">Researching (6+ mo)</option></select>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-gold" onclick="goWishlist()"><span class="bl">Continue →</span><span class="dots"><span></span><span></span><span></span></span></button>
+    <button class="btn-back" onclick="back()">← Back</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- S4B-BUY: Wishlist                                     -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="screen" id="s4b-buy">
+    <div class="q-step">Your dream home</div>
+    <div class="q-text">What are you looking for?</div>
+    <div class="q-sub">Tell me your must-haves — even if it feels out of reach right now.</div>
+    <div class="fields">
+      <div class="row2">
+        <div class="field"><label>Bedrooms</label><select id="b-bd"><option value="">Any</option><option>1</option><option>2</option><option>3</option><option>4</option><option value="5+">5+</option></select></div>
+        <div class="field"><label>Bathrooms</label><select id="b-ba"><option value="">Any</option><option>1</option><option>2</option><option>3</option><option value="4+">4+</option></select></div>
+      </div>
+      <label style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);font-weight:500;display:block;">Must-Haves</label>
+      <div class="ckg" id="b-mh">
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Yard / Outdoor Space</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Single Story</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Good School District</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Home Office</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Pool</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Pet Friendly</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>ADU / Guest House</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>New Construction</div>
+      </div>
+      <div class="field"><label>Describe Your Dream Home (optional)</label>
+        <textarea id="b-dream" placeholder="e.g. 4BR single story with pool near great schools in Calabasas..."></textarea>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Commute To</label><input id="b-com" placeholder="SpaceX, Downtown LA..."></div>
+        <div class="field"><label>Neighborhood Vibe</label>
+          <select id="b-vibe"><option value="">No preference</option><option>Quiet / Suburban</option><option>Urban / Walkable</option><option>Near Beach</option><option>Family-Friendly</option><option>Trendy</option></select>
+        </div>
+      </div>
+      <div class="field"><label>Notes / Questions</label><textarea id="b-notes" placeholder="Anything else I should know..."></textarea></div>
+    </div>
+    <button class="btn btn-gold" id="buyBtn" onclick="subBuy()"><span class="bl">Show Me My Options →</span><span class="dots"><span></span><span></span><span></span></span></button>
+    <button class="btn-back" onclick="back()">← Back</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- S4-SELL: Sell details                                 -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="screen" id="s4-sell">
+    <div class="ibox"><span class="ico">💡</span><strong>Did you know?</strong> When you sell, <strong>the buyer pays for their own agent — not you.</strong> You keep far more than most sellers realize.</div>
+    <div class="q-step">Your home</div>
+    <div class="q-text">Tell me about your property</div>
+    <div class="fields">
+      <div class="field"><label>Property Address</label><input id="s-adr" placeholder="123 Sunset Blvd, Los Angeles CA"></div>
+      <div class="row2">
+        <div class="field"><label>ZIP Code</label><input id="s-zip" placeholder="90210"></div>
+        <div class="field"><label>Year Purchased</label><input type="number" id="s-yr" placeholder="2019"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Bedrooms</label><select id="s-bd"><option>2</option><option selected>3</option><option>4</option><option value="5+">5+</option></select></div>
+        <div class="field"><label>Condition</label><select id="s-cond"><option>Excellent</option><option selected>Good</option><option>Fair</option><option value="Needs Work">Needs Work</option></select></div>
+      </div>
+      <div class="field"><label>Stories</label><select id="s-str"><option value="1">Single Story</option><option value="2" selected>Two Story</option><option value="Condo">Condo / Townhome</option></select></div>
+      <div class="row2">
+        <div class="field"><label>Remaining Mortgage ($)</label><input type="number" id="s-mb" placeholder="350,000"></div>
+        <div class="field"><label>Estimated Value ($)</label><input type="number" id="s-est" placeholder="750,000"></div>
+      </div>
+      <div class="field"><label>After Selling I Want To...</label>
+        <select id="s-nxt"><option value="Buy smaller / single-story">Buy smaller / single-story</option><option value="Buy in a new area">Buy in a new area</option><option value="Retire / downsize">Retire or downsize</option><option value="Invest equity">Invest the equity</option><option value="Rent for a while">Rent for a while</option><option value="Not sure yet">Not sure yet</option></select>
+      </div>
+      <div class="field"><label>What's Holding You Back?</label>
+        <select id="s-cnc"><option value="Dont know what I can afford next">Don't know what I can afford next</option><option value="Worried wont get enough">Worried I won't get enough</option><option value="Dont know the process">Don't know the process</option><option value="Emotional attachment">Emotional attachment</option><option value="Timing uncertainty">Unsure about timing</option><option value="None just exploring">Just exploring</option></select>
+      </div>
+      <div class="field"><label>Timeline</label><select id="s-tl"><option value="ASAP">ASAP</option><option value="3-6 months">3–6 months</option><option value="6-12 months">6–12 months</option><option value="Just exploring">Just exploring</option></select></div>
+      <div class="field"><label>Notes</label><textarea id="s-notes" placeholder="e.g. Two-story, need single story near family..."></textarea></div>
+    </div>
+    <button class="btn btn-gold" id="sellBtn" onclick="subSell()"><span class="bl">Show Me My Options →</span><span class="dots"><span></span><span></span><span></span></span></button>
+    <button class="btn-back" onclick="back()">← Back</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- S4-LOAN: Loan options details                         -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="screen" id="s4-loan">
+    <div class="q-step">Your situation</div>
+    <div class="q-text">Tell me what you're looking for</div>
+    <div class="fields">
+      <div class="field"><label>What Type of Loan?</label>
+        <select id="l-type" onchange="toggleLoanFields()">
+          <option value="Refinance">Refinance My Current Home</option>
+          <option value="Cash-Out Refi">Cash-Out Refinance</option>
+          <option value="HELOC">HELOC (Home Equity Line)</option>
+          <option value="Not Sure">Not Sure — Show Me My Options</option>
+        </select>
+      </div>
+      <div class="field"><label>Employment Type</label>
+        <select id="l-emp" onchange="toggleSelfEmp()">
+          <option value="W-2 Employee">W-2 Employee</option>
+          <option value="Self-Employed">Self-Employed / 1099</option>
+          <option value="Retired">Retired</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div id="self-emp-note" style="display:none">
+        <div class="ibox"><span class="ico">💼</span><strong>Self-Employed?</strong> No 2-year tax returns needed. Bank statement loans, DSCR loans, and asset-based options are available. We'll show you exactly what applies to you.</div>
+      </div>
+      <div id="lf-standard">
+        <div class="row2">
+          <div class="field"><label>Current Balance ($)</label><input type="number" id="l-bal" placeholder="500,000"></div>
+          <div class="field"><label>Current Rate (%)</label><input type="number" id="l-rate" placeholder="7.5" step="0.1"></div>
+        </div>
+        <div class="field"><label>Current Monthly Payment ($)</label><input type="number" id="l-pmt" placeholder="3,500"></div>
+      </div>
+      <div id="lf-heloc" style="display:none">
+        <div class="row2">
+          <div class="field"><label>Home Value ($)</label><input type="number" id="l-hv" placeholder="900,000"></div>
+          <div class="field"><label>Mortgage Balance ($)</label><input type="number" id="l-mb" placeholder="400,000"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Amount to Borrow ($)</label><input type="number" id="l-br" placeholder="100,000"></div>
+          <div class="field"><label>HELOC Rate (%)</label><input type="number" id="l-hr" placeholder="8.5" step="0.1"></div>
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Monthly Income ($)</label><input type="number" id="l-inc" placeholder="8,500"></div>
+        <div class="field"><label>Monthly Debts ($)</label><input type="number" id="l-dbt" placeholder="500"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>ZIP Code</label><input id="l-zip" placeholder="90210"></div>
+        <div class="field"><label>Credit Profile</label>
+          <select id="l-cr"><option value="Excellent (740+)">Excellent (740+)</option><option value="Good (680-739)">Good (680-739)</option><option value="Fair (620-679)">Fair (620-679)</option><option value="Building (Below 620)">Building</option></select>
+        </div>
+      </div>
+      <div id="lf-self" style="display:none">
+        <div class="row2">
+          <div class="field"><label>Monthly Revenue ($)</label><input type="number" id="l-rev" placeholder="15,000"></div>
+          <div class="field"><label>Bank Balance ($)</label><input type="number" id="l-bnk" placeholder="50,000"></div>
+        </div>
+        <div class="row2">
+          <div class="field"><label>Business Type</label>
+            <select id="l-btype"><option value="Freelancer / Contractor">Freelancer</option><option value="LLC Owner">LLC Owner</option><option value="S-Corp / C-Corp">S/C-Corp</option><option value="Sole Proprietor">Sole Proprietor</option><option value="Real Estate Investor">RE Investor</option></select>
+          </div>
+          <div class="field"><label>Years in Business</label>
+            <select id="l-yrs"><option value="Less than 1 year">&lt;1 Yr</option><option value="1 year">1 Yr</option><option value="2 years">2 Yrs</option><option value="3-5 years">3–5 Yrs</option><option value="5+ years">5+ Yrs</option></select>
+          </div>
+        </div>
+      </div>
+      <div class="field"><label>Notes / Questions</label><textarea id="l-notes" placeholder="Tell me your situation — I'll show you what's available..."></textarea></div>
+    </div>
+    <button class="btn btn-gold" id="loanBtn" onclick="subLoan()"><span class="bl">Show Me My Options →</span><span class="dots"><span></span><span></span><span></span></span></button>
+    <button class="btn-back" onclick="back()">← Back</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- S4-WAYOUT: Your Way Out details                       -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="screen" id="s4-wayout">
+    <div class="ibox way"><span class="ico">🚪</span><strong>You are not alone — and this is not the end.</strong> I'm not a collector. I'm a licensed agent here to show you a dignified path forward. Everything you share is confidential.</div>
+    <div class="q-step">Your situation</div>
+    <div class="q-text">Tell me what's happening</div>
+    <div class="fields">
+      <div class="field"><label>What Best Describes Your Situation?</label>
+        <select id="w-sit">
+          <option value="Tax Delinquent">Behind on property taxes (1+ years)</option>
+          <option value="Pre-Foreclosure">Received foreclosure notice</option>
+          <option value="Behind on Mortgage">Behind on mortgage payments</option>
+          <option value="Separation - Need to Sell">Separation — property needs to be sold</option>
+          <option value="Inherited Property">Inherited a property I can't afford</option>
+          <option value="Need Cash Fast">Need cash fast — considering selling</option>
+        </select>
+      </div>
+      <div class="field"><label>Property Address</label><input id="w-adr" placeholder="Address of the property"></div>
+      <div class="row2">
+        <div class="field"><label>ZIP Code</label><input id="w-zip" placeholder="90210"></div>
+        <div class="field"><label>Estimated Value ($)</label><input type="number" id="w-val" placeholder="400,000"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Mortgage Balance ($)</label><input type="number" id="w-mtg" placeholder="200,000"></div>
+        <div class="field"><label>Back Taxes Owed ($)</label><input type="number" id="w-tax" placeholder="25,000"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Other Liens ($)</label><input type="number" id="w-lien" placeholder="0"></div>
+        <div class="field"><label>Years Behind</label><select id="w-yrs"><option>1</option><option>2</option><option>3</option><option>4</option><option value="5+">5+</option></select></div>
+      </div>
+      <div class="field"><label>What Would Help You Most?</label>
+        <select id="w-need"><option value="Stop foreclosure and walk away clean">Stop foreclosure and walk away clean</option><option value="Pay off taxes and get some cash">Pay off taxes and get some cash</option><option value="Understand all my options">Understand all my options first</option><option value="Sell fast no hassle">Sell fast with no hassle</option></select>
+      </div>
+      <div class="field"><label>Tell Me Your Situation</label><textarea id="w-notes" placeholder="Whatever you're comfortable sharing — no judgment here..."></textarea></div>
+    </div>
+    <button class="btn btn-green" id="wayBtn" onclick="subWayOut()"><span class="bl">Show Me My Way Out →</span><span class="dots"><span></span><span></span><span></span></span></button>
+    <button class="btn-back" onclick="back()">← Back</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- S4-LEASE: Lease details                               -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="screen" id="s4-lease">
+    <div class="q-step">What you need</div>
+    <div class="q-text">Tell me what you're looking for</div>
+    <div class="fields">
+      <div class="row2">
+        <div class="field"><label>Target Area</label><input id="r-area" placeholder="West LA, Pasadena..."></div>
+        <div class="field"><label>Max Budget ($/mo)</label><input type="number" id="r-bdg" placeholder="2,500"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Unit Size</label><select id="r-sz"><option>Studio</option><option value="1BR">1 Bedroom</option><option value="2BR">2 Bedroom</option><option value="3BR">3 Bedroom</option><option>House</option></select></div>
+        <div class="field"><label>Move-In</label><select id="r-mv"><option>ASAP</option><option value="1 month">1 Month</option><option value="2-3 months">2–3 Months</option><option>Flexible</option></select></div>
+      </div>
+      <label style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);font-weight:500;display:block;">What Matters Most?</label>
+      <div class="ckg" id="r-mh">
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Private Parking</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Pet Friendly</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>In-Unit Laundry</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Near Transit</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Gym / Pool</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Storage Space</div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Parking Spaces</label><select id="r-pk"><option value="0">No car</option><option value="1" selected>1</option><option value="2">2</option><option value="3">3</option><option value="4+">4+ (special situation)</option></select></div>
+        <div class="field"><label>Pets?</label><input id="r-pets" placeholder="e.g. 1 large dog"></div>
+      </div>
+      <div class="field"><label>Notes / Special Needs</label><textarea id="r-notes" placeholder="e.g. Need 5 spots for vintage cars — open to nearby garage..."></textarea></div>
+    </div>
+    <button class="btn btn-gold" id="leaseBtn" onclick="subLease()"><span class="bl">Show Me My Options →</span><span class="dots"><span></span><span></span><span></span></span></button>
+    <button class="btn-back" onclick="back()">← Back</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- S4-COMMERCIAL: Commercial details                     -->
+  <!-- ══════════════════════════════════════════════════════ -->
+  <div class="screen" id="s4-comm">
+    <div class="q-step">Your space</div>
+    <div class="q-text">Tell me what you need</div>
+    <div class="fields">
+      <div class="row2">
+        <div class="field"><label>Target Area</label><input id="m-area" placeholder="Culver City, DTLA..."></div>
+        <div class="field"><label>Max Budget ($/mo)</label><input type="number" id="m-bdg" placeholder="5,000"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Square Footage</label><input type="number" id="m-sqft" placeholder="2,000"></div>
+        <div class="field"><label>Space Type</label>
+          <select id="m-type"><option value="Retail Storefront">Retail Storefront</option><option value="Office Space">Office Space</option><option value="Warehouse / Industrial">Warehouse</option><option value="Flex / Mixed Use">Flex / Mixed Use</option><option value="Restaurant / Food">Restaurant</option><option value="Medical / Dental">Medical / Dental</option><option value="Salon / Studio">Salon / Studio</option></select>
+        </div>
+      </div>
+      <label style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--gray);font-weight:500;display:block;">Special Requirements</label>
+      <div class="ckg" id="m-req">
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Loading Dock</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>High Ceilings</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Drive-In Access</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Street Visibility</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>Large Parking Lot</div>
+        <div class="cki" onclick="ck(this)"><span class="ckb"></span>24/7 Access</div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Parking Spaces</label><select id="m-pk"><option value="0-5">0–5</option><option value="6-10">6–10</option><option value="11-20">11–20</option><option value="20+">20+</option></select></div>
+        <div class="field"><label>Move-In</label><select id="m-mv"><option>ASAP</option><option>1–3 months</option><option>3–6 months</option><option>Flexible</option></select></div>
+      </div>
+      <div class="field"><label>Notes / Specific Needs</label><textarea id="m-notes" placeholder="Loading dock + 20 parking — open to nearby overflow lot..."></textarea></div>
+    </div>
+    <button class="btn btn-gold" id="commBtn" onclick="subComm()"><span class="bl">Show Me My Options →</span><span class="dots"><span></span><span></span><span></span></span></button>
+    <button class="btn-back" onclick="back()">← Back</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════ -->
+  <!-- RESULTS                                               -->
+  <!-- ══════════════════════════════════════════════════════ -->
+
+  <!-- BUY RESULT -->
+  <div class="result" id="res-buy">
+    <div class="res-hero"><div class="res-eye">Your Estimated Monthly Payment</div><div class="res-big" id="r-piti">—<span class="res-mo">/mo</span></div><div id="r-qb"></div></div>
+    <div class="sec-t">📋 Full Payment Breakdown</div>
+    <div class="bkgrid" id="r-bk"></div>
+    <div class="sec-t">📊 Debt-to-Income</div>
+    <div class="dtirow" id="r-dti"></div>
+    <div id="r-wish" style="display:none"><div class="sec-t">🏡 Your Wishlist</div><div class="wtags" id="r-wtags"></div></div>
+    <div id="r-dream" style="display:none">
+      <div class="sec-t">✨ Your Path to Your Dream Home</div>
+      <div class="tl" id="r-tl"></div>
+      <div class="sec-t">📈 Value Projection</div>
+      <div class="vchart"><div class="vbars" id="r-vb"></div></div>
+    </div>
+    <div class="metarow" id="r-meta"></div>
+    <div class="sacc"><button class="sh" onclick="togS('buy')"><span>📞 Scripts & Follow-Up</span><em class="chev">▼</em></button>
+      <div class="sb" id="sc-buy"><div class="si">
+        <div class="sblk"><h4>Call Opener</h4><p id="ss-bop"></p></div>
+        <div class="sblk"><h4>SMS Follow-Up</h4><p id="ss-bsms"></p></div>
+        <div class="sblk"><h4>Voicemail</h4><p id="ss-bvm"></p></div>
+        <div class="sblk"><h4>Dream Home Response</h4><p id="ss-bdream"></p></div>
+      </div></div>
+    </div>
+    <a id="cta-buy" href="#" class="cta">📱 Text Shiva To Discuss Your Results</a>
+    <div class="restart"><button onclick="reset()">← Start over</button></div>
+  </div>
+
+  <!-- SELL RESULT -->
+  <div class="result" id="res-sell">
+    <div class="sec-t">🏡 Your Equity Report</div>
+    <div class="sgrid" id="r-sgrid"></div>
+    <div class="sec-t">✨ Your Possibilities</div>
+    <div id="r-sposs"></div>
+    <div class="metarow" id="r-smeta"></div>
+    <div class="sacc"><button class="sh" onclick="togS('sell')"><span>📞 Conversation Scripts</span><em class="chev">▼</em></button>
+      <div class="sb" id="sc-sell"><div class="si">
+        <div class="sblk"><h4>Call Opener</h4><p id="ss-sop"></p></div>
+        <div class="sblk"><h4>SMS</h4><p id="ss-ssms"></p></div>
+        <div class="sblk"><h4>Address Their Concern</h4><p id="ss-scnc"></p></div>
+        <div class="sblk"><h4>The Possibilities Script</h4><p id="ss-sposs"></p></div>
+      </div></div>
+    </div>
+    <a id="cta-sell" href="#" class="cta">📱 Text Shiva — Let's Talk Your Options</a>
+    <div class="restart"><button onclick="reset()">← Start over</button></div>
+  </div>
+
+  <!-- LOAN RESULT -->
+  <div class="result" id="res-loan">
+    <div class="res-hero"><div class="res-eye">Your Estimated Payment</div><div class="res-big" id="r-lpiti">—<span class="res-mo">/mo</span></div><div id="r-lqb"></div></div>
+    <div class="sec-t">📋 Payment Breakdown</div>
+    <div class="bkgrid" id="r-lbk"></div>
+    <div id="r-lself" style="display:none">
+      <div class="sec-t">💼 Loan Options Available To You</div>
+      <div id="r-lloans"></div>
+      <div class="sec-t">🗺️ Your Roadmap</div>
+      <div class="rmap" id="r-lroad"></div>
+    </div>
+    <div class="metarow" id="r-lmeta"></div>
+    <div class="sacc"><button class="sh" onclick="togS('loan')"><span>📞 Scripts & Follow-Up</span><em class="chev">▼</em></button>
+      <div class="sb" id="sc-loan"><div class="si">
+        <div class="sblk"><h4>Call Opener</h4><p id="ss-lop"></p></div>
+        <div class="sblk"><h4>SMS</h4><p id="ss-lsms"></p></div>
+      </div></div>
+    </div>
+    <a id="cta-loan" href="#" class="cta">📱 Text Shiva — Let's Talk Your Options</a>
+    <div class="restart"><button onclick="reset()">← Start over</button></div>
+  </div>
+
+  <!-- WAY OUT RESULT -->
+  <div class="result" id="res-wayout">
+    <div class="res-hero way"><div class="res-eye">Estimated Cash In Your Pocket</div><div class="res-big gr" id="r-wwalk">—</div><div style="font-size:11px;color:rgba(255,255,255,.35);margin-top:4px;">After all debts cleared</div></div>
+    <div class="sec-t gr">💰 Your Numbers</div>
+    <div class="bkgrid" id="r-wbk"></div>
+    <div class="sec-t gr">🚪 Your Path Forward</div>
+    <div id="r-wposs"></div>
+    <div class="metarow" id="r-wmeta"></div>
+    <div class="sacc"><button class="sh" onclick="togS('wayout')"><span>📞 Compassionate Scripts</span><em class="chev">▼</em></button>
+      <div class="sb" id="sc-wayout"><div class="si">
+        <div class="sblk way"><h4>Call Opener</h4><p id="ss-wop"></p></div>
+        <div class="sblk way"><h4>SMS (gentle)</h4><p id="ss-wsms"></p></div>
+        <div class="sblk way"><h4>When They're Hesitant</h4><p id="ss-whes"></p></div>
+        <div class="sblk way"><h4>Walk Away Clean Script</h4><p id="ss-wclean"></p></div>
+      </div></div>
+    </div>
+    <a id="cta-wayout" href="#" class="cta way">📱 Text Shiva — Confidential, No Pressure</a>
+    <div class="restart"><button onclick="reset()">← Start over</button></div>
+  </div>
+
+  <!-- LEASE RESULT -->
+  <div class="result" id="res-lease">
+    <div class="sec-t">🔑 Your Leasing Options</div>
+    <div id="r-lposs"></div>
+    <div class="metarow" id="r-leasemeta"></div>
+    <div class="sacc"><button class="sh" onclick="togS('lease')"><span>📞 Follow-Up Scripts</span><em class="chev">▼</em></button>
+      <div class="sb" id="sc-lease"><div class="si">
+        <div class="sblk"><h4>Call Opener</h4><p id="ss-rop"></p></div>
+        <div class="sblk"><h4>SMS</h4><p id="ss-rsms"></p></div>
+      </div></div>
+    </div>
+    <a id="cta-lease" href="#" class="cta">📱 Text Shiva — Let's Find Your Place</a>
+    <div class="restart"><button onclick="reset()">← Start over</button></div>
+  </div>
+
+  <!-- COMMERCIAL RESULT -->
+  <div class="result" id="res-comm">
+    <div class="sec-t">🏢 Your Commercial Options</div>
+    <div id="r-cposs"></div>
+    <div class="metarow" id="r-commmeta"></div>
+    <div class="sacc"><button class="sh" onclick="togS('comm')"><span>📞 Follow-Up Scripts</span><em class="chev">▼</em></button>
+      <div class="sb" id="sc-comm"><div class="si">
+        <div class="sblk"><h4>Call Opener</h4><p id="ss-cop"></p></div>
+        <div class="sblk"><h4>SMS</h4><p id="ss-csms"></p></div>
+      </div></div>
+    </div>
+    <a id="cta-comm" href="#" class="cta">📱 Text Shiva — Let's Find Your Space</a>
+    <div class="restart"><button onclick="reset()">← Start over</button></div>
+  </div>
+
+  <div class="card-footer">
+    <strong>Shiva Tamara</strong> of ShivaLuxury · DRE# 02251909 · NMLS 2779492<br>
+    Nobility and Monarchs Real Estate · Beverly Hills Financial Group · Beverly Hills, CA
+  </div>
+</div>
 
 <script>
-    // ── Auto-detect backend URL ────────────────────────────────────────────────
-    // Works locally (localhost:5001) AND on Render (same origin)
-    const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-        ? 'http://localhost:5001'
-        : '';   // same origin on Render
+const API = (location.hostname==='localhost'||location.hostname==='127.0.0.1')?'http://localhost:5001':'';
+const SMS = '3104225608';
+let path='', life='none', bm='price';
+let history=['s1'];
+const TOTAL={buy:5,sell:4,loan:4,wayout:4,lease:4,commercial:4};
 
-    async function sendData() {
-        const btn    = document.getElementById('auditBtn');
-        const result = document.getElementById('result');
+// ── Show/hide screens ─────────────────────────────────────────────────────────
+function show(id,back=false){
+  document.querySelectorAll('.screen,.result').forEach(e=>{e.classList.remove('active','show','back');});
+  const el=document.getElementById(id);
+  if(!el)return;
+  if(el.classList.contains('result'))el.classList.add('show');
+  else{el.classList.add('active');if(back)el.classList.add('back');}
+  updateProg(id);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function go(id){history.push(id);show(id);}
+function back(){
+  if(history.length>1){history.pop();show(history[history.length-1],true);}
+}
+function reset(){path='';life='none';history=['s1'];document.querySelectorAll('.path-card,.gchoice').forEach(e=>e.classList.remove('sel'));show('s1');}
 
-        btn.classList.add('loading');
-        btn.disabled = true;
-        result.classList.remove('show');
+function updateProg(id){
+  const steps=['s1','s2','s3',`s4-${path}`,`s4b-${path}`].filter(Boolean);
+  const idx=steps.indexOf(id);
+  const tot=TOTAL[path]||5;
+  const pct=idx<0?100:Math.round(((idx+1)/tot)*100);
+  document.getElementById('prog').style.width=pct+'%';
+  const si=document.getElementById('stepInfo');
+  if(idx>=0){si.classList.add('show');document.getElementById('stepLbl').textContent=`Step ${idx+1}`;document.getElementById('stepFrac').textContent=`${idx+1} of ${tot}`;}
+  else si.classList.remove('show');
+}
 
-        const data = {
-            name:           document.getElementById('name').value.trim(),
-            phone:          document.getElementById('phone').value.trim(),
-            email:          document.getElementById('email').value.trim(),
-            monthly_income: document.getElementById('income').value,
-            monthly_debts:  document.getElementById('debts').value,
-            loan_amount:    document.getElementById('loan_amount').value,
-            zip_code:       document.getElementById('zip_code').value.trim() || '90210',
-            credit:         document.getElementById('credit').value,
-            loan_type:      document.getElementById('loan_type').value,
-            timeline:       document.getElementById('timeline').value
-        };
+// ── Path & life selections ────────────────────────────────────────────────────
+function pickPath(p,el){
+  document.querySelectorAll('.path-card').forEach(e=>e.classList.remove('sel'));
+  el.classList.add('sel'); path=p;
+  const skipLife=['wayout','commercial'];
+  setTimeout(()=>go(skipLife.includes(p)?'s3':'s2'),280);
+}
+function pickLife(e,el){
+  document.querySelectorAll('.gchoice').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel'); life=e;
+  setTimeout(()=>go('s3'),280);
+}
 
-        try {
-            const resp = await fetch(`${API_BASE}/audit`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            const r = await resp.json();
+// ── Contact → route to detail screen ─────────────────────────────────────────
+function goDetails(){
+  if(!g('c-name').trim()){alert('Please enter your name.');return;}
+  if(!g('c-phone').trim()){alert('Please enter your phone number.');return;}
+  const map={buy:'s4-buy',sell:'s4-sell',loan:'s4-loan',wayout:'s4-wayout',lease:'s4-lease',commercial:'s4-comm'};
+  go(map[path]||'s4-buy');
+}
+function goWishlist(){go('s4b-buy');}
 
-            if (r.status === 'success') {
-                // PITI
-                document.getElementById('pitiAmt').textContent       = r.message.replace('Total Est. PITI: ','');
-                document.getElementById('pitiBreakdown').textContent  = r.breakdown || '';
+// ── Field toggles ─────────────────────────────────────────────────────────────
+function bTab(m){
+  bm=m;
+  document.querySelectorAll('#s4-buy .ttab').forEach((b,i)=>b.classList.toggle('active',(i===0&&m==='price')||(i===1&&m==='loan')));
+  document.getElementById('bp-price').style.display=m==='price'?'block':'none';
+  document.getElementById('bp-loan').style.display=m==='loan'?'block':'none';
+}
+function toggleLoanFields(){
+  const t=g('l-type');
+  document.getElementById('lf-standard').style.display=t==='HELOC'?'none':'block';
+  document.getElementById('lf-heloc').style.display=t==='HELOC'?'block':'none';
+}
+function toggleSelfEmp(){
+  const se=g('l-emp')==='Self-Employed';
+  document.getElementById('self-emp-note').style.display=se?'block':'none';
+  document.getElementById('lf-self').style.display=se?'block':'none';
+}
+function syncDP(){const p=+g('b-hp'),pct=+g('b-dpct');if(p&&pct)s('b-damt',Math.round(p*pct/100));}
+function syncDPAmt(){const p=+g('b-hp'),a=+g('b-damt');if(p&&a)s('b-dpct',(a/p*100).toFixed(1));}
+function syncDPPct(){syncDP();}
 
-                // Qualification badge
-                const qb = document.getElementById('qualBadge');
-                qb.textContent = r.qualification || '';
-                qb.className   = 'qualification-badge ' +
-                    (r.qualifies === true ? 'badge-yes' : r.qualifies === false ? 'badge-no' : 'badge-na');
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function ck(el){el.classList.toggle('on');el.querySelector('.ckb').textContent=el.classList.contains('on')?'✓':'';}
+function gc2(id){return[...document.querySelectorAll(`#${id} .cki.on`)].map(e=>e.textContent.replace('✓','').trim());}
+function g(id){return document.getElementById(id)?.value||'';}
+function s(id,v){const e=document.getElementById(id);if(e)e.value=v;}
+function sf(v){try{return parseFloat(v||0)||0;}catch{return 0;}}
+function fm(n){return'$'+(parseFloat(n)||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fms(n){return'$'+(parseFloat(n)||0).toLocaleString('en-US',{maximumFractionDigits:0});}
+function togS(t){const b=document.getElementById(`sc-${t}`),h=b.previousElementSibling;h.classList.toggle('open');b.classList.toggle('open');}
+function load(id,on){const b=document.getElementById(id);b.classList.toggle('loading',on);b.disabled=on;}
+async function post(p){const r=await fetch(`${API}/audit`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(p)});return r.json();}
+function pcards(arr,way=false){return arr.map(p=>`<div class="pcard ${way||p.fresh?'way':''}"><div class="pico">${p.icon}</div><div><div class="ptitle">${p.title}</div><div class="pdesc">${p.desc}</div></div></div>`).join('');}
 
-                // Meta
-                document.getElementById('taxRate').textContent    = r.tax_rate   || '—';
-                document.getElementById('segmentVal').textContent  = r.segment    || '—';
-                document.getElementById('priorityVal').textContent = r.priority   || '—';
-                document.getElementById('sheetsVal').textContent   = r.sheets_saved ? '✅ Saved' : '⚠️ ' + (r.sheets_error || 'Not saved');
+// ══════════════════════════════════════════════════════════════════════════════
+async function subBuy(){
+  load('buyBtn',true);
+  let hp=0,dp=0,dpct=0,la=0;
+  if(bm==='price'){hp=sf(g('b-hp'));dpct=sf(g('b-dpct'))||20;dp=sf(g('b-damt'))||hp*dpct/100;la=hp-dp;}
+  else la=sf(g('b-la'));
+  const pay={path:'buyer',life_event:life,name:g('c-name'),phone:g('c-phone'),email:g('c-email'),monthly_income:g('b-inc'),monthly_debts:g('b-dbt'),employment_type:g('b-emp'),loan_type:'Purchase',property_type:g('b-ptype'),zip_code:g('b-zip')||'90210',hoa:g('b-hoa'),credit:g('b-cr'),timeline:g('b-tl'),budget_mode:bm,home_price:hp,down_payment:dp,down_pct:dpct,loan_amount:la,beds:g('b-bd'),baths:g('b-ba'),must_haves:gc2('b-mh').join(', '),commute:g('b-com'),vibe:g('b-vibe'),dream_home:g('b-dream'),notes:g('b-notes')};
+  try{const r=await post(pay);if(r.status==='success'){renderBuy(r);go('res-buy');}else alert('Error: '+r.message);}
+  catch(e){alert('Connection error: '+e.message);}finally{load('buyBtn',false);}
+}
 
-                // Refi flag
-                const rf = document.getElementById('refiFlag');
-                if (r.refi_flag) {
-                    rf.textContent = '🔁 ' + r.refi_flag;
-                    rf.style.display = 'block';
-                } else {
-                    rf.style.display = 'none';
-                }
+function renderBuy(r){
+  const b=r.breakdown;
+  document.getElementById('r-piti').innerHTML=`${fm(b.total_piti)}<span class="res-mo">/mo</span>`;
+  const qc=r.qualifies===true?'qy':r.qualifies===false?'qn':'qna',qi=r.qualifies===true?'✅':r.qualifies===false?'⚠️':'ℹ️';
+  document.getElementById('r-qb').innerHTML=`<span class="qbadge ${qc}">${qi} ${r.qualification}</span>`;
+  const rows=[{ico:'💵',lbl:'Principal & Interest',val:b.p_and_i,note:`${b.rate} · 30-yr fixed`},{ico:'🏛️',lbl:'Property Tax',val:b.monthly_tax,note:`${b.tax_rate} annual`},{ico:'🔒',lbl:'Home Insurance',val:b.monthly_ins,note:'~0.5% annually'},{ico:'🛡️',lbl:'PMI',val:b.pmi,note:b.pmi>0?'Removed at 20% equity':'None ✅'},{ico:'🏢',lbl:'HOA',val:b.hoa,note:b.hoa>0?'As entered':'N/A'},{ico:'💳',lbl:'Total Monthly Payment',val:b.total_piti,note:'',tot:true}];
+  document.getElementById('r-bk').innerHTML=rows.map(row=>`<div class="brow ${row.tot?'tot':''}"><div class="blft"><div class="bico">${row.ico}</div><div><span class="blbl">${row.lbl}</span>${!row.tot?`<span class="bnote">${row.note}</span>`:''}</div></div><span class="bval">${fm(row.val)}/mo</span></div>`).join('');
+  const fd=parseFloat(b.front_dti),bd2=parseFloat(b.back_dti);
+  document.getElementById('r-dti').innerHTML=`<div class="dtibox ${fd<=28?'dok':fd<=31?'dwarn':'dbad'}"><span class="dn">${fd.toFixed(1)}%</span><span class="dl">Front DTI · ≤28%</span></div><div class="dtibox ${bd2<=36?'dok':bd2<=43?'dwarn':'dbad'}"><span class="dn">${bd2.toFixed(1)}%</span><span class="dl">Back DTI · ≤43%</span></div>`;
+  if(r.wishlist?.length){document.getElementById('r-wish').style.display='block';document.getElementById('r-wtags').innerHTML=r.wishlist.map(w=>`<span class="wtag">${w}</span>`).join('');}
+  if(r.dream_path){document.getElementById('r-dream').style.display='block';document.getElementById('r-tl').innerHTML=r.dream_path.steps.map(s=>`<div class="tl-step"><div class="tl-dot">${s.icon}</div><div class="tl-b"><div class="tl-lbl">${s.label}</div><div class="tl-val">${s.value}</div><div class="tl-desc">${s.desc}</div></div></div>`).join('');const bars=r.dream_path.chart,mx=Math.max(...bars.map(b=>b.value));document.getElementById('r-vb').innerHTML=bars.map(b=>`<div class="vbw"><div class="vbv">${fms(b.value)}</div><div class="vbar" style="height:${Math.round(b.value/mx*75)}px"></div><div class="vbl">${b.label}</div></div>`).join('');}
+  document.getElementById('r-meta').innerHTML=`<div class="mpill"><div class="dot dg"></div>${r.segment}</div><div class="mpill"><div class="dot dgr"></div>${r.priority}</div>${r.sheets_saved?'<div class="mpill"><div class="dot db"></div>Saved to CRM</div>':''}`;
+  if(r.script){document.getElementById('ss-bop').textContent=r.script.call_opener||'';document.getElementById('ss-bsms').textContent=r.script.sms_followup||'';document.getElementById('ss-bvm').textContent=r.script.voicemail||'';document.getElementById('ss-bdream').textContent=r.script.dream_response||'';}
+  document.getElementById('cta-buy').href=`sms:${SMS}&body=${encodeURIComponent("Hi Shiva! I just got my report and I'd love to discuss my results.")}`;
+}
 
-                // Scripts
-                if (r.script) {
-                    document.getElementById('scriptOpener').textContent    = r.script.call_opener   || '';
-                    document.getElementById('scriptSMS').textContent       = r.script.sms_followup  || '';
-                    document.getElementById('scriptVM').textContent        = r.script.voicemail      || '';
-                    document.getElementById('scriptObjLook').textContent   = r.script.objections?.just_looking || '';
-                    document.getElementById('scriptObjCredit').textContent = r.script.objections?.bad_credit   || '';
-                }
+async function subSell(){
+  load('sellBtn',true);
+  const pay={path:'seller',life_event:life,name:g('c-name'),phone:g('c-phone'),email:g('c-email'),address:g('s-adr'),zip_code:g('s-zip')||'90210',year_purchased:g('s-yr'),beds:g('s-bd'),baths:'2',condition:g('s-cond'),stories:g('s-str'),mortgage_balance:g('s-mb'),owner_estimate:g('s-est'),next_step:g('s-nxt'),concern:g('s-cnc'),timeline:g('s-tl'),notes:g('s-notes')};
+  try{const r=await post(pay);if(r.status==='success'){const sd=r.seller_data;document.getElementById('r-sgrid').innerHTML=`<div class="sstat"><span class="sn">${fms(sd.est_value)}</span><span class="sl">Est. Value</span></div><div class="sstat hi"><span class="sn">${fms(sd.net_equity)}</span><span class="sl">Net Equity</span></div><div class="sstat"><span class="sn">${fms(sd.after_commission)}</span><span class="sl">After Commission</span></div><div class="sstat hi"><span class="sn">${fms(sd.buying_power)}</span><span class="sl">Buying Power Next</span></div>`;document.getElementById('r-sposs').innerHTML=pcards(r.possibilities);document.getElementById('r-smeta').innerHTML=`<div class="mpill"><div class="dot dg"></div>${r.priority}</div>${r.sheets_saved?'<div class="mpill"><div class="dot db"></div>Saved to CRM</div>':''}`;if(r.script){document.getElementById('ss-sop').textContent=r.script.opener||'';document.getElementById('ss-ssms').textContent=r.script.sms||'';document.getElementById('ss-scnc').textContent=r.script.concern_response||'';document.getElementById('ss-sposs').textContent=r.script.possibilities||'';}document.getElementById('cta-sell').href=`sms:${SMS}&body=${encodeURIComponent("Hi Shiva! I saw my home report and I'd love to discuss my options.")}`;go('res-sell');}else alert('Error: '+r.message);}
+  catch(e){alert('Connection error: '+e.message);}finally{load('sellBtn',false);}
+}
 
-                // SMS CTA
-                const phone  = "3104225608";
-                const msg    = encodeURIComponent("Hi Shiva! I just finished my 2026 Buying Power Audit and I'd love to discuss my results.");
-                document.getElementById('smsBtn').href = `sms:${phone}&body=${msg}`;
-
-                result.classList.add('show');
-                result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            } else {
-                alert('Error: ' + (r.message || 'Something went wrong'));
-            }
-        } catch (err) {
-            alert('Connection error — make sure Python app is running.\n\n' + err.message);
-        } finally {
-            btn.classList.remove('loading');
-            btn.disabled = false;
-        }
+async function subLoan(){
+  load('loanBtn',true);
+  const lt=g('l-type'),isSelf=g('l-emp')==='Self-Employed';
+  const pay={path: isSelf ? 'self_employed' : 'buyer',life_event:life,name:g('c-name'),phone:g('c-phone'),email:g('c-email'),loan_type:lt,employment_type:g('l-emp'),monthly_income:g('l-inc'),monthly_debts:g('l-dbt'),credit:g('l-cr'),zip_code:g('l-zip')||'90210',refi_balance:g('l-bal'),refi_rate:g('l-rate'),refi_payment:g('l-pmt'),heloc_home_value:g('l-hv'),heloc_balance:g('l-mb'),heloc_borrow:g('l-br'),heloc_rate:g('l-hr'),monthly_revenue:g('l-rev'),bank_balance:g('l-bnk'),business_type:g('l-btype'),years_in_business:g('l-yrs'),home_price:0,loan_amount:sf(g('l-bal')),budget_mode:'loan',notes:g('l-notes')};
+  try{const r=await post(pay);if(r.status==='success'){
+    if(isSelf){
+      document.getElementById('r-lpiti').innerHTML=`<span style="font-size:22px">Loan Options Ready</span>`;
+      document.getElementById('r-lqb').innerHTML='';
+      document.getElementById('r-lbk').innerHTML='<div class="brow"><div class="blft"><div class="bico">💼</div><div><span class="blbl">Self-Employed Profile Reviewed</span><span class="bnote">See loan options below</span></div></div><span class="bval">✅</span></div>';
+      document.getElementById('r-lself').style.display='block';
+      document.getElementById('r-lloans').innerHTML=r.loan_options?.map(l=>`<div class="lopt"><div class="lo-tag">${l.tag}</div><div class="lo-title">${l.name}</div><div class="lo-desc">${l.desc}</div></div>`).join('')||'';
+      document.getElementById('r-lroad').innerHTML=r.roadmap?.map((s,i)=>`<div class="rms"><div class="rmn">${i+1}</div><div><div class="rmt">${s.title}</div><div class="rmd">${s.desc}</div></div></div>`).join('')||'';
+    } else {
+      const b=r.breakdown||{};
+      document.getElementById('r-lpiti').innerHTML=`${fm(b.total_piti||0)}<span class="res-mo">/mo</span>`;
+      const qc=r.qualifies===true?'qy':r.qualifies===false?'qn':'qna',qi=r.qualifies===true?'✅':r.qualifies===false?'⚠️':'ℹ️';
+      document.getElementById('r-lqb').innerHTML=`<span class="qbadge ${qc}">${qi} ${r.qualification||''}</span>`;
+      const rows=[{ico:'💵',lbl:'Principal & Interest',val:b.p_and_i||0,note:`${b.rate||''}`},{ico:'🏛️',lbl:'Property Tax',val:b.monthly_tax||0,note:`${b.tax_rate||''}`},{ico:'🔒',lbl:'Insurance',val:b.monthly_ins||0,note:''},{ico:'💳',lbl:'Total Monthly Payment',val:b.total_piti||0,note:'',tot:true}];
+      document.getElementById('r-lbk').innerHTML=rows.map(row=>`<div class="brow ${row.tot?'tot':''}"><div class="blft"><div class="bico">${row.ico}</div><div><span class="blbl">${row.lbl}</span>${!row.tot&&row.note?`<span class="bnote">${row.note}</span>`:''}</div></div><span class="bval">${fm(row.val)}/mo</span></div>`).join('');
     }
+    document.getElementById('r-lmeta').innerHTML=`<div class="mpill"><div class="dot dg"></div>${r.priority||''}</div>${r.sheets_saved?'<div class="mpill"><div class="dot db"></div>Saved to CRM</div>':''}`;
+    if(r.script){document.getElementById('ss-lop').textContent=r.script.call_opener||r.script.opener||'';document.getElementById('ss-lsms').textContent=r.script.sms_followup||r.script.sms||'';}
+    document.getElementById('cta-loan').href=`sms:${SMS}&body=${encodeURIComponent("Hi Shiva! I just saw my loan options and I'd love to discuss them.")}`;
+    go('res-loan');
+  }else alert('Error: '+r.message);}
+  catch(e){alert('Connection error: '+e.message);}finally{load('loanBtn',false);}
+}
 
-    function toggleScript() {
-        const toggle = document.getElementById('scriptToggle');
-        const body   = document.getElementById('scriptBody');
-        toggle.classList.toggle('open');
-        body.classList.toggle('open');
-    }
+async function subWayOut(){
+  load('wayBtn',true);
+  const pay={path:'fresh_start',name:g('c-name'),phone:g('c-phone'),email:g('c-email'),situation:g('w-sit'),address:g('w-adr'),zip_code:g('w-zip')||'90210',property_value:g('w-val'),mortgage_balance:g('w-mtg'),back_taxes:g('w-tax'),other_liens:g('w-lien'),years_behind:g('w-yrs'),primary_need:g('w-need'),notes:g('w-notes')};
+  try{const r=await post(pay);if(r.status==='success'){document.getElementById('r-wwalk').textContent=fms(r.fresh_data.walkaway_cash);document.getElementById('r-wbk').innerHTML=r.breakdown_rows.map(row=>`<div class="brow ${row.tot?'wtot':''}"><div class="blft"><div class="bico">${row.ico}</div><div><span class="blbl">${row.lbl}</span><span class="bnote">${row.note}</span></div></div><span class="bval">${row.val}</span></div>`).join('');document.getElementById('r-wposs').innerHTML=pcards(r.possibilities,true);document.getElementById('r-wmeta').innerHTML=`<div class="mpill"><div class="dot dr"></div>${r.priority}</div>${r.sheets_saved?'<div class="mpill"><div class="dot db"></div>Saved Confidentially</div>':''}`;if(r.script){document.getElementById('ss-wop').textContent=r.script.opener||'';document.getElementById('ss-wsms').textContent=r.script.sms||'';document.getElementById('ss-whes').textContent=r.script.hesitant||'';document.getElementById('ss-wclean').textContent=r.script.walk_away_clean||'';}document.getElementById('cta-wayout').href=`sms:${SMS}&body=${encodeURIComponent("Hi Shiva, this is confidential. I need help with my property situation.")}`;go('res-wayout');}else alert('Error: '+r.message);}
+  catch(e){alert('Connection error: '+e.message);}finally{load('wayBtn',false);}
+}
+
+async function subLease(){
+  load('leaseBtn',true);
+  const pay={path:'lease',life_event:life,name:g('c-name'),phone:g('c-phone'),email:g('c-email'),area:g('r-area'),budget:g('r-bdg'),size:g('r-sz'),move_in:g('r-mv'),lease_length:'12 months',parking:g('r-pk'),pets:g('r-pets'),must_haves:gc2('r-mh').join(', '),notes:g('r-notes')};
+  try{const r=await post(pay);if(r.status==='success'){document.getElementById('r-lposs').innerHTML=pcards(r.possibilities);document.getElementById('r-leasemeta').innerHTML=`<div class="mpill"><div class="dot dgr"></div>${r.priority}</div>${r.sheets_saved?'<div class="mpill"><div class="dot db"></div>Saved to CRM</div>':''}`;if(r.script){document.getElementById('ss-rop').textContent=r.script.opener||'';document.getElementById('ss-rsms').textContent=r.script.sms||'';}document.getElementById('cta-lease').href=`sms:${SMS}&body=${encodeURIComponent("Hi Shiva! I submitted my leasing needs and I'd love to discuss options.")}`;go('res-lease');}else alert('Error: '+r.message);}
+  catch(e){alert('Connection error: '+e.message);}finally{load('leaseBtn',false);}
+}
+
+async function subComm(){
+  load('commBtn',true);
+  const pay={path:'commercial',name:g('c-name'),phone:g('c-phone'),email:g('c-email'),area:g('m-area'),budget:g('m-bdg'),sqft:g('m-sqft'),space_type:g('m-type'),lease_length:'1 year',requirements:gc2('m-req').join(', '),use_type:'Mixed',parking:g('m-pk'),move_in:g('m-mv'),notes:g('m-notes')};
+  try{const r=await post(pay);if(r.status==='success'){document.getElementById('r-cposs').innerHTML=pcards(r.possibilities);document.getElementById('r-commmeta').innerHTML=`<div class="mpill"><div class="dot dg"></div>${r.priority}</div>${r.sheets_saved?'<div class="mpill"><div class="dot db"></div>Saved to CRM</div>':''}`;if(r.script){document.getElementById('ss-cop').textContent=r.script.opener||'';document.getElementById('ss-csms').textContent=r.script.sms||'';}document.getElementById('cta-comm').href=`sms:${SMS}&body=${encodeURIComponent("Hi Shiva! I submitted my commercial needs and I'd love to discuss options.")}`;go('res-comm');}else alert('Error: '+r.message);}
+  catch(e){alert('Connection error: '+e.message);}finally{load('commBtn',false);}
+}
 </script>
 </body>
 </html>
