@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: shiva-lead-gen
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    plan: free
+    envVars:
+      - key: GOOGLE_CREDENTIALS
+        sync: false
+      - key: EMAIL_PASSWORD
+        sync: false
+      - key: SHEET_NAME
+        value: Unlock Your 2026 Buying Power
+      - key: INTEREST_RATE
+        value: "0.065"
